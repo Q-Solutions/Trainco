@@ -27,5 +27,13 @@ namespace TPCTrainco.Umbraco
         public void OnApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
         }
+
+        public void OnApplicationError(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        {
+
+            HttpContext ctx = HttpContext.Current;
+            ctx.Response.Redirect("/error");
+        }
+
     }
 }

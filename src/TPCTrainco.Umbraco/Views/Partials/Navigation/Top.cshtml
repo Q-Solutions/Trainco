@@ -24,6 +24,10 @@
     <li>
       <a class="authbar-link" href="/dashboard/login">Log in</a>
     </li>
+
+        <li>
+            <a class="authbar-link" href="/search-seminars" title=""><img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-tab.png" class="cart-img-cart ng-scope"> </a>
+        </li>
   </ul>
   </div>
   <div ng-if="vm.isLoggedIn" ng-cloak>
