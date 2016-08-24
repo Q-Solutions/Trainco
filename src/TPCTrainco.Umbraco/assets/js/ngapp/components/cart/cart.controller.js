@@ -11,6 +11,9 @@
     var purchaseAPI = CONSTANTS.CART_API_URL;
     vm.cartItem = {};
     vm.isCartOpened = false;
+    var queryString = window.location.search.substring(1);
+    if (queryString.indexOf('cart') !== -1)
+        vm.isCartOpened = true;
     vm.cartIsOpen = function() {
       vm.isCartOpened =! vm.isCartOpened
     }
