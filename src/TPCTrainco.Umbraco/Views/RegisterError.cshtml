@@ -31,31 +31,28 @@
 
 @Html.Partial("Cart/ReadOnlyCart")
 
-<div class="container-fluid register-top">
 
+
+<div class="container-fluid headline-section">
     <div class="container">
         <div class="jumbotron">
-            @if (!String.IsNullOrEmpty(CurrentPage.pageHeadline))
-            {
-                <h1>@CurrentPage.pageHeadline</h1>
-            }
-            else
-            {
-                <h1>@CurrentPage.name</h1>
-            }
-        </div>
-
-        <div class="alert alert-error">
-            <strong>@(errorMessage)</strong>
+           <h1 style="font-size: 30px;">@CurrentPage.pageHeadline</h1>
+			 
         </div>
     </div>
 </div>
 
-<div class="container-fluid">
-
+<div class="container-fluid gradient-bg main-content">
     <div class="container">
-        <p>&nbsp;</p>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 text-wrap">
+                <h3 style='text-align: center;'><span> We apologize for the inconvenience. </span></h3>
+				<p style="text-align: center;">You may register by phone at <font style=color:#337ab7> 1-877-978-7246 </font> </p>
+				<p style="text-align: center;">Or by email at <a href="mailto:customerservice@tpctrainco.com">customerservice@tpctrainco.com</a></p>
+				
+				<p style="text-align: center;">&nbsp;</p>
+            </div>
+        </div>
     </div>
-
-    <a class="btn-reg btn-blue-solid next-btn" href="/register/?cart=@(cartGuid)">Try Again</a>
-</div>
+</div>			
+			
