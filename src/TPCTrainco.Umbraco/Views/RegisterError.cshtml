@@ -5,27 +5,27 @@
     Layout = "Base.cshtml";
 
     string cartGuid = null;
-    string errorMessage = "There was a problem processing your order. The website administrators have been notified. Please try again at a later time.";
+    //string errorMessage = "There was a problem processing your order. The website administrators have been notified. Please try again at a later time.";
 
     cartGuid = Carts.GetCartGuid(Session);
 
-    if (Request.QueryString["error"] != null && Request.QueryString.Get("error").Length > 0)
-    {
-        string errorCode = Request.QueryString.Get("error");
+    //if (Request.QueryString["error"] != null && Request.QueryString.Get("error").Length > 0)
+    //{
+    //    string errorCode = Request.QueryString.Get("error");
 
-        switch (errorCode)
-        {
-            case "80":
-            case "81":
-            case "82":
-            case "83":
-                errorMessage = "Your registration items have expired, please try again.";
-                break;
-            default:
-                break;
-        }
+    //    switch (errorCode)
+    //    {
+    //        case "80":
+    //        case "81":
+    //        case "82":
+    //        case "83":
+    //            errorMessage = "Your registration items have expired, please try again.";
+    //            break;
+    //        default:
+    //            break;
+    //    }
 
-    }
+    //}
 
 }
 
@@ -49,7 +49,7 @@
                 <h3 style='text-align: center;'><span> We apologize for the inconvenience. </span></h3>
 				<p style="text-align: center;">You may register by phone at <font style=color:#337ab7> 1-877-978-7246 </font> </p>
 				<p style="text-align: center;">Or by email at <a href="mailto:customerservice@tpctrainco.com">customerservice@tpctrainco.com</a></p>
-				
+                <p style="text-align: center;">Or <a href="/register/?cart=@(cartGuid)">click here</a> to try again</p>
 				<p style="text-align: center;">&nbsp;</p>
             </div>
         </div>

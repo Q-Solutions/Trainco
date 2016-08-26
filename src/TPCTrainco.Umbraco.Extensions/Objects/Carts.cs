@@ -775,48 +775,55 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
 
         public void SendCheckoutErrorEmail(string emailBody, string page = "", string subject = "")
         {
-            List<string> emailToList = null;
-
-            if (ConfigurationManager.AppSettings["LogToEmail:CCError"] != null && ConfigurationManager.AppSettings.Get("LogToEmail:CCError").Length > 0)
+            try
             {
-                emailToList = new List<string>();
+                List<string> emailToList = null;
 
-                emailToList = ConfigurationManager.AppSettings.Get("LogToEmail:CCError").Split(';').ToList();
-
-                Helpers.Email email = new Email();
-
-                email.EmailFrom = "website@tpctrainco.com";
-                email.EmailToList = emailToList;
-                if (false == string.IsNullOrEmpty(subject))
+                if (ConfigurationManager.AppSettings["LogToEmail:CCError"] != null && ConfigurationManager.AppSettings.Get("LogToEmail:CCError").Length > 0)
                 {
-                    email.Subject = subject;
-                }
-                else
-                {
-                    email.Subject = "TPCTrainco.com Registration Error";
-                }
-                email.IsBodyHtml = false;
+                    emailToList = new List<string>();
 
-                string body = emailBody;
+                    emailToList = ConfigurationManager.AppSettings.Get("LogToEmail:CCError").Split(';').ToList();
 
-                body += "\r\n\r\n";
-                if (false == string.IsNullOrEmpty(page))
-                {
-                    body += page;
+                    Helpers.Email email = new Email();
+
+                    email.EmailFrom = "website@tpctrainco.com";
+                    email.EmailToList = emailToList;
+                    if (false == string.IsNullOrEmpty(subject))
+                    {
+                        email.Subject = subject;
+                    }
+                    else
+                    {
+                        email.Subject = "TPCTrainco.com Registration Error";
+                    }
+                    email.IsBodyHtml = false;
+
+                    string body = emailBody;
+
+                    body += "\r\n\r\n";
+                    if (false == string.IsNullOrEmpty(page))
+                    {
+                        body += page;
+                    }
+                    else
+                    {
+                        body += HttpContext.Current.Request.Url.AbsoluteUri;
+                    }
+                    body += "\r\n\r\n";
+                    body += HttpContext.Current.Request.UserHostAddress;
+                    body += "\r\n\r\n";
+                    body += HttpContext.Current.Request.UserAgent;
+                    body += "\r\n\r\n";
+
+                    email.Body = body;
+
+                    email.SendEmail();
                 }
-                else
-                {
-                    body += HttpContext.Current.Request.Url.AbsoluteUri;
-                }
-                body += "\r\n\r\n";
-                body += HttpContext.Current.Request.UserHostAddress;
-                body += "\r\n\r\n";
-                body += HttpContext.Current.Request.UserAgent;
-                body += "\r\n\r\n";
+            }
+            catch (Exception ex)
+            {
 
-                email.Body = body;
-
-                email.SendEmail();
             }
         }
 
