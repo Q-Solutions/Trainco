@@ -9,6 +9,7 @@ using TPCTrainco.Umbraco.Extensions.Objects;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using System.Data.Entity.Validation;
 
 namespace TPCTrainco.Umbraco.Extensions.Helpers
 {
@@ -991,6 +992,47 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
 
             return success;
 
+        }
+
+        public static void CreateUserTrainco(UserModel user, CompanyModel company)
+        {            
+            using (var db = new americantraincoEntities())
+            {
+                try
+                {
+                    DateTime dtUTC = DateTime.UtcNow;
+                    WebAccount account = new WebAccount();
+                    account.Created = account.Updated = dtUTC;
+                    account.EmailAddress = user.Email;
+                    account.FirstName = user.FirstName;
+                    account.LastName = user.LastName;
+                    account.Title = user.Title;
+                    account.PhoneNumber = user.Phone;
+                    account.PhoneExtension = user.PhoneExtension;
+                    account.CompanyName = company.Name;
+                    account.AddressLn1 = company.Address1.truncateString();
+                    account.AddressLn2 = company.Address2.truncateString();
+                    account.Country = company.Country.truncateString();
+                    account.StateProvince = company.State.truncateString();
+                    account.PostalCode = company.PostalCode.truncateString();
+                    account.City = company.City.truncateString();
+                    account.PriorCustomer = company.HasMakePreviousPurchase;
+                    account.Industry = company.Industry;
+                    account.OutsideTrainingFrequency = company.ExternalTrainingUsageAmount;
+                    account.NbrEmplforTraining = company.NumberOfEmployees;
+                    account.TrainingTopics = company.TrainingTopics;
+                    db.WebAccounts.Add(account);
+                    db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+        }
+
+        public static string truncateString(this string str, int maxLength = 50)
+        {
+            return !string.IsNullOrEmpty(str) ? str.Substring(0, Math.Min(str.Length, maxLength)) : "";
         }
     }
 }

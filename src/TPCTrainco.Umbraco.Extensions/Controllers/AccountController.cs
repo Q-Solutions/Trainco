@@ -93,7 +93,8 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers
 
                     var success = AccountHelper.UpdateCompany(user.Key, request.Company);
                 }
-
+                if (user != null && !String.IsNullOrEmpty(user.ValidationCode))
+                    AccountHelper.CreateUserTrainco(request.User, request.Company);
                 responseModel = new CreateUserResponseModel()
                 {
                     Status = String.IsNullOrEmpty(user.ValidationCode) ? System.Net.HttpStatusCode.NotModified.ToString() : System.Net.HttpStatusCode.Created.ToString(),
