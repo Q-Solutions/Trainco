@@ -194,7 +194,7 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
 
                     user.Key = member.Key.ToString();
                     user.ValidationCode = validationCode;
-
+                    UpdateUserTrainco(user);
                     var emailTemplete = GetEmailTemplate("New Account Verification");
 
                     if (emailTemplete != null)
@@ -547,6 +547,7 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
                 try
                 {
                     ApplicationContext.Current.Services.MemberService.Save(member);
+                    UpdateCompanyTrainco(member.Email, company);
                 }
                 catch
                 {
@@ -617,6 +618,7 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
                 try
                 {
                     ApplicationContext.Current.Services.MemberService.Save(member);
+                    UpdateUserTrainco(user, false);
                 }
                 catch
                 {
@@ -994,7 +996,7 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
 
         }
 
-        public static void CreateUserTrainco(UserModel user, CompanyModel company)
+        public static void UpdateUserTrainco(UserModel user,bool bCreate = true)
         {            
             using (var db = new americantraincoEntities())
             {
@@ -1002,13 +1004,46 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
                 {
                     DateTime dtUTC = DateTime.UtcNow;
                     WebAccount account = new WebAccount();
-                    account.Created = account.Updated = dtUTC;
+                    if (!bCreate)
+                    {
+                        account = db.WebAccounts.Where(x => x.EmailAddress == user.Email).FirstOrDefault();
+                        if (account == null)
+                            return;
+                    }
+                    account.Updated = dtUTC;
                     account.EmailAddress = user.Email;
                     account.FirstName = user.FirstName;
                     account.LastName = user.LastName;
                     account.Title = user.Title;
                     account.PhoneNumber = user.Phone;
                     account.PhoneExtension = user.PhoneExtension;
+                    if (bCreate)
+                    {
+                        account.Created = dtUTC;
+                        db.WebAccounts.Add(account);
+                    }
+                    db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+        }
+
+        public static string truncateString(this string str, int maxLength = 50)
+        {
+            return !string.IsNullOrEmpty(str) ? str.Substring(0, Math.Min(str.Length, maxLength)) : "";
+        }
+
+        public static void UpdateCompanyTrainco(string userEmail, CompanyModel company)
+        {
+            using (var db = new americantraincoEntities())
+            {
+                try
+                {
+                    WebAccount account = db.WebAccounts.Where(x => x.EmailAddress == userEmail).FirstOrDefault();
+                    if (account == null)
+                        return;
                     account.CompanyName = company.Name;
                     account.AddressLn1 = company.Address1.truncateString();
                     account.AddressLn2 = company.Address2.truncateString();
@@ -1021,18 +1056,12 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
                     account.OutsideTrainingFrequency = company.ExternalTrainingUsageAmount;
                     account.NbrEmplforTraining = company.NumberOfEmployees;
                     account.TrainingTopics = company.TrainingTopics;
-                    db.WebAccounts.Add(account);
                     db.SaveChanges();
                 }
                 catch (Exception ex)
                 {
                 }
             }
-        }
-
-        public static string truncateString(this string str, int maxLength = 50)
-        {
-            return !string.IsNullOrEmpty(str) ? str.Substring(0, Math.Min(str.Length, maxLength)) : "";
         }
     }
 }

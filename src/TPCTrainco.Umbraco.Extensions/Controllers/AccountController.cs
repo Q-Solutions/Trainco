@@ -90,11 +90,9 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers
                     {
                         request.Company = AccountHelper.GetCompany(request.Company.Username);
                     }
-
                     var success = AccountHelper.UpdateCompany(user.Key, request.Company);
                 }
-                if (user != null && !String.IsNullOrEmpty(user.ValidationCode))
-                    AccountHelper.CreateUserTrainco(request.User, request.Company);
+                    
                 responseModel = new CreateUserResponseModel()
                 {
                     Status = String.IsNullOrEmpty(user.ValidationCode) ? System.Net.HttpStatusCode.NotModified.ToString() : System.Net.HttpStatusCode.Created.ToString(),
@@ -500,9 +498,7 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers
         public HttpResponseMessage UpdateCompany(UpdateCompanyRequestModel request)
         {
             var memberKey = AccountHelper.GetMemberKeyFromToken(Request.Headers.Authorization.Parameter);
-
-            var success = AccountHelper.UpdateCompany(memberKey, request.Company);
-
+            bool success = AccountHelper.UpdateCompany(memberKey, request.Company);
             var responseModel = new UpdateCompanyResponseModel()
             {
                 Status = System.Net.HttpStatusCode.Accepted.ToString(),
