@@ -813,8 +813,9 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
                     var content = ApplicationContext.Current.Services.ContentService.GetById(courseDetail.NodeId);
 
                     var materials = new List<MaterialModel>();
-
-                    var materialIdsRaw = content.GetValue<string>("materials");
+                    string materialIdsRaw = "";
+                    if(content != null)
+                        materialIdsRaw = content.GetValue<string>("materials");
 
                     if (!String.IsNullOrEmpty(materialIdsRaw))
                     {
