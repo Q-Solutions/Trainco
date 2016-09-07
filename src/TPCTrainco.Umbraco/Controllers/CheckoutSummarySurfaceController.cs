@@ -115,7 +115,7 @@ namespace TPCTrainco.Umbraco.Controllers
 
                 debug.AppendLine("-=Cart Checkout=-\r\n");
 
-                if (true == model.Company.SaveAccount)
+                if (model.Company != null && true == model.Company.SaveAccount)
                 {
                     if (true == string.IsNullOrEmpty(model.Company.Industry))
                     {
