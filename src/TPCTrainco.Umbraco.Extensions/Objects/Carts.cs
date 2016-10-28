@@ -13,6 +13,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Net;
 using System.IO;
+using umbraco.presentation.plugins.tinymce3;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace TPCTrainco.Umbraco.Extensions.Objects
 {
@@ -525,149 +528,135 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
 
         public CreditCardResult ProcessCreditCard(CheckoutDetails checkout, CheckoutBilling billing)
         {
-            CreditCardResult creditCardResult = new CreditCardResult();
-
-            int errorCode = 999;
+            int errorCode = 0;
             string errorText = null;
-
-            creditCardResult.ErrorCode = errorCode;
-            creditCardResult.ErrorText = null;
-
-            bool websiteTestMode = ConfigurationManager.AppSettings.Get("CC2:WebsiteTestMode") == "1" ? true : false;
-            string ccCurrency = ConfigurationManager.AppSettings.Get("CC2:Currency");
-            string ccMerchantId = ConfigurationManager.AppSettings.Get("CC2:MerchID");
-            string ccUserId = ConfigurationManager.AppSettings.Get("CC2:UserID");
-            string ccPin = ConfigurationManager.AppSettings.Get("CC2:PIN");
-            string ccTest = ConfigurationManager.AppSettings.Get("CC2:IsTest");
-
-            if (false == websiteTestMode)
+            CreditCardResult creditCardResult = new CreditCardResult();
+            try
             {
 
-                int ccMonth = checkout.tempCust.ccMonth ?? 1;
-                int ccYear = checkout.tempCust.ccYear ?? 2000;
+                bool websiteTestMode = ConfigurationManager.AppSettings.Get("CC2:WebsiteTestMode") == "1" ? true : false;
+                // string ccCurrency = ConfigurationManager.AppSettings.Get("CC2:Currency");
+                string ccMerchantId = ConfigurationManager.AppSettings.Get("CC2:MerchID");
+                // string ccUserId = ConfigurationManager.AppSettings.Get("CC2:UserID");
+                string ccPin = ConfigurationManager.AppSettings.Get("CC2:PIN");
+                // string ccTest = ConfigurationManager.AppSettings.Get("CC2:IsTest");
 
-                DateTime dtExpire = DateTime.Parse(ccMonth + "/1/" + ccYear);
-                string description = checkout.tempCust.CoName;
-                description += "_" + checkout.tempCust.authPhone1 + "-" + checkout.tempCust.authPhone2 + "-" + checkout.tempCust.authPhone3 + "_";
-                description += checkout.tempCust.authLName + "_" + checkout.tempCust.authFName;
+                string grant_type = "grant_type=password&username=" + ccMerchantId + "&password=" + ccPin + "";
 
-
-                string phone = "(" + checkout.tempCust.billPhone1 + ") " + checkout.tempCust.billPhone2 + "-" + checkout.tempCust.billPhone3;
-                string fax = "";
-
-                if (false == string.IsNullOrWhiteSpace(checkout.tempCust.billFax1))
+                if (!websiteTestMode)
                 {
-                    fax = "(" + checkout.tempCust.billFax1 + ") " + checkout.tempCust.billFax2 + "-" + checkout.tempCust.billFax3;
-                }
+                    int ccMonth = checkout.tempCust.ccMonth ?? 1;
+                    int ccYear = checkout.tempCust.ccYear ?? 2000;
 
-                decimal orderTotal = Convert.ToDecimal(checkout.tempCust.reg_Cost ?? 0);
-                string orderTotalStr = String.Format("{0:C}", orderTotal).Replace("$", "").Replace(",", "");
+                    DateTime dtExpire = DateTime.Parse(ccMonth + "/1/" + ccYear);
+                    string description = checkout.tempCust.CoName;
+                    description += "_" + checkout.tempCust.authPhone1 + "-" + checkout.tempCust.authPhone2 + "-" + checkout.tempCust.authPhone3 + "_";
+                    description += checkout.tempCust.authLName + "_" + checkout.tempCust.authFName;
 
-                string processorUrl = "https://www.myvirtualmerchant.com/VirtualMerchant/process.do";
-                string results = null;
 
-                string postData = "ssl_transaction_type=CCSALE";
-                postData += "&ssl_merchant_id=" + ccMerchantId;
-                postData += "&ssl_pin=" + ccPin;
-                postData += "&ssl_user_id=" + ccUserId;
-                postData += "&ssl_test_mode=" + ccTest;
+                    string phone = "(" + checkout.tempCust.billPhone1 + ") " + checkout.tempCust.billPhone2 + "-" + checkout.tempCust.billPhone3;
+                    string fax = "";
 
-                postData += "&ssl_amount=" + orderTotalStr;
-                postData += "&ssl_card_number=" + billing.CCNumber.Replace(" ", "").Replace("-", "");
-                postData += "&ssl_exp_date=" + dtExpire.ToString("MMyy");
-                postData += "&ssl_cvv2cvc2_indicator=1";
-                postData += "&ssl_cvv2cvc2=" + checkout.tempCust.ccCVC;
-
-                postData += "&ssl_description=" + StringUtilities.StringMaxLength(description, 255); ;
-                postData += "&ssl_invoice_number=" + checkout.tempCust.reg_ID;
-
-                string customerCode = description;
-                if (customerCode.Length > 17)
-                {
-                    customerCode = StringUtilities.StringMaxLength(customerCode.Replace("-", ""), 17);
-                }
-                postData += "&ssl_customer_code=" + customerCode;
-                postData += "&ssl_company=" + StringUtilities.StringMaxLength(checkout.tempCust.CoName, 50);
-                postData += "&ssl_first_name=" + StringUtilities.StringMaxLength(checkout.tempCust.billFName, 20);
-                postData += "&ssl_last_name=" + StringUtilities.StringMaxLength(checkout.tempCust.billLName, 30);
-                postData += "&ssl_avs_address=" + StringUtilities.StringMaxLength(checkout.tempCust.billAddr1, 20);
-                postData += "&ssl_city=" + StringUtilities.StringMaxLength(checkout.tempCust.billCity, 30);
-                postData += "&ssl_state=" + StringUtilities.StringMaxLength(checkout.tempCust.billState, 50);
-                postData += "&ssl_avs_zip=" + StringUtilities.StringMaxLength(checkout.tempCust.billZip, 9);
-                postData += "&ssl_country=" + StringUtilities.StringMaxLength(checkout.tempCust.billCountry, 30);
-                postData += "&ssl_phone=" + StringUtilities.StringMaxLength(phone, 20);
-                postData += "&ssl_email=" + StringUtilities.StringMaxLength(checkout.tempCust.billEmail, 100);
-
-                postData += "&ssl_show_form=FALSE";
-                postData += "&ssl_result_format=ASCII";
-
-                byte[] data = Encoding.ASCII.GetBytes(postData);
-                WebRequest request = WebRequest.Create(processorUrl);
-                request.Method = "POST";
-                request.ContentLength = data.Length;
-                request.ContentType = "application/x-www-form-urlencoded";
-
-                try
-                {
-                    using (var stream = request.GetRequestStream())
+                    if (false == string.IsNullOrWhiteSpace(checkout.tempCust.billFax1))
                     {
-                        stream.Write(data, 0, data.Length);
+                        fax = "(" + checkout.tempCust.billFax1 + ") " + checkout.tempCust.billFax2 + "-" + checkout.tempCust.billFax3;
                     }
 
-                    HttpWebResponse objResponse = (HttpWebResponse)request.GetResponse();
-                    string responseString = new StreamReader(objResponse.GetResponseStream()).ReadToEnd();
+                    decimal orderTotal = Convert.ToDecimal(checkout.tempCust.reg_Cost ?? 0);
+                    string orderTotalStr = String.Format("{0:C}", orderTotal).Replace("$", "").Replace(",", "");
 
-                    List<string> responseArray = responseString.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                    foreach (string returnVal in responseArray)
+                    ASCIIEncoding encoding = new ASCIIEncoding();
+                    byte[] bytes = encoding.GetBytes(grant_type);
+
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.paytrace.com/oauth/token");
+                    request.Method = "POST";
+                    request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+                    request.ContentLength = bytes.Length;
+
+                    // send validation request
+                    Stream str = request.GetRequestStream();
+                    str.Write(bytes, 0, bytes.Length);
+                    str.Flush();
+                    str.Close();
+
+                    // get response and parse
+                    WebResponse response = request.GetResponse();
+                    Stream rsp_stream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(rsp_stream);
+
+                    // read the response string
+                    string strResponse = reader.ReadToEnd();
+
+                    if (strResponse.Contains("ERROR"))
+                        throw new Exception("Invalid Authorization");
+
+                    Dictionary<string, object> dict_1 = JsonConvert.DeserializeObject<Dictionary<string, object>>(strResponse);
+
+                    string Access_Tokan = dict_1["access_token"].ToString();
+                    string Token_type = dict_1["token_type"].ToString();
+                    string Expires = dict_1["expires_in"].ToString();
+
+                    if (Token_type == "bearer")
                     {
-                        List<string> returnValArray = returnVal.Split('=').ToList();
-
-                        if (returnValArray.Count == 2)
-                        {
-                            if (returnValArray[0] == "ssl_result")
-                            {
-                                errorCode = Convert.ToInt32(returnValArray[1]);
-                            }
-                            else if (returnValArray[0] == "ssl_result_message")
-                            {
-                                errorText = returnValArray[1];
-                            }
-                            else if (returnValArray[0].IndexOf("errorCode") >= 0)
-                            {
-                                errorCode = Convert.ToInt32(returnValArray[1]);
-                            }
-                            else if (returnValArray[0] == "ssl_result_message")
-                            {
-                                errorText = returnValArray[1];
-                            }
-
-                            // for log
-                            results += "&" + returnVal;
-                        }
+                        Token_type = "Bearer";
                     }
-
-                    if (errorCode == 0)
+                    string customerCode = description;
+                    if (customerCode.Length > 17)
                     {
-                        errorText = "";
+                        customerCode = StringUtilities.StringMaxLength(customerCode.Replace("-", ""), 17);
                     }
+                    Dictionary<string, object> dict = new Dictionary<string, object>();
 
-                    AddToCCLog(checkout.tempCust, responseString);
+                    dict.Add("amount", orderTotalStr);
+                    dict.Add("credit_card", new Dictionary<string, string> { { "number", "" + billing.CCNumber.Replace(" ", "").Replace("-", "") + "" }, { "expiration_month", "" + ccMonth + "" }, { "expiration_year", "" + ccYear + "" } });
+                    dict.Add("csc", "" + checkout.tempCust.ccCVC + "");
+                    dict.Add("customer_reference_id", "" + customerCode + "");
+                    dict.Add("invoice_id", "" + checkout.tempCust.reg_ID + "");
+                    dict.Add("description", "" + StringUtilities.StringMaxLength(description, 255) + "");
+                    dict.Add("billing_address", new Dictionary<string, string> { { "name", "" + StringUtilities.StringMaxLength(checkout.tempCust.billFName, 20) + "" }, { "street_address", "" + StringUtilities.StringMaxLength(checkout.tempCust.billAddr1, 20) + "" }, { "city", "" + StringUtilities.StringMaxLength(checkout.tempCust.billCity, 30) + "" }, { "zip", "" + StringUtilities.StringMaxLength(checkout.tempCust.billZip, 9) + "" }, { "country", "" + StringUtilities.StringMaxLength(checkout.tempCust.billCountry, 30) + "" }, { "state", "" + StringUtilities.StringMaxLength(checkout.tempCust.billState, 50) + "" } });
+                    dict.Add("email", "" + StringUtilities.StringMaxLength(checkout.tempCust.billEmail, 100) + "");
 
-                }
-                catch (Exception ex)
-                {
-                    errorCode = 900;
-                }
+
+                    string json = JsonConvert.SerializeObject(dict);
+
+                    // encoding = new ASCIIEncoding();
+                    byte[] bytes_2 = encoding.GetBytes(json);
+
+
+                    HttpWebRequest request_2 = (HttpWebRequest)WebRequest.Create("https://api.paytrace.com/v1/transactions/sale/keyed");
+                    request_2.Method = "POST";
+                    request_2.ContentType = "application/json";
+                    request_2.Headers.Add("Authorization", Token_type + " " + Access_Tokan);
+                    request_2.ContentLength = bytes_2.Length;
+
+                    // send validation request
+                    Stream str_2 = request_2.GetRequestStream();
+                    str_2.Write(bytes_2, 0, bytes_2.Length);
+                    str_2.Flush();
+                    str_2.Close();
+
+                    // get response and parse
+                    WebResponse response_2 = request_2.GetResponse();
+                    Stream rsp_stream_2 = response_2.GetResponseStream();
+                    StreamReader reader_2 = new StreamReader(rsp_stream_2);
+                    string Cart_Responce = reader_2.ReadToEnd();
+                    Dictionary<string, object> dict_new = JsonConvert.DeserializeObject<Dictionary<string, object>>(Cart_Responce);
+                    bool status = Convert.ToBoolean(dict_new["success"]);
+                    string response_code = dict_new["response_code"].ToString();
+                    if (!status || response_code != "101")
+                        throw new Exception("invalid card detail");
+                    AddToCCLog(checkout.tempCust, Cart_Responce);
+                }  
+              
             }
-            else // websiteTestMode ON
+            catch (Exception ex)
             {
-                errorCode = 0;
+                errorCode = 900;
             }
 
             creditCardResult.ErrorCode = errorCode;
             creditCardResult.ErrorText = errorText;
-
             return creditCardResult;
         }
 
