@@ -266,6 +266,7 @@
     <Content Include="App_Data\packages\created\createdPackages.config" />
     <Content Include="App_Data\packages\installed\installedPackages.config" />
     <Content Include="assets\browserconfig.xml" />
+    <Content Include="assets\css\main.css" />
     <Content Include="assets\images\android-icon-144x144.png" />
     <Content Include="assets\images\android-icon-192x192.png" />
     <Content Include="assets\images\android-icon-36x36.png" />
