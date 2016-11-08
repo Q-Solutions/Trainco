@@ -27,8 +27,8 @@
           '&location=' + searchObj.locParam +
           '&radius=' + searchObj.radiusParam +
           '&topics=' + theTopics +
-          '&date-start=' + searchObj.defStart + '-01-' + searchObj.startYear +
-          '&date-end=' + searchObj.defEnd + '-' + endDate.getDate() + '-' + endDate.getFullYear())
+          '&date-start=' + searchObj.startYear + '-' + searchObj.defStart + '-01' +
+          '&date-end=' + endDate.getFullYear() + '-' + (endDate.getMonth() + 1) + '-' + endDate.getDate())
         .then(getSearchComplete)
         .catch(getSearchFailed);
 

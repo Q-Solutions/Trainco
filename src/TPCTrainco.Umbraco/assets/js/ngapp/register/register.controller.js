@@ -347,7 +347,7 @@
 
       $loading.start('courses');
       var today = new Date();
-      var thisMonth = today.getMonth();
+      var thisMonth = today.getMonth() + 1;
       var searchObj = {
         keywordParam: vm.kwFilter.word,
         locParam: vm.locSearchFilter.location,
@@ -356,9 +356,9 @@
         topicParam2: vm.topicParam2,
         topicParam3: vm.topicParam3,
         topicParam4: vm.topicParam4,
-        defStart: vm.dateRange.start || today.getMonth(),
+        defStart: vm.dateRange.start || thisMonth,
         startYear: checkYear('start'),
-        defEnd: vm.dateRange.end || (today.getMonth() + 3),
+        defEnd: vm.dateRange.end || (thisMonth + 11),
         endYear: checkYear('end')
       }
 
@@ -411,6 +411,7 @@
       $document[0].body.scrollTop = $document[0].documentElement.scrollTop = 0;
       vm.showDirections = true;
       vm.searchFired = false;
+      doParamSearch();
     }
 
     vm.numLimit = 10;
