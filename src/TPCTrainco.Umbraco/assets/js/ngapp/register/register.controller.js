@@ -194,6 +194,8 @@
       if (field === 'loc') {
         vm.locSearchFilter.locationAll = false;
       }
+      if (field === 'loc' && vm.locSearchFilter.location.length < 4)
+          return;
       if (e.keyCode != 13) {
         if (vm.typingTimeout) {
           clearTimeout(vm.typingTimeout)
