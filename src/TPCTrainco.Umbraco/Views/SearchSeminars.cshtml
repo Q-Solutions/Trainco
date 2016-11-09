@@ -72,7 +72,7 @@
 
         <div class="filter-location">
           <label class="sidebar-label">Keyword Search</label>
-          <input type="search" ng-keyup="ctrl.manualTextBoxHandler($event)" ng-blur="ctrl.manualTextBoxHandler($event)" ng-keydown="ctrl.typingTextBoxHandler($event, 'kw')" ng-model="ctrl.kwFilter.word" placeholder="Enter Keyword">
+          <input type="search" ng-keydown="ctrl.typingTextBoxHandler($event, 'kw')" ng-model="ctrl.kwFilter.word" placeholder="Enter Keyword">
         </div>
         <hr class="dark-hr" />
         <div class="filter-topic">
@@ -94,7 +94,7 @@
         <hr class="divider" />
         <div class="filter-location">
           <label class="sidebar-label">City or ZIP</label>
-          <input type="search" ng-keyup="ctrl.manualTextBoxHandler($event)" ng-blur="ctrl.manualTextBoxHandler($event)" ng-keydown="ctrl.typingTextBoxHandler($event, 'loc')" ng-model="ctrl.locSearchFilter.location" placeholder="Enter Location">
+          <input type="search" ng-keydown="ctrl.typingTextBoxHandler($event, 'loc')" ng-model="ctrl.locSearchFilter.location" placeholder="Enter Location">
           <h5>- or -</h5>
           <div class="input-group">
             <span class="input-group-addon">

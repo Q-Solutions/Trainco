@@ -178,7 +178,7 @@
      * @return {method}   doParamSearch()
      */
     vm.manualTextBoxHandler = function(e) {
-      if (e.keyCode === 13 || e.type === 'blur') {
+      if (e.keyCode === 13) {
         doParamSearch();
       }
     }
@@ -190,22 +190,18 @@
      * @param  {object} e the event
      * @return {method}   doParamSearch()
      */
-    vm.typingTextBoxHandler = function(e, field) {
-      if (field === 'loc') {
-        vm.locSearchFilter.locationAll = false;
-      }
-      if (field === 'loc' && vm.locSearchFilter.location.length < 4)
-          return;
-      if (e.keyCode != 13) {
-        if (vm.typingTimeout) {
-          clearTimeout(vm.typingTimeout)
-        }
-
+    vm.typingTextBoxHandler = function (e, field) {
+        if (e.keyCode == 9 || e.keyCode == 13)
+            return;
+        if (field === 'loc')
+            vm.locSearchFilter.locationAll = false;
+        if (field === 'loc' && vm.locSearchFilter.location.length < 4)
+            return;
+        if (vm.typingTimeout)
+            clearTimeout(vm.typingTimeout);
         vm.typingTimeout = $timeout(function(e) {
-          // $log.debug('typingTextBoxHandler running');
-          doParamSearch();
+            doParamSearch();
         }, 1000)
-      }
     }
 
     vm.locWatcher = function() {
@@ -404,6 +400,7 @@
       vm.categories.management = false;
       vm.categories.mechanical = false;
       vm.categories.all = false;
+      vm.topicParam1 = vm.topicParam2 = vm.topicParam3 = vm.topicParam4 = '';
       vm.locSearchFilter.locationAll = false;
     }
 
