@@ -9,7 +9,9 @@
   function RegisterController($rootScope, $scope, $log, Search, $localStorage, cartService, UtilitySvc, courseSearch, MonthSvc, $loading, $timeout, $document, $window, SeminarsSvc, CONSTANTS) {
     var vm = this;
 
-    vm.kwFilter = {};
+    vm.kwFilter = {
+        word: ''
+    };
     vm.mileRange = {};
     vm.locSearchFilter = {};
     vm.categories = {
