@@ -614,16 +614,12 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     dict.Add("customer_reference_id", "" + customerCode + "");
                     dict.Add("invoice_id", "" + checkout.tempCust.reg_ID + "");
                     dict.Add("description", "" + StringUtilities.StringMaxLength(description, 255) + "");
-                    dict.Add("billing_address", new Dictionary<string, string> { { "name", "" + StringUtilities.StringMaxLength(checkout.tempCust.billFName, 20) + "" }, { "street_address", "" + StringUtilities.StringMaxLength(checkout.tempCust.billAddr1, 20) + "" }, { "city", "" + StringUtilities.StringMaxLength(checkout.tempCust.billCity, 30) + "" }, { "zip", "" + StringUtilities.StringMaxLength(checkout.tempCust.billZip, 9) + "" }, { "country", "" + StringUtilities.StringMaxLength(checkout.tempCust.billCountry, 30) + "" }, { "state", "" + StringUtilities.StringMaxLength(checkout.tempCust.billState, 50) + "" } });
+                    dict.Add("billing_address", new Dictionary<string, string> { { "name", "" + StringUtilities.StringMaxLength(checkout.tempCust.ccName, 50) + "" }, { "street_address", "" + StringUtilities.StringMaxLength(checkout.tempCust.billAddr1, 20) + "" }, { "street_address2", "" + StringUtilities.StringMaxLength(checkout.tempCust.billAddr2, 20) + "" }, { "city", "" + StringUtilities.StringMaxLength(checkout.tempCust.billCity, 30) + "" }, { "zip", "" + StringUtilities.StringMaxLength(checkout.tempCust.billZip, 9) + "" }, { "country", "" + StringUtilities.StringMaxLength(checkout.tempCust.billCountry, 30) + "" }, { "state", "" + StringUtilities.StringMaxLength(checkout.tempCust.billState, 50) + "" } });
+                    dict.Add("shipping_address", new Dictionary<string, string> { { "name", "" + StringUtilities.StringMaxLength(checkout.tempCust.authFName + " " + checkout.tempCust.authLName, 50) + "" }, { "street_address", "" + StringUtilities.StringMaxLength(checkout.tempCust.authAddr1, 20) + "" }, { "street_address2", "" + StringUtilities.StringMaxLength(checkout.tempCust.authAddr2, 20) + "" }, { "city", "" + StringUtilities.StringMaxLength(checkout.tempCust.authCity, 30) + "" }, { "zip", "" + StringUtilities.StringMaxLength(checkout.tempCust.authZip, 9) + "" }, { "country", "" + StringUtilities.StringMaxLength(checkout.tempCust.authCountry, 30) + "" }, { "state", "" + StringUtilities.StringMaxLength(checkout.tempCust.authState, 50) + "" } });
                     dict.Add("email", "" + StringUtilities.StringMaxLength(checkout.tempCust.billEmail, 100) + "");
-
-
                     string json = JsonConvert.SerializeObject(dict);
-
                     // encoding = new ASCIIEncoding();
                     byte[] bytes_2 = encoding.GetBytes(json);
-
-
                     HttpWebRequest request_2 = (HttpWebRequest)WebRequest.Create("https://api.paytrace.com/v1/transactions/sale/keyed");
                     request_2.Method = "POST";
                     request_2.ContentType = "application/json";
