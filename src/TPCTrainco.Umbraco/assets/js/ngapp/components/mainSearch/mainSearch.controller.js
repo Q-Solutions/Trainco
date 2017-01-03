@@ -11,8 +11,10 @@
     var vm = this;
     vm.$storage = $localStorage;
 
-    vm.cities = Cities.getCities();
-
+    var cities = Cities.getCities();
+    if (cities[0].label == "")
+        cities.splice(0, 1);
+    vm.cities = cities;
     vm.createFunction = function(input) {
       // format the option and return it
       return {
@@ -44,7 +46,7 @@
     var today = new Date();
     var thisMonth = today.getMonth();
     var monthNames = MonthSvc.getAbrvMonths() || [];
-    // Starts the array at the current month through December
+      // Starts the array at the current month through December
     var startingMonthArray = monthNames.slice(thisMonth);
 
     function fixEndingArray(endingMonthArray) {
@@ -52,12 +54,10 @@
       var num = parseInt(first.name.slice(3))
       $log.debug(first.name);
       var trunc = first.name.slice(0, 3)
-
       first.name = trunc + ' ' + (num + 1);
-
       return endingMonthArray;
     }
-    var endingMonthArray = fixEndingArray(monthNames.slice(0, (thisMonth)));
+    var endingMonthArray = thisMonth > 0 ? fixEndingArray(monthNames.slice(0, thisMonth)) : [];
 
     var combinedMonthsArray = startingMonthArray.concat(endingMonthArray)
     var lengthValue = startingMonthArray.length
