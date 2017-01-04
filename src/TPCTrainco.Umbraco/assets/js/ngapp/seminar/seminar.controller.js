@@ -80,7 +80,7 @@
 
       return endingMonthArray;
     }
-    var endingMonthArray = fixEndingArray(monthNames.slice(0, (thisMonth)));
+    var endingMonthArray = thisMonth > 0 ? fixEndingArray(monthNames.slice(0, thisMonth)) : [];
 
     var combinedMonthsArray = startingMonthArray.concat(endingMonthArray)
 
