@@ -665,7 +665,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             ccLog.Cart_ID = tempCust.reg_ID;
             ccLog.Reg_TR_Number = 0;
             ccLog.CC_Type = tempCust.ccType;
-            ccLog.CC_Num = tempCust.ccNumber;
+            ccLog.CC_Num = !string.IsNullOrEmpty(tempCust.ccNumber) ? tempCust.ccNumber.Substring((tempCust.ccNumber.Length - 4),4) : "";
             ccLog.CC_Amount = Convert.ToDecimal(tempCust.reg_Cost ?? 0);
             ccLog.CC_Result = result;
             ccLog.ProcessedFrom = "ATI";
