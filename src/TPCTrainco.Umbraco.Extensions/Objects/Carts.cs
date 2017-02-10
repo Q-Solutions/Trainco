@@ -530,6 +530,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
         {
             int errorCode = 0;
             string errorText = null;
+            string sResponse = "";
             CreditCardResult creditCardResult = new CreditCardResult();
             try
             {
@@ -586,26 +587,19 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     StreamReader reader = new StreamReader(rsp_stream);
 
                     // read the response string
-                    string strResponse = reader.ReadToEnd();
+                    sResponse = reader.ReadToEnd();
+                    if (sResponse.Contains("ERROR"))
+                        throw new Exception("Authorization Failed");
 
-                    if (strResponse.Contains("ERROR"))
-                        throw new Exception("Invalid Authorization");
-
-                    Dictionary<string, object> dict_1 = JsonConvert.DeserializeObject<Dictionary<string, object>>(strResponse);
-
+                    Dictionary<string, object> dict_1 = JsonConvert.DeserializeObject<Dictionary<string, object>>(sResponse);
                     string Access_Tokan = dict_1["access_token"].ToString();
                     string Token_type = dict_1["token_type"].ToString();
                     string Expires = dict_1["expires_in"].ToString();
-
                     if (Token_type == "bearer")
-                    {
                         Token_type = "Bearer";
-                    }
                     string customerCode = description;
                     if (customerCode.Length > 17)
-                    {
                         customerCode = StringUtilities.StringMaxLength(customerCode.Replace("-", ""), 17);
-                    }
                     Dictionary<string, object> dict = new Dictionary<string, object>();
 
                     dict.Add("amount", orderTotalStr);
@@ -618,7 +612,6 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     dict.Add("shipping_address", new Dictionary<string, string> { { "name", "" + StringUtilities.StringMaxLength(checkout.tempCust.authFName + " " + checkout.tempCust.authLName, 50) + "" }, { "street_address", "" + StringUtilities.StringMaxLength(checkout.tempCust.authAddr1, 20) + "" }, { "street_address2", "" + StringUtilities.StringMaxLength(checkout.tempCust.authAddr2, 20) + "" }, { "city", "" + StringUtilities.StringMaxLength(checkout.tempCust.authCity, 30) + "" }, { "zip", "" + StringUtilities.StringMaxLength(checkout.tempCust.authZip, 9) + "" }, { "country", "" + StringUtilities.StringMaxLength(checkout.tempCust.authCountry, 30) + "" }, { "state", "" + StringUtilities.StringMaxLength(checkout.tempCust.authState, 50) + "" } });
                     dict.Add("email", "" + StringUtilities.StringMaxLength(checkout.tempCust.billEmail, 100) + "");
                     string json = JsonConvert.SerializeObject(dict);
-                    // encoding = new ASCIIEncoding();
                     byte[] bytes_2 = encoding.GetBytes(json);
                     HttpWebRequest request_2 = (HttpWebRequest)WebRequest.Create("https://api.paytrace.com/v1/transactions/sale/keyed");
                     request_2.Method = "POST";
@@ -636,21 +629,20 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     WebResponse response_2 = request_2.GetResponse();
                     Stream rsp_stream_2 = response_2.GetResponseStream();
                     StreamReader reader_2 = new StreamReader(rsp_stream_2);
-                    string Cart_Responce = reader_2.ReadToEnd();
-                    Dictionary<string, object> dict_new = JsonConvert.DeserializeObject<Dictionary<string, object>>(Cart_Responce);
+                    sResponse = reader_2.ReadToEnd();
+                    Dictionary<string, object> dict_new = JsonConvert.DeserializeObject<Dictionary<string, object>>(sResponse);
                     bool status = Convert.ToBoolean(dict_new["success"]);
                     string response_code = dict_new["response_code"].ToString();
                     if (!status || response_code != "101")
-                        throw new Exception("invalid card detail");
-                    AddToCCLog(checkout.tempCust, Cart_Responce);
-                }  
-              
+                        throw new Exception(dict_new.ContainsKey("status_message") ? dict_new["status_message"].ToString() : "Invalid CC Detail");
+                }
             }
             catch (Exception ex)
             {
                 errorCode = 900;
+                errorText = ex.Message;
             }
-
+            AddToCCLog(checkout.tempCust, sResponse);
             creditCardResult.ErrorCode = errorCode;
             creditCardResult.ErrorText = errorText;
             return creditCardResult;
