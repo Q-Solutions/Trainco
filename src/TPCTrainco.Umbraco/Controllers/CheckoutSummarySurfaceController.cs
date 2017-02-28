@@ -78,7 +78,12 @@ namespace TPCTrainco.Umbraco.Controllers
 
                             tempCust = db.temp_Cust.Where(p => p.reg_ID == regId).FirstOrDefault();
                             tempAttList = db.temp_Att.Where(p => p.reg_ID == regId).ToList();
-
+                            checkoutDetails.seminarTypes = new Dictionary<int, string>();
+                            foreach(temp_Reg reg in tempRegList) {
+                                SCHEDULE schedule = db.SCHEDULES.Where(x => x.ScheduleID == reg.sem_SID).FirstOrDefault();
+                                if (schedule != null)
+                                    checkoutDetails.seminarTypes.Add(reg.sem_SID.Value, schedule.ScheduleType);
+                            }
                             if (tempCust != null && tempAttList != null && tempAttList.Count > 0)
                             {
                                 checkoutDetails.tempRegList = tempRegList;

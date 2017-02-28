@@ -22,6 +22,7 @@
         all: false
       }
     vm.locSearchFilter.locationAll = false;
+    vm.locSearchFilter.simulcast = false;
     var searchAPI = CONSTANTS.API_URL;
     vm.dateRange = {};
     vm.$storage = $localStorage;
@@ -84,11 +85,14 @@
     activate();
 
     function receiveSeminarData(seminarsData) {
-      vm.initialDirections = false;
-      var seminarLocations = [];
-      vm.seminarLocations = seminarsData;
-      // below is to calculate the pagination
-      vm.semLocLength = vm.seminarLocations.length / 4;
+          vm.initialDirections = false;
+          var seminarLocations = [];
+          vm.seminarLocations = seminarsData;
+        // below is to calculate the pagination
+          var length = vm.seminarLocations.length / 4
+          if(length < 1 && vm.seminarLocations.length > 0)
+              length = 1;
+          vm.semLocLength = length;
     }
 
     /**
@@ -219,6 +223,9 @@
     }
     vm.dateWatcher = function() {
       doParamSearch();
+    }
+    vm.simulcastWatcher = function () {
+        doParamSearch();
     }
 
     /**
@@ -351,6 +358,7 @@
       var searchObj = {
         keywordParam: vm.kwFilter.word,
         locParam: vm.locSearchFilter.location,
+        simulcast: vm.locSearchFilter.simulcast ? '1' : '0',
         radiusParam: vm.mileRange.value || '500',
         topicParam1: vm.topicParam1,
         topicParam2: vm.topicParam2,

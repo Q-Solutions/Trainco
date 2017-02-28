@@ -27,7 +27,7 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers.v2
                 searchRequest.DateRage = new DateRange();
                 searchRequest.DateRage.Min = DateTime.Parse(DateTime.Now.ToString("M/1/yyyy"));
                 searchRequest.DateRage.Max = DateTime.Parse(searchRequest.DateRage.Min.AddMonths(4).AddDays(-1).ToString("M/d/yyyy"));
-
+                bool bSimulcast = HttpContext.Current.Request.QueryString["simulcast"] == "1";
                 if (false == string.IsNullOrWhiteSpace(HttpContext.Current.Request.QueryString["keyword"]))
                 {
                     searchRequest.Keywords = HttpContext.Current.Request.QueryString.Get("keyword");
@@ -36,7 +36,7 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers.v2
                 {
                     searchRequest.Topics = HttpContext.Current.Request.QueryString.Get("topics").Split(',');
                 }
-                if (false == string.IsNullOrWhiteSpace(HttpContext.Current.Request.QueryString["location"]))
+                if (!bSimulcast && !string.IsNullOrWhiteSpace(HttpContext.Current.Request.QueryString["location"]))
                 {
                     searchRequest.Location = HttpContext.Current.Request.QueryString.Get("location");
 
@@ -49,7 +49,7 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers.v2
                     }
                     
                 }
-                if (false == string.IsNullOrWhiteSpace(HttpContext.Current.Request.QueryString["radius"]))
+                if (!bSimulcast && !string.IsNullOrWhiteSpace(HttpContext.Current.Request.QueryString["radius"]))
                 {
                     double radius = 50;
 
@@ -76,6 +76,7 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers.v2
                     int.TryParse(HttpContext.Current.Request.QueryString.Get("page"), out page);
                 }
                 searchRequest.Page = page;
+                searchRequest.Simulcast = bSimulcast;
 
                 if (false == string.IsNullOrWhiteSpace(id))
                 {

@@ -473,6 +473,7 @@ namespace TPCTrainco.Cache.Controllers
 
                                     locationScheduleDetail.SeminarId = scheduleCourse.CourseID;
                                     locationScheduleDetail.SeminarTitle = legacyCourse.TitlePlain;
+                                    locationScheduleDetail.ScheduleType = legacySchedule.ScheduleType;
                                 }
 
                                 locationScheduleDetailList.Add(locationScheduleDetail);

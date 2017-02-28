@@ -53,8 +53,8 @@ using (Html.BeginUmbracoForm
       {
           int regSeqId = tempReg.reg_SEQ;
           string[] semPlaceArray = tempReg.sem_Place.Split('-');
-
-          string semLocation = semPlaceArray[0].Trim();
+          string seminarType = Model.seminarTypes.ContainsKey(tempReg.sem_SID.Value) ? Model.seminarTypes[tempReg.sem_SID.Value].ToLower() : ""; 
+          string semLocation = seminarType == "simulcast" ? "Simulcast" : semPlaceArray[0].Trim();
           string semDates = semPlaceArray.Length == 2 ? semPlaceArray[1].Trim() : "";
 
           if (semPlaceArray.Length == 3)

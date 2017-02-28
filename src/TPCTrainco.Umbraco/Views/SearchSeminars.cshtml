@@ -101,6 +101,11 @@
               <input ng-model="ctrl.locSearchFilter.locationAll" ng-change="ctrl.locWatcher()" type="checkbox">All Locations
             </span>
           </div>
+        <div class="input-group">
+            <span class="input-group-addon">
+                <input type="checkbox" ng-model="ctrl.locSearchFilter.simulcast" ng-change="ctrl.simulcastWatcher()">Simulcast Only (will display only web-based courses)
+            </span>
+        </div>
         </div>
         <hr class="divider" />
         <label>Search Within a</label>
@@ -166,33 +171,60 @@
                   <div class="col-xs-5 hide-responsive">Seminar Information</div>
                   <div class="col-sm-2 col-xs-3 result-attendee-wrapper">Attendees</div>
               </section>
-              <section class="row result-table-body">
-                  <div class="result-location-row"
-                       ng-repeat="location in course.locationSchedules | limitTo: ctrl.limits[course.id].limit">
-                      <div class="col-md-5 col-sm-10 col-xs-9 result-location">
-                          <span class="state">{{::location.state}}</span>
-                          <span class="city">{{::location.city}}</span>
-                          <span class="date-responsive">{{::location.date}}</span>
-                      </div>
-                      <div class="col-xs-5 result-date">
-                          {{::location.date}}
-                          <span>{{location.locationDetails}}</span>
-                      </div>
+            <section class="row result-table-body simulcast" ng-if="course.simulcastSchedules.length > 0">
+                <h3 class="no-margin">Simulcast Courses <span><a class="small" href="/simulcast/" target="_blank">(Learn more)</a></span></h3>
+                <span class="result-course-subtitle">In addition to classroom locations shown below, this course is also available as a simulcast - a live, web-based connection to a classroom seminar.</span>
+                <hr class="no-margin"/>
+                <div class="result-location-row" ng-repeat="location in course.simulcastSchedules">
+                    <div class="col-md-5 col-sm-10 col-xs-9 result-location">
+                        <span class="city">{{::location.city}}</span>
+                        <span class="date-responsive">{{::location.date}}</span>
+                    </div>
+                    <div class="col-xs-5 result-date">
+                        {{::location.date}}
+                        <span>{{location.locationDetails}}</span>
+                    </div>
 
-                      <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
-                          <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
-                          <input class="cart-btn btn btn-reg btn-blue-solid"
-                                 type="button"
-                                 value="Add to Cart"
-                                 ng-show="location.qty > 0"
-                                 ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
-                      </div>
-                  </div>
-                  @*<span class="additional-showing" ng-if="course.locationSchedules.length > 10" ng-click="ctrl.additionalClick()"><i class="fa fa-plus-circle"></i> Show additional seminars for this topic</span>*@
-                  <span class="additional-showing" ng-if="ctrl.showAdditional(course.id)" ng-click="ctrl.additionalClick(course.id,$event)"><i class="fa fa-plus-circle"></i> Show additional seminars for this topic</span>
-                  <span class="additional-showing" ng-if="ctrl.showLess(course.id)" ng-click="ctrl.lessClick(course.id,$event)"><i class="fa fa-minus-circle"></i> Show less seminars for this topic</span>
-              </section>
-          </div>
+                    <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
+                        <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
+                        <input class="cart-btn btn btn-reg btn-blue-solid"
+                                type="button"
+                                value="Add to Cart"
+                                ng-show="location.qty > 0"
+                                ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
+                    </div>
+                </div>
+            </section>
+            <section class="row result-table-body" ng-if="course.locationSchedules.length > 0">
+                <h3 class="no-margin">Classroom Courses</h3>
+                <hr class="no-margin"/>
+                <div class="result-location-row"
+                    ng-repeat="location in course.locationSchedules | limitTo: ctrl.limits[course.id].limit">
+                    <div class="col-md-5 col-sm-10 col-xs-9 result-location">
+                        <span class="state">{{::location.state}}</span>
+                        <span class="city">{{::location.city}}</span>
+                        <span class="date-responsive">{{::location.date}}</span>
+                    </div>
+                    <div class="col-xs-5 result-date">
+                        {{::location.date}}
+                        <span>{{location.locationDetails}}</span>
+                    </div>
+
+                    <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
+                        <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
+                        <input class="cart-btn btn btn-reg btn-blue-solid"
+                                type="button"
+                                value="Add to Cart"
+                                ng-show="location.qty > 0"
+                                ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
+                    </div>
+                </div>
+                @*<span class="additional-showing" ng-if="course.locationSchedules.length > 10" ng-click="ctrl.additionalClick()"><i class="fa fa-plus-circle"></i> Show additional seminars for this topic</span>*@
+                <span class="additional-showing" ng-if="ctrl.showAdditional(course.id)" ng-click="ctrl.additionalClick(course.id,$event)"><i class="fa fa-plus-circle"></i> Show additional seminars for this topic</span>
+                <span class="additional-showing" ng-if="ctrl.showLess(course.id)" ng-click="ctrl.lessClick(course.id,$event)"><i class="fa fa-minus-circle"></i> Show less seminars for this topic</span>
+            </section>
+                
+</div>
     <ul class="pagination-btn-wrapper" ng-hide="ctrl.showDirections">
           <!-- bottom pagination buttons -->
           <li><button class="btn-pagination btn-pagination-left"

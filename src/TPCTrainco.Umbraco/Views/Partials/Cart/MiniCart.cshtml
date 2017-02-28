@@ -19,7 +19,7 @@
           <ul class="container">
             <li class="class-title col-xs-12 col-sm-12 col-md-4">{{cartItem.title}}</li>
 
-            <li class="location col-xs-12 col-sm-4 col-md-2">{{cartItem.city}}, {{cartItem.state}}</li>
+            <li class="location col-xs-12 col-sm-4 col-md-2">{{cartItem.city}}{{cartItem.state != "" ? ", " + cartItem.state : ""}}</li>
             <li class="date col-xs-12 col-sm-4 col-md-2">{{cartItem.date}}</li>
             <li class="col-xs-12 col-sm-4 col-md-2 remove-wrap">
               <a href="javascript:void(0);" ng-click="vm.removeItemFromCart(cartItem.id)" class="remove">X Remove</a>

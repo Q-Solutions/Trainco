@@ -32,6 +32,8 @@
       vm.popoverIsOpen = false;
     }
     vm.location = {};
+    vm.seminarLocations = [];
+    vm.seminarSimulcast = [];
 
     /**
      * adds item to the cart or updates the quantity
@@ -213,12 +215,15 @@
     }
 
     function receiveSeminarData(seminarsData) {
-      vm.seminarLocations = seminarsData.locationSchedules;
-      var seminarLocationsArray = vm.seminarLocations;
-      seminarLocationsArray.forEach(function(location, index) {
-        var dateF = location.dateFilter;
-        return dateF;
-      });
+        console.log(seminarsData);
+        vm.seminarLocations = seminarsData.locationSchedules;
+        vm.seminarSimulcast = seminarsData.simulcastSchedules;
+        console.log(seminarsData);
+      //var seminarLocationsArray = vm.seminarLocations;
+      //seminarLocationsArray.forEach(function(location, index) {
+      //  var dateF = location.dateFilter;
+      //  return dateF;
+      //});
     }
   }
 })();

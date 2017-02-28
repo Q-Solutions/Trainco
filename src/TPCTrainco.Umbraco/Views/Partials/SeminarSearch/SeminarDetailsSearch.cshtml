@@ -37,7 +37,7 @@
             <a class="register-link seminar-training" href="/on-site-training/">Want this training at your facility instead?</a>
           </div>
         </div>
-      <div class="empty-results" ng-if="!seminar.seminarLocations.length">
+      <div class="empty-results" ng-if="seminar.seminarLocations.length == 0 && seminar.seminarSimulcast.length == 0">
         <div class="no-results">
           <h2>Sorry, no results were found.</h2>
           <p>
@@ -50,10 +50,31 @@
             <li><a href="/public-seminars/plant-management/">Plant Management</a></li>
             <li><a href="/public-seminars/mechanical-and-industrial-training/">Mechanical &amp; Industrial</a></li>
         </ul>
-
       </div>
-
-    <ul>
+    <ul ng-if="seminar.seminarSimulcast.length > 0" class="no-margin">
+        <li class="seminar-loc--block">
+            <h3 class="state-name no-margin"><strong>Simulcast Web-Based Option</strong></h3>
+            <span>Don't see a date/location that works? Connect online to a live classroom seminar on the date below (Learn more)</span>
+            <div class="location-row" ng-repeat="event in seminar.seminarSimulcast | filter: seminar.isBetween(event.dateMonthYear)">
+                <ul class="seminar-loc--row">
+                    <div class="result-table-body ">
+                        <li class="faux-head--city col-xs-4 col-md-4">
+                            <span class="city-name">{{ event.city }}</span>
+                        </li>
+                        <li class="faux-head--date col-xs-5 col-md-4">
+                            <span class="event-date">{{ event.date}}</span>
+                        </li>
+                        <li class="faux-head--register col-xs-3 col-md-4">
+                            <a uib-popover-template="seminar.detailPop.templateUrl" popover-trigger="outsideClick" popover-placement="top" class="register-link" ng-click="seminar.registerSem({id: event.id})">Register <i class="fa fa-chevron-down"></i> </a>
+                        </li>
+                    </div>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </li>
+    </ul>
+    <ul ng-if="seminar.seminarLocations.length > 0">
       <li class="seminar-loc--block" ng-repeat="location in seminar.seminarLocations | filter: seminar.isBetween(location.dateMonthYear) | groupBy:'state'">
         <h3 class="state-name"><strong>{{ location[0].state }}</strong></h3>
         <div class="location-row">
