@@ -32,7 +32,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
         public SeminarCommon()
         {
             CourseDetailList = CacheObjects.GetCourseDetailList();
-            LocationScheduleDetailList = CacheObjects.GetLocationScheduleDetailList(true);
+            LocationScheduleDetailList = CacheObjects.GetLocationScheduleDetailList();
         }
 
 

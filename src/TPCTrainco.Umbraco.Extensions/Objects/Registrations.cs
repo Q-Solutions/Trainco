@@ -291,13 +291,13 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                             string attendeeSummary = emailOrderSummaryTemplate;
 
                             SCHEDULE schedule = CacheObjects.GetScheduleList().Where(p => p.ScheduleID == tempReg.sem_SID).FirstOrDefault();
-
+                            bool bSimulcast = schedule.ScheduleType.ToLower() == "simulcast";
                             if (schedule != null && schedule.ScheduleStatus != null && schedule.ScheduleStatus > 0)
                             {
                                 isCourseCancelling = true;
                             }
 
-                            string seminarTitle = tempReg.sem_SID.ToString() + ": <strong>" + tempReg.sem_Title + "</strong><br /> - " + tempReg.sem_Place + "  " + tempReg.sem_FeeName;
+                            string seminarTitle = tempReg.sem_SID.ToString() + ": <strong>" + tempReg.sem_Title + "</strong><br /> - " + (bSimulcast ? "Simulcast" : tempReg.sem_Place) + "  " + tempReg.sem_FeeName;
                             emailOrderSummaryList += "<tr><td colspan=\"3\">" + seminarTitle + "</td></tr><tr><td colspan=\"3\" height=\"15\"></td></tr>";
 
 
@@ -658,13 +658,14 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             if (tempReg != null)
             {
                 SCHEDULE schedule = Objects.CacheObjects.GetScheduleList().Where(p => p.ScheduleID == tempReg.sem_SID).First();
+                bool bSimulcast = schedule.ScheduleType.ToLower() == "simulcast";
                 ScheduleCourseInstructor schCourse = Objects.CacheObjects.GetScheduleCourseList().Where(p => p.ScheduleID == tempReg.sem_SID).FirstOrDefault();
                 Location location = Objects.CacheObjects.GetLocationList().Where(p => p.LocationID == schedule.LocationID).FirstOrDefault();
                 COURS course = Objects.CacheObjects.GetCourseList().Where(p => p.CourseID == schCourse.CourseID).FirstOrDefault();
 
                 string tempStr = emailTemplate;
 
-                tempStr = tempStr.Replace("{{SEMINAR}}", tempReg.sem_SID + ": " + tempReg.sem_Title + " - " + tempReg.sem_Place + " " + tempReg.sem_FeeName);
+                tempStr = tempStr.Replace("{{SEMINAR}}", tempReg.sem_SID + ": " + tempReg.sem_Title + " - " + (bSimulcast ? "Simulcast" : tempReg.sem_Place) + " " + tempReg.sem_FeeName);
 
                 if (course != null)
                 {
