@@ -660,37 +660,26 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                 SCHEDULE schedule = Objects.CacheObjects.GetScheduleList().Where(p => p.ScheduleID == tempReg.sem_SID).First();
                 bool bSimulcast = schedule.ScheduleType.ToLower() == "simulcast";
                 ScheduleCourseInstructor schCourse = Objects.CacheObjects.GetScheduleCourseList().Where(p => p.ScheduleID == tempReg.sem_SID).FirstOrDefault();
-                Location location = Objects.CacheObjects.GetLocationList().Where(p => p.LocationID == schedule.LocationID).FirstOrDefault();
+                Location location = null;
+                if(!bSimulcast)
+                    location = Objects.CacheObjects.GetLocationList().Where(p => p.LocationID == schedule.LocationID).FirstOrDefault();
                 COURS course = Objects.CacheObjects.GetCourseList().Where(p => p.CourseID == schCourse.CourseID).FirstOrDefault();
-
                 string tempStr = emailTemplate;
-
-                tempStr = tempStr.Replace("{{SEMINAR}}", tempReg.sem_SID + ": " + tempReg.sem_Title + " - " + (bSimulcast ? "Simulcast" : tempReg.sem_Place) + " " + tempReg.sem_FeeName);
-
-                if (course != null)
-                {
-                    tempStr = tempStr.Replace("{{TIME}}", course.CourseTimes);
-                }
-
                 IPublishedContent searchSeminarNode = null;
-                string defaultSearchLocationText = "";
-
                 searchSeminarNode = Nodes.Instance.SeminarSearch;
-
-                if (searchSeminarNode.GetProperty("locationMessage").HasValue)
-                {
-                    defaultSearchLocationText = searchSeminarNode.GetProperty("locationMessage").Value.ToString();
-                }
-
-                if (location != null && false == string.IsNullOrEmpty(location.LocationNotes))
-                {
-                    tempStr = tempStr.Replace("{{LOCATION}}", FixLocationNotes(location.LocationNotes));
-                }
-                else
-                {
-                    tempStr = tempStr.Replace("{{LOCATION}}", defaultSearchLocationText);
-                }
-
+                tempStr = tempStr.Replace("{{SEMINAR}}", tempReg.sem_SID + ": " + tempReg.sem_Title + " - " + (bSimulcast ? "Simulcast" : tempReg.sem_Place) + " " + tempReg.sem_FeeName);
+                string timeStr = "";
+                if(!bSimulcast && course != null)
+                    timeStr = course.CourseTimes;
+                else if(searchSeminarNode.GetProperty("simulcastInfoMessage").HasValue)
+                    timeStr = searchSeminarNode.GetProperty("simulcastInfoMessage").Value.ToString();
+                tempStr = tempStr.Replace("{{TIME}}", timeStr);
+                string locationStr = " - ";
+                if (location != null && !string.IsNullOrEmpty(location.LocationNotes))
+                    locationStr = FixLocationNotes(location.LocationNotes);
+                else if (!bSimulcast && searchSeminarNode.GetProperty("locationMessage").HasValue)
+                    locationStr = searchSeminarNode.GetProperty("locationMessage").Value.ToString();
+                tempStr = tempStr.Replace("{{LOCATION}}",locationStr);
                 detailsText.AppendLine(tempStr);
             }
             else

@@ -379,7 +379,7 @@
          * @return {any}          its going to happen regardless of whether or not theres values in LS.
          */
         //emptyLocalStorage();
-        if (data.seminars.length) {
+        if (data.seminars != null && data.seminars.length) {
           // Set showDirections to false because a search has now been executed
           // and that search returns results.
           vm.showDirections = false;
@@ -390,7 +390,7 @@
           // the error message.
           vm.showDirections = true;
         }
-        var seminarsData = data.seminars;
+        var seminarsData = data.seminars || [];
         receiveSeminarData(seminarsData);
         // Set true to show error.
         vm.searchFired = true;
