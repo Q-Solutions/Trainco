@@ -1,6 +1,6 @@
-﻿//var BASEURL = 'http://trainco-phase1.axial-client.com/api';
+﻿var BASEURL = 'http://trainco-phase1.axial-client.com/api';
 
-var BASEURL = 'http://localhost:56386/api';
+//var BASEURL = 'http://test.tpctrainco.com/api';
 
 $(document).ready(function () {
     SubmitRegForm();

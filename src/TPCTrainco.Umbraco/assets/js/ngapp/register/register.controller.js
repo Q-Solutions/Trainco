@@ -412,13 +412,14 @@
       vm.categories.all = false;
       vm.topicParam1 = vm.topicParam2 = vm.topicParam3 = vm.topicParam4 = '';
       vm.locSearchFilter.locationAll = false;
+      vm.locSearchFilter.simulcast = false;
     }
 
-    vm.clearFilters = function() {
+    vm.clearFilters = function () {
+      vm.showDirections = true;
       emptyLocalStorage();
       resetFields();
       $document[0].body.scrollTop = $document[0].documentElement.scrollTop = 0;
-      vm.showDirections = true;
       vm.searchFired = false;
       doParamSearch();
     }
