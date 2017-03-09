@@ -7,7 +7,19 @@
         </div>
       </div>
     </div>
-    <div class="row cart-gray">
+    <ul class="cart-heading-list">
+        <li>
+            <ul class="container">
+                <li class="class-title col-xs-12 col-sm-12 col-md-4"></li>
+                <li class="col-xs-12 col-sm-4 col-md-2"></li>
+                <li class="date col-xs-12 col-sm-4 col-md-2"></li>
+                <li class="col-xs-12 col-sm-4 col-md-2"></li>
+                <li class="qty-wrap col-xs-12 col-sm-4 col-md-1">Attendees:</li>
+                <li class="sub-total col-xs-12 col-sm-4 col-md-1">Subtotal</li>
+            </ul>
+        </li>
+    </ul>
+    <div class="cart-gray">
       <ul class="list-inline cart-item-list">
         <li class="cart-item" ng-repeat="cartItem in vm.cartItemList track by $index">
           <ul class="container">

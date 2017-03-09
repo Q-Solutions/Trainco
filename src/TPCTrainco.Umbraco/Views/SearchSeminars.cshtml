@@ -44,11 +44,16 @@
       <div class="filter-location">
         <label class="sidebar-label">City or ZIP</label>
         <input type="search" ng-keydown="ctrl.handleLocInput($event)" ng-model="ctrl.locSearchFilter.location" placeholder="Enter Location">
-        <h5>- or -</h5>
+        <h5 class="white">- or -</h5>
         <div class="input-group">
           <span class="input-group-addon">
             <input ng-model="ctrl.locSearchFilter.locationAll" ng-change="ctrl.locWatcher()"  type="checkbox">All Locations
           </span>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon">
+                <input type="checkbox" ng-model="ctrl.locSearchFilter.simulcast" ng-change="ctrl.simulcastWatcher()">Simulcast Only (will display only web-based courses)
+            </span>
         </div>
       </div>
       <hr class="divider" />
