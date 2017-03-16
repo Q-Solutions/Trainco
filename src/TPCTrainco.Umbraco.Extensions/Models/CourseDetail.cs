@@ -29,10 +29,12 @@ namespace TPCTrainco.Umbraco.Extensions.Models
         [NullSetting(NullSetting = NullSettings.Null)]
         public string DetailsUrl { get; set; }
 
-        [NullSetting(NullSetting = NullSettings.Null)]
-        public int NodeId { get; set; }
+        //[NullSetting(NullSetting = NullSettings.Null)]
+        //[Ignore]
+        //public int NodeId { get; set; }
 
         public double Price { get; set; }
+
 
         
     }

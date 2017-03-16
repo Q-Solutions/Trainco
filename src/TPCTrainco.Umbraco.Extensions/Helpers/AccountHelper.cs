@@ -810,28 +810,28 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
 
                 if (courseDetail != null && scheduleDetail != null)
                 {
-                    var content = ApplicationContext.Current.Services.ContentService.GetById(courseDetail.NodeId);
+                    //var content = ApplicationContext.Current.Services.ContentService.GetById(courseDetail.NodeId);
+                    
+                    //var materials = new List<MaterialModel>();
+                    //string materialIdsRaw = "";
+                    //if(content != null)
+                    //    materialIdsRaw = content.GetValue<string>("materials");
 
-                    var materials = new List<MaterialModel>();
-                    string materialIdsRaw = "";
-                    if(content != null)
-                        materialIdsRaw = content.GetValue<string>("materials");
-
-                    if (!String.IsNullOrEmpty(materialIdsRaw))
-                    {
-                        var materialIds = materialIdsRaw.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i => Convert.ToInt32(i));
-                        foreach (var materialId in materialIds)
-                        {
-                            var media = ApplicationContext.Current.Services.MediaService.GetById(materialId);
-                            if (media != null)
-                            {
-                                materials.Add(new MaterialModel()
-                                {
-                                    Url = media.GetValue<string>("umbracoFile")
-                                });
-                            }
-                        }
-                    }
+                    //if (!String.IsNullOrEmpty(materialIdsRaw))
+                    //{
+                    //    var materialIds = materialIdsRaw.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i => Convert.ToInt32(i));
+                    //    foreach (var materialId in materialIds)
+                    //    {
+                    //        var media = ApplicationContext.Current.Services.MediaService.GetById(materialId);
+                    //        if (media != null)
+                    //        {
+                    //            materials.Add(new MaterialModel()
+                    //            {
+                    //                Url = media.GetValue<string>("umbracoFile")
+                    //            });
+                    //        }
+                    //    }
+                    //}
 
                     var attendeeList = new List<AttendeeModel>();
                     foreach (var history in historyGroup)
@@ -907,27 +907,27 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
 
                             if (courseDetail != null && scheduleDetail != null)
                             {
-                                var content = ApplicationContext.Current.Services.ContentService.GetById(courseDetail.NodeId);
+                                //var content = ApplicationContext.Current.Services.ContentService.GetById(courseDetail.NodeId);
 
-                                var materials = new List<MaterialModel>();
+                                //var materials = new List<MaterialModel>();
 
-                                var materialIdsRaw = content.GetValue<string>("materials");
+                                //var materialIdsRaw = content.GetValue<string>("materials");
 
-                                if (!String.IsNullOrEmpty(materialIdsRaw))
-                                {
-                                    var materialIds = materialIdsRaw.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i => Convert.ToInt32(i));
-                                    foreach (var materialId in materialIds)
-                                    {
-                                        var media = ApplicationContext.Current.Services.MediaService.GetById(materialId);
-                                        if (media != null)
-                                        {
-                                            materials.Add(new MaterialModel()
-                                            {
-                                                Url = media.GetValue<string>("umbracoFile")
-                                            });
-                                        }
-                                    }
-                                }
+                                //if (!String.IsNullOrEmpty(materialIdsRaw))
+                                //{
+                                //    var materialIds = materialIdsRaw.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i => Convert.ToInt32(i));
+                                //    foreach (var materialId in materialIds)
+                                //    {
+                                //        var media = ApplicationContext.Current.Services.MediaService.GetById(materialId);
+                                //        if (media != null)
+                                //        {
+                                //            materials.Add(new MaterialModel()
+                                //            {
+                                //                Url = media.GetValue<string>("umbracoFile")
+                                //            });
+                                //        }
+                                //    }
+                                //}
 
                                 var attendeeList = new List<AttendeeModel>();
                                 attendeeList.Add(new AttendeeModel()
