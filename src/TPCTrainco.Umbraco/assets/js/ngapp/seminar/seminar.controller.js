@@ -225,5 +225,16 @@
       //  return dateF;
       //});
     }
+
+    vm.toggleSimulcastDescription = function ($e) {
+        var obj = angular.element($e.target);
+        var parent = obj.parents('li.simulcast');
+        var ele = angular.element('div.text-learnmore', parent);
+        ele.toggleClass('hide');
+        if (ele.is(':visible'))
+            obj.text('(Hide Description)');
+        else
+            obj.text('(Learn more)');
+    };
   }
 })();

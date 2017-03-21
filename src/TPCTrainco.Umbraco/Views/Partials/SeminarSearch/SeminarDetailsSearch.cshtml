@@ -52,9 +52,13 @@
         </ul>
       </div>
     <ul ng-if="seminar.seminarSimulcast.length > 0" class="no-margin">
-        <li class="seminar-loc--block">
+        <li class="seminar-loc--block simulcast">
             <h3 class="state-name no-margin"><strong>Simulcast Web-Based Option</strong></h3>
-            <span>Don't see a date/location that works? Connect online to a live classroom seminar on the date below (Learn more)</span>
+            <span>Don't see a date/location that works? Connect online to a live classroom seminar on the date below </span><span class="small btn-learnmore" ng-click="seminar.toggleSimulcastDescription($event)">(Learn more)</span>
+            <div class="text-learnmore hide">
+                <p>Our simulcast option allows students to connect to a live classroom seminar via a web link, with the ability to participate fully in the classroom dialogue, exercises, and Q&A throughout the 2-day live course.</p>
+                <p>Simulcast students receive all classroom materials electronically, full technical support during the event, a certificate of completion for 1.6 CEUs, and the same No-Risk Registration and Money-Back Guarantee as our classroom students.</p>
+            </div>
             <div class="location-row" ng-repeat="event in seminar.seminarSimulcast | filter: seminar.isBetween(event.dateMonthYear)">
                 <ul class="seminar-loc--row">
                     <div class="result-table-body ">
