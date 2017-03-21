@@ -49,7 +49,7 @@
   	$('input').next('span').remove().css('border-color', '#d7d7d7');
 
   	$.ajax({
-  	    url: 'http://trainco-phase1.axial-client.com/api/checkout/submit',
+  	    url: 'https://www.tpctrainco.com/api/checkout/submit',
   	    //url: 'http://test.tpctrainco.com/api/checkout/submit',
   		data: JSON.stringify(checkoutData),
   		type: "POST",
