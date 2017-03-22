@@ -72,7 +72,7 @@ function CheckoutPost(checkoutData) {
 
     $regSubmit.css('opacity', 0);
     $loader.show();
-
+    $checkoutErrMsg.hide();
     $('input').next('span').remove().css('border-color', '#d7d7d7');
 
     $.ajax({
@@ -107,7 +107,16 @@ function CheckoutPost(checkoutData) {
 
         }
     }).fail(function (error) {
-        $regSubmit.css('opacity', 1).prepend('<p class="checkout-err-msg">An error occurred. Please try again later.</p>');
+        $regSubmit.css('opacity', 1);
+        $checkoutErrMsg.html('An error occurred. Please try again later.').show();
         $loader.hide();
     });
 };
+
+$(document).on('keydown', '.form-control.error', function (e) {
+    var obj = $(this);
+    if (obj.val().length == 0)
+        return;
+    obj.removeClass('error');
+    obj.siblings('span.error-text').remove();
+});

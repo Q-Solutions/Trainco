@@ -123,13 +123,13 @@
             foreach (temp_Reg seminar in cartList)
             {
                 string courseFormatStr = null;
-                string scheduleType = null;
+                bool bSimulcast = false;
                 using (var db = new americantraincoEntities())
                 {
                     SCHEDULE schedule = db.SCHEDULES.Where(x => x.ScheduleID == seminar.sem_SID).FirstOrDefault();
                     if (schedule != null)
                     {
-                        scheduleType = schedule.ScheduleType.ToLower();
+                        bSimulcast = schedule.ScheduleType.ToLower() == "simulcast";
                         ScheduleCourseInstructor scheduleCourseInstructor = db.ScheduleCourseInstructors.Where(p => p.ScheduleID == schedule.ScheduleID).FirstOrDefault();
                         if (scheduleCourseInstructor != null)
                         {
@@ -149,7 +149,7 @@
 
                 string[] locationDatesArray = seminar.sem_Place.Split(new string[] { " - " }, StringSplitOptions.None);
 
-                string location = scheduleType != "simulcast" ? locationDatesArray[0] : "Simulcast";
+                string location = !bSimulcast ? locationDatesArray[0] : "Simulcast";
                 string seminarDates = locationDatesArray[1];
 
                 <div class="col-md-12 form-item-wrapper" data-seminar="@(seminar.sem_SID)">
@@ -182,12 +182,16 @@
                                     </div>
 
                                     <div class="form-group col-xs-12 col-sm-6 col-md-3">
-                                        <input id="email@(attendeeInc)" name="email" type="email" class="form-control @(scheduleType == "simulcast" ? "required" : "")" placeholder="Email">
+                                        <input id="email@(attendeeInc)" name="email" type="email" class="form-control @(bSimulcast ? "required" : "")" placeholder="Email">
                                     </div>
 
                                     <input id="attendee@(i)" name="attendee" type="hidden" value="@(i)">
                                     <input id="attendeeInc@(i)" name="attendeeInc" type="hidden" value="@(attendeeInc)">
                                 </form>
+                            }
+                            <div class="clearfix"></div>
+                            @if (bSimulcast) {
+                            <div class="helper-text"><strong>PLEASE NOTE:</strong> An email address is required for EACH simulcast attendee. Every attendee on your team must be registered in order to receive course materials, participate in the simulcast, and receive CEUs.</div>
                             }
                         </div>
 

@@ -232,9 +232,9 @@
         var ele = angular.element('div.text-learnmore', parent);
         ele.toggleClass('hide');
         if (ele.is(':visible'))
-            obj.text('(Hide Description)');
+            angular.element('span.action', obj).text('x');
         else
-            obj.text('(Learn more)');
+            angular.element('span.action', obj).text('+');
     };
   }
 })();
