@@ -202,7 +202,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                 GeoCoordinates.UpdateCityCoordinates();
             }
 
-            tempSearch = locationScheduleDetailSearch.Where(x => x.CoordinatesObj != null && x.CoordinatesObj.Distance(coordinateDetails.DbGeography) * 0.00062 <= radiusInMiles)
+            tempSearch = locationScheduleDetailSearch.Where(x => x.ScheduleType.ToLower() == "simulcast" || (x.CoordinatesObj != null && x.CoordinatesObj.Distance(coordinateDetails.DbGeography) * 0.00062 <= radiusInMiles))
                     .OrderBy(p => p.CoordinatesObj.Distance(coordinateDetails.DbGeography)).ToList();
 
             foreach (LocationScheduleDetail updateCoordinates in tempSearch)
