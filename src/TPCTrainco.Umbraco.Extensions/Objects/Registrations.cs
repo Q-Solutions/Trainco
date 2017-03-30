@@ -296,8 +296,8 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                             {
                                 isCourseCancelling = true;
                             }
-
-                            string seminarTitle = tempReg.sem_SID.ToString() + ": <strong>" + tempReg.sem_Title + "</strong><br /> - " + (bSimulcast ? "Simulcast" : tempReg.sem_Place) + "  " + tempReg.sem_FeeName;
+                            string[] sParts = tempReg.sem_Place.Split(new string[] { " - " }, StringSplitOptions.None);
+                            string seminarTitle = tempReg.sem_SID.ToString() + ": <strong>" + tempReg.sem_Title + "</strong><br />" + (bSimulcast ? "Simulcast" + (sParts.Length == 2 ? " - " + sParts[1] : "") : tempReg.sem_Place) + " - " + tempReg.sem_FeeName;
                             emailOrderSummaryList += "<tr><td colspan=\"3\">" + seminarTitle + "</td></tr><tr><td colspan=\"3\" height=\"15\"></td></tr>";
 
 
@@ -667,7 +667,8 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                 string tempStr = emailTemplate;
                 IPublishedContent searchSeminarNode = null;
                 searchSeminarNode = Nodes.Instance.SeminarSearch;
-                tempStr = tempStr.Replace("{{SEMINAR}}", tempReg.sem_SID + ": " + tempReg.sem_Title + " - " + (bSimulcast ? "Simulcast" : tempReg.sem_Place) + " " + tempReg.sem_FeeName);
+                string[] sParts = tempReg.sem_Place.Split(new string[] { " - " }, StringSplitOptions.None);
+                tempStr = tempStr.Replace("{{SEMINAR}}", tempReg.sem_SID + ": " + tempReg.sem_Title + " - " + (bSimulcast ? "Simulcast" + (sParts.Length == 2 ? " - " + sParts[1] : "") : tempReg.sem_Place) + " - " + tempReg.sem_FeeName);
                 string timeStr = "";
                 if(!bSimulcast && course != null)
                     timeStr = course.CourseTimes;
