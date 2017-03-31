@@ -814,7 +814,7 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
 
                     var materials = new List<MaterialModel>();
                     string materialIdsRaw = "";
-                    if(content != null)
+                    if(content != null && content.HasProperty("materials"))
                         materialIdsRaw = content.GetValue<string>("materials");
 
                     if (!String.IsNullOrEmpty(materialIdsRaw))
@@ -827,7 +827,7 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
                             {
                                 materials.Add(new MaterialModel()
                                 {
-                                    Url = media.GetValue<string>("umbracoFile")
+                                    Url = media.HasProperty("umbracoFile") ? media.GetValue<string>("umbracoFile") : ""
                                 });
                             }
                         }
