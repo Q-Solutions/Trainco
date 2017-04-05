@@ -301,6 +301,7 @@
     <Content Include="assets\images\electrical.jpg" />
     <Content Include="assets\images\electricalHover.png" />
     <Content Include="assets\images\electricalSelected.png" />
+    <Content Include="assets\images\email\email-logo.png" />
     <Content Include="assets\images\email\logo-trainco-1x.png" />
     <Content Include="assets\images\favicon-16x16.png" />
     <Content Include="assets\images\favicon-32x32.png" />

@@ -725,7 +725,8 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     return;
                 string emailBody = template.GetProperty("emailBody").Value.ToString();
                 string toAlt = template.GetProperty("emailToAlt").Value.ToString();
-                emailBody = emailBody.Replace("{{COMPANY}}", model.Company)
+                emailBody = emailBody.Replace("{{DOMAIN}}", HttpContext.Current.Request.Url.Authority)
+                                     .Replace("{{COMPANY}}", model.Company)
                                      .Replace("{{NAME}}", model.FirstName + " " + model.LastName)
                                      .Replace("{{INVOICE}}", model.InvoiceNumber)
                                      .Replace("{{DATE}}", DateTime.Now.ToShortDateString())
