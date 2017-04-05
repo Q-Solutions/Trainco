@@ -114,19 +114,14 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers.v2
 
 
         [HttpGet]
-        public object SummaryText()
+        public object SummaryText(string id = null)
         {
             string output = "";
-
             try
             {
-                output = Nodes.Instance.SeminarSearch.GetPropertyValue<string>("locationMessage");
+                output = Nodes.Instance.SeminarSearch.GetPropertyValue<string>((string.IsNullOrEmpty(id) ? "locationMessage" : "simulcastInfoMessage"));
             }
-            catch (Exception ex)
-            {
-
-            }
-
+            catch (Exception ex) {}
             return output;
         }
     }

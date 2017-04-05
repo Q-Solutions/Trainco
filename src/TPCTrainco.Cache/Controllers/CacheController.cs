@@ -405,7 +405,7 @@ namespace TPCTrainco.Cache.Controllers
             int inc = 0;
 
             string defaultSearchLocationText = GetUmbracoSummaryText();
-
+            string defaultSimulcastText = GetUmbracoSummaryText(true);
             List<ScheduleCourseInstructor> scheduleCourseInstructorList = CacheObjects.GetScheduleCourseList(true);
 
             List<LocationScheduleDetail> locationScheduleDetailList = null;
@@ -453,7 +453,7 @@ namespace TPCTrainco.Cache.Controllers
                                     locationScheduleDetail.City = legacyCity.CityName;
                                     locationScheduleDetail.StateCode = legacyState.StateAbbreviation;
                                     locationScheduleDetail.State = legacyState.StateName;
-
+                                    locationScheduleDetail.ScheduleType = legacySchedule.ScheduleType;
                                     // get exact location
                                     Location locationDetail = CacheObjects.GetLocationList().Where(p => p.LocationID == legacySchedule.LocationID).FirstOrDefault();
 
@@ -463,7 +463,7 @@ namespace TPCTrainco.Cache.Controllers
                                     }
                                     else
                                     {
-                                        locationScheduleDetail.LocationDetails = defaultSearchLocationText;
+                                        locationScheduleDetail.LocationDetails = legacySchedule.ScheduleType.ToLower() == "simulcast" ? defaultSimulcastText : defaultSearchLocationText;
                                     }
 
                                     locationScheduleDetail.CoordinatesObj = legacyCity.Coordinates;
@@ -473,7 +473,6 @@ namespace TPCTrainco.Cache.Controllers
 
                                     locationScheduleDetail.SeminarId = scheduleCourse.CourseID;
                                     locationScheduleDetail.SeminarTitle = legacyCourse.TitlePlain;
-                                    locationScheduleDetail.ScheduleType = legacySchedule.ScheduleType;
                                 }
 
                                 locationScheduleDetailList.Add(locationScheduleDetail);
@@ -507,7 +506,7 @@ namespace TPCTrainco.Cache.Controllers
         }
 
 
-        private string GetUmbracoSummaryText()
+        private string GetUmbracoSummaryText(bool bSimulcast = false)
         {
             string output = null;
 
@@ -516,18 +515,15 @@ namespace TPCTrainco.Cache.Controllers
 
             try
             {
-                HttpResponseMessage response = client.GetAsync(apiDomain + "/api/contents/SummaryText").Result;
+                HttpResponseMessage response = client.GetAsync(apiDomain + "/api/contents/SummaryText" + (bSimulcast ? "/1" : "")).Result;
                 response.EnsureSuccessStatusCode();
-
                 output = response.Content.ReadAsStringAsync().Result;
-
                 output = output.Trim("\"");
             }
             catch (Exception ex)
             {
                 output = "Specific location will be provided via email approximately 4 weeks prior to seminar date.";
             }
-
             return output;
         }
 

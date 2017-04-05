@@ -661,9 +661,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                 SCHEDULE schedule = Objects.CacheObjects.GetScheduleList().Where(p => p.ScheduleID == tempReg.sem_SID).First();
                 bool bSimulcast = schedule.ScheduleType.ToLower() == "simulcast";
                 ScheduleCourseInstructor schCourse = Objects.CacheObjects.GetScheduleCourseList().Where(p => p.ScheduleID == tempReg.sem_SID).FirstOrDefault();
-                Location location = null;
-                if(!bSimulcast)
-                    location = Objects.CacheObjects.GetLocationList().Where(p => p.LocationID == schedule.LocationID).FirstOrDefault();
+                Location location = Objects.CacheObjects.GetLocationList().Where(p => p.LocationID == schedule.LocationID).FirstOrDefault();
                 COURS course = Objects.CacheObjects.GetCourseList().Where(p => p.CourseID == schCourse.CourseID).FirstOrDefault();
                 string tempStr = emailTemplate;
                 IPublishedContent searchSeminarNode = null;
@@ -679,8 +677,11 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                 string locationStr = " - ";
                 if (location != null && !string.IsNullOrEmpty(location.LocationNotes))
                     locationStr = FixLocationNotes(location.LocationNotes);
-                else if (!bSimulcast && searchSeminarNode.GetProperty("locationMessage").HasValue)
-                    locationStr = searchSeminarNode.GetProperty("locationMessage").Value.ToString();
+                else {
+                    string key = bSimulcast ? "simulcastLocationMessage" : "locationMessage";
+                    if(searchSeminarNode.GetProperty(key).HasValue)
+                        locationStr = searchSeminarNode.GetProperty(key).Value.ToString();
+                }
                 tempStr = tempStr.Replace("{{LOCATION}}",locationStr);
                 detailsText.AppendLine(tempStr);
             }
