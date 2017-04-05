@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="americantraincoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="americantraincoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="cart">
           <Key>
             <PropertyRef Name="cartSeq" />
@@ -102,6 +102,24 @@
           <Property Name="CC_Result" Type="varchar(max)" />
           <Property Name="ProcessedFrom" Type="varchar" MaxLength="50" />
           <Property Name="Approval" Type="int" StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="CC_Payments">
+          <Key>
+            <PropertyRef Name="Seq" />
+          </Key>
+          <Property Name="Seq" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProcessedDate" Type="datetime" Nullable="false" />
+          <Property Name="InvoiceNumber" Type="varchar" MaxLength="50" />
+          <Property Name="InvoiceAmount" Type="money" />
+          <Property Name="PaymentAmount" Type="money" />
+          <Property Name="CompanyName" Type="varchar" MaxLength="255" />
+          <Property Name="ContactName" Type="varchar" MaxLength="255" />
+          <Property Name="ContactPhone" Type="varchar" MaxLength="255" />
+          <Property Name="ContactEmail" Type="varchar" MaxLength="255" />
+          <Property Name="InvoiceDescription" Type="varchar(max)" />
+          <Property Name="AppliedDate" Type="datetime" />
+          <Property Name="AppliedAmount" Type="money" />
+          <Property Name="AppliedReference" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Cities">
           <Key>
@@ -378,6 +396,7 @@
           <Property Name="RegPaidTotal" Type="money" />
           <Property Name="RegBalanceDue" Type="money" StoreGeneratedPattern="Computed" />
           <Property Name="MktgFollowupEmailSent" Type="datetime" />
+          <Property Name="BlockSeq" Type="bigint" />
         </EntityType>
         <EntityType Name="ScheduleCourseInstructors">
           <Key>
@@ -659,6 +678,7 @@ warning 6002: The table/view 'americantrainco.dbo.Attendees_ClassHistory' does n
           <Property Name="ClassDates" Type="varchar" MaxLength="255" />
           <Property Name="City" Type="varchar" MaxLength="50" />
           <Property Name="State" Type="varchar" MaxLength="5" />
+          <Property Name="BlockSeq" Type="bigint" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -726,6 +746,7 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <EntitySet Name="CATEGORY" EntityType="Self.CATEGORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CATEGORYTYPE" EntityType="Self.CATEGORYTYPE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CC_Log" EntityType="Self.CC_Log" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CC_Payments" EntityType="Self.CC_Payments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cities" EntityType="Self.Cities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Countries" EntityType="Self.Countries" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseFormats" EntityType="Self.CourseFormats" Schema="dbo" store:Type="Tables" />
@@ -765,7 +786,8 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
     [Attendees_ClassHistory].[ClassStart] AS [ClassStart], 
     [Attendees_ClassHistory].[ClassDates] AS [ClassDates], 
     [Attendees_ClassHistory].[City] AS [City], 
-    [Attendees_ClassHistory].[State] AS [State]
+    [Attendees_ClassHistory].[State] AS [State], 
+    [Attendees_ClassHistory].[BlockSeq] AS [BlockSeq]
     FROM [dbo].[Attendees_ClassHistory] AS [Attendees_ClassHistory]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Seminar_Catalog" EntityType="Self.Seminar_Catalog" store:Type="Views" store:Schema="dbo">
@@ -1098,6 +1120,7 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <Property Name="RegPaidTotal" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="RegBalanceDue" Type="Decimal" Precision="19" Scale="4" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="MktgFollowupEmailSent" Type="DateTime" Precision="3" />
+          <Property Name="BlockSeq" Type="Int64" />
         </EntityType>
         <EntityType Name="State">
           <Key>
@@ -1333,6 +1356,7 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <EntitySet Name="RegistrationAttendeeSchedules" EntityType="americantraincoModel.RegistrationAttendeeSchedule" />
           <EntitySet Name="WebAccounts" EntityType="americantraincoModel.WebAccount" />
           <EntitySet Name="Attendees_ClassHistory" EntityType="americantraincoModel.Attendees_ClassHistory" />
+          <EntitySet Name="CC_Payments" EntityType="americantraincoModel.CC_Payments" />
         </EntityContainer>
         <EntityType Name="CourseTopic">
           <Key>
@@ -1552,6 +1576,25 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <Property Name="ClassDates" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="State" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="BlockSeq" Type="Int64" />
+        </EntityType>
+        <EntityType Name="CC_Payments">
+          <Key>
+            <PropertyRef Name="Seq" />
+          </Key>
+          <Property Name="Seq" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProcessedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="InvoiceAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PaymentAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="CompanyName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ContactName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ContactPhone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ContactEmail" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="InvoiceDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="AppliedDate" Type="DateTime" Precision="3" />
+          <Property Name="AppliedAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="AppliedReference" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1792,6 +1835,7 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <EntitySetMapping Name="REGISTRATIONS">
             <EntityTypeMapping TypeName="americantraincoModel.REGISTRATION">
               <MappingFragment StoreEntitySet="REGISTRATIONS">
+                <ScalarProperty Name="BlockSeq" ColumnName="BlockSeq" />
                 <ScalarProperty Name="MktgFollowupEmailSent" ColumnName="MktgFollowupEmailSent" />
                 <ScalarProperty Name="RegistrationID" ColumnName="RegistrationID" />
                 <ScalarProperty Name="RegPromoCode" ColumnName="RegPromoCode" />
@@ -2247,6 +2291,7 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <EntitySetMapping Name="Attendees_ClassHistory">
             <EntityTypeMapping TypeName="americantraincoModel.Attendees_ClassHistory">
               <MappingFragment StoreEntitySet="Attendees_ClassHistory">
+                <ScalarProperty Name="BlockSeq" ColumnName="BlockSeq" />
                 <ScalarProperty Name="State" ColumnName="State" />
                 <ScalarProperty Name="City" ColumnName="City" />
                 <ScalarProperty Name="ClassDates" ColumnName="ClassDates" />
@@ -2264,6 +2309,25 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
                 <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
                 <ScalarProperty Name="RegistrationID" ColumnName="RegistrationID" />
                 <ScalarProperty Name="AttendeeID" ColumnName="AttendeeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CC_Payments">
+            <EntityTypeMapping TypeName="americantraincoModel.CC_Payments">
+              <MappingFragment StoreEntitySet="CC_Payments">
+                <ScalarProperty Name="AppliedReference" ColumnName="AppliedReference" />
+                <ScalarProperty Name="AppliedAmount" ColumnName="AppliedAmount" />
+                <ScalarProperty Name="AppliedDate" ColumnName="AppliedDate" />
+                <ScalarProperty Name="InvoiceDescription" ColumnName="InvoiceDescription" />
+                <ScalarProperty Name="ContactEmail" ColumnName="ContactEmail" />
+                <ScalarProperty Name="ContactPhone" ColumnName="ContactPhone" />
+                <ScalarProperty Name="ContactName" ColumnName="ContactName" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="PaymentAmount" ColumnName="PaymentAmount" />
+                <ScalarProperty Name="InvoiceAmount" ColumnName="InvoiceAmount" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="ProcessedDate" ColumnName="ProcessedDate" />
+                <ScalarProperty Name="Seq" ColumnName="Seq" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

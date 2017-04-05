@@ -81,5 +81,6 @@ namespace TPCTrainco.Umbraco.Extensions
         public Nullable<decimal> RegPaidTotal { get; set; }
         public Nullable<decimal> RegBalanceDue { get; set; }
         public Nullable<System.DateTime> MktgFollowupEmailSent { get; set; }
+        public Nullable<long> BlockSeq { get; set; }
     }
 }

@@ -649,7 +649,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
         }
 
 
-        public void AddToCCLog(temp_Cust tempCust, string result)
+        public void AddToCCLog(temp_Cust tempCust, string result, string processedFrom = "ATI")
         {
             CC_Log ccLog = new CC_Log();
 
@@ -660,7 +660,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             ccLog.CC_Num = !string.IsNullOrEmpty(tempCust.ccNumber) ? tempCust.ccNumber.Substring((tempCust.ccNumber.Length - 4),4) : "";
             ccLog.CC_Amount = Convert.ToDecimal(tempCust.reg_Cost ?? 0);
             ccLog.CC_Result = result;
-            ccLog.ProcessedFrom = "ATI";
+            ccLog.ProcessedFrom = processedFrom;
 
             using (var db = new americantraincoEntities())
             {
@@ -1032,6 +1032,132 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             return new System.ComponentModel.DataAnnotations
                                 .EmailAddressAttribute()
                                 .IsValid(emailAddress);
+        }
+
+        public CreditCardResult ProcessCreditCard(CheckoutCustomer oObj)
+        {
+            int errorCode = 0;
+            string errorText = null;
+            string sResponse = "";
+            CreditCardResult creditCardResult = new CreditCardResult();
+            try
+            {
+                bool websiteTestMode = ConfigurationManager.AppSettings.Get("CC2:WebsiteTestMode") == "1" ? true : false;
+                string ccMerchantId = ConfigurationManager.AppSettings.Get("CC2:MerchID");
+                string ccPin = ConfigurationManager.AppSettings.Get("CC2:PIN");
+                string grant_type = "grant_type=password&username=" + ccMerchantId + "&password=" + ccPin + "";
+                if (!websiteTestMode)
+                {
+                    ServicePointManager.Expect100Continue = true;
+                    ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+                    DateTime dtExpire = StringUtilities.GetExpirationDate(oObj.CCExpiration);
+                    string description = oObj.Company + "_" + oObj.Phone + "_" + oObj.LastName + "_" + oObj.FirstName;
+                    decimal orderTotal = Convert.ToDecimal(oObj.Amount);
+                    string orderTotalStr = String.Format("{0:C}", orderTotal).Replace("$", "").Replace(",", "");
+
+                    ASCIIEncoding encoding = new ASCIIEncoding();
+                    byte[] bytes = encoding.GetBytes(grant_type);
+
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.paytrace.com/oauth/token");
+                    request.Method = "POST";
+                    request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+                    request.ContentLength = bytes.Length;
+
+                    // send validation request
+                    Stream str = request.GetRequestStream();
+                    str.Write(bytes, 0, bytes.Length);
+                    str.Flush();
+                    str.Close();
+
+                    // get response and parse
+                    WebResponse response = request.GetResponse();
+                    Stream rsp_stream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(rsp_stream);
+
+                    // read the response string
+                    sResponse = reader.ReadToEnd();
+                    if (sResponse.Contains("ERROR"))
+                        throw new Exception("Authorization Failed");
+
+                    Dictionary<string, object> dict_1 = JsonConvert.DeserializeObject<Dictionary<string, object>>(sResponse);
+                    string Access_Tokan = dict_1["access_token"].ToString();
+                    string Token_type = dict_1["token_type"].ToString();
+                    string Expires = dict_1["expires_in"].ToString();
+                    if (Token_type == "bearer")
+                        Token_type = "Bearer";
+                    string customerCode = description;
+                    if (customerCode.Length > 17)
+                        customerCode = StringUtilities.StringMaxLength(customerCode.Replace("-", ""), 17);
+                    Dictionary<string, object> dict = new Dictionary<string, object>();
+
+                    dict.Add("amount", orderTotalStr);
+                    dict.Add("credit_card", new Dictionary<string, string> { { "number", "" + oObj.CCNumber.Replace(" ", "").Replace("-", "") + "" }, { "expiration_month", "" + dtExpire.Month + "" }, { "expiration_year", "" + dtExpire.Year + "" } });
+                    dict.Add("csc", "" + oObj.CVVCode + "");
+                    dict.Add("customer_reference_id", "" + customerCode + "");
+                    dict.Add("invoice_id", "" + oObj.InvoiceNumber + "");
+                    dict.Add("description", "" + StringUtilities.StringMaxLength(description, 255) + "");
+                    dict.Add("billing_address", new Dictionary<string, string> { { "name", "" + StringUtilities.StringMaxLength(oObj.CCName, 50) + "" } });
+                    dict.Add("shipping_address", new Dictionary<string, string> { { "name", "" + StringUtilities.StringMaxLength(oObj.FirstName + " " + oObj.LastName, 50) + "" } });
+                    dict.Add("email", "" + StringUtilities.StringMaxLength(oObj.Email, 100) + "");
+                    string json = JsonConvert.SerializeObject(dict);
+                    byte[] bytes_2 = encoding.GetBytes(json);
+                    HttpWebRequest request_2 = (HttpWebRequest)WebRequest.Create("https://api.paytrace.com/v1/transactions/sale/keyed");
+                    request_2.Method = "POST";
+                    request_2.ContentType = "application/json";
+                    request_2.Headers.Add("Authorization", Token_type + " " + Access_Tokan);
+                    request_2.ContentLength = bytes_2.Length;
+
+                    // send validation request
+                    Stream str_2 = request_2.GetRequestStream();
+                    str_2.Write(bytes_2, 0, bytes_2.Length);
+                    str_2.Flush();
+                    str_2.Close();
+
+                    // get response and parse
+                    WebResponse response_2 = request_2.GetResponse();
+                    Stream rsp_stream_2 = response_2.GetResponseStream();
+                    StreamReader reader_2 = new StreamReader(rsp_stream_2);
+                    sResponse = reader_2.ReadToEnd();
+                    Dictionary<string, object> dict_new = JsonConvert.DeserializeObject<Dictionary<string, object>>(sResponse);
+                    bool status = Convert.ToBoolean(dict_new["success"]);
+                    string response_code = dict_new["response_code"].ToString();
+                    if (!status || response_code != "101")
+                        throw new Exception(dict_new.ContainsKey("status_message") ? dict_new["status_message"].ToString() : "Invalid CC Detail");
+                    AddToCCPayments(oObj);
+                }
+            }
+            catch (Exception ex)
+            {
+                errorCode = 900;
+                errorText = ex.Message;
+            }
+            AddToCCLog(new temp_Cust()
+            {
+                reg_ID = -99,
+                ccType = StringUtilities.CreditCardType(oObj.CCNumber),
+                ccNumber = oObj.CCNumber,
+                reg_Cost = oObj.Amount,
+            }, sResponse,"Payment Portal");
+            creditCardResult.ErrorCode = errorCode;
+            creditCardResult.ErrorText = errorText;
+            return creditCardResult;
+        }
+
+        public void AddToCCPayments(CheckoutCustomer oObj)
+        {
+            CC_Payments obj = new CC_Payments();
+            obj.ProcessedDate = DateTime.Now;
+            obj.InvoiceNumber = oObj.InvoiceNumber;
+            obj.PaymentAmount = oObj.Amount;
+            obj.CompanyName = oObj.Company;
+            obj.ContactName = oObj.FirstName + " " + oObj.LastName;
+            obj.ContactPhone = oObj.Phone;
+            obj.ContactEmail = oObj.Email;
+            using (var db = new americantraincoEntities())
+            {
+                db.CC_Payments.Add(obj);
+                db.SaveChanges();
+            }
         }
     }
 }

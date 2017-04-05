@@ -31,5 +31,6 @@ namespace TPCTrainco.Umbraco.Extensions
         public string ClassDates { get; set; }
         public string City { get; set; }
         public string State { get; set; }
+        public Nullable<long> BlockSeq { get; set; }
     }
 }

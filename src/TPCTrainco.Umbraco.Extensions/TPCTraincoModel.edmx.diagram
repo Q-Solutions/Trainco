@@ -34,6 +34,7 @@
         <EntityTypeShape EntityType="americantraincoModel.RegistrationAttendeeSchedule" Width="1.5" PointX="13.375" PointY="17.75" />
         <EntityTypeShape EntityType="americantraincoModel.WebAccount" Width="1.5" PointX="12.875" PointY="0.75" />
         <EntityTypeShape EntityType="americantraincoModel.Attendees_ClassHistory" Width="1.5" PointX="19.375" PointY="0.75" />
+        <EntityTypeShape EntityType="americantraincoModel.CC_Payments" Width="1.5" PointX="0.75" PointY="19.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

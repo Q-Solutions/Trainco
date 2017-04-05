@@ -33,6 +33,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -370,6 +371,7 @@
     <Content Include="assets\js\custom\FormStyles.js" />
     <Content Include="assets\js\custom\HomePage.js" />
     <Content Include="assets\js\custom\MainSearchSelect.js" />
+    <Content Include="assets\js\custom\offlinePayment.js" />
     <Content Include="assets\js\custom\TPCApp.js" />
     <Content Include="assets\js\dashboard\app.css" />
     <Content Include="assets\js\dashboard\app.js" />
@@ -2989,6 +2991,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CheckoutSummarySurfaceController.cs" />
     <Compile Include="Controllers\CheckoutCustomerSurfaceController.cs" />
+    <Compile Include="Controllers\OfflinePaymentController.cs" />
     <Compile Include="Models\RegisterAttendeeViewModel.cs" />
     <Compile Include="Models\RegisterFormViewModel.cs" />
     <Compile Include="Models\RegisterSeminarListViewModel.cs" />
@@ -3153,6 +3156,8 @@
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <Content Include="Views\Logout.cshtml" />
     <Content Include="Views\Error404.cshtml" />
+    <Content Include="Views\OfflinePayment.cshtml" />
+    <Content Include="Views\Partials\OfflinePaymentForm.cshtml" />
     <None Include="Web.Debug-Trainco.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

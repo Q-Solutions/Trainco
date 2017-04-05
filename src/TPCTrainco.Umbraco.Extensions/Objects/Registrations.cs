@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -710,6 +711,42 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             }
 
             return output;
+        }
+
+        public static void EmailPaymentConfirmation(CheckoutCustomer model)
+        {
+            try
+            {
+                StringBuilder emailText = new StringBuilder();
+                if (model == null || string.IsNullOrEmpty(model.Email))
+                    return;
+                IPublishedContent template = Helpers.Nodes.Instance.SiteSettings.Children.FirstOrDefault(n => n.DocumentTypeAlias == "EmailTemplates").Children.Where(p => p.Name == "Payment Confirmation").FirstOrDefault();
+                if (template == null)
+                    return;
+                string emailBody = template.GetProperty("emailBody").Value.ToString();
+                string toAlt = template.GetProperty("emailToAlt").Value.ToString();
+                emailBody = emailBody.Replace("{{COMPANY}}", model.Company)
+                                     .Replace("{{NAME}}", model.FirstName + " " + model.LastName)
+                                     .Replace("{{INVOICE}}", model.InvoiceNumber)
+                                     .Replace("{{DATE}}", DateTime.Now.ToShortDateString())
+                                     .Replace("{{AMOUNT}}", model.Amount.Value.ToString("C", new CultureInfo("en-US")))
+                                     .Replace("{{CARDTYPE}}", StringUtilities.CreditCardType(model.CCNumber))
+                                     .Replace("{{CARDNUM}}", "***" + model.CCNumber.Substring(model.CCNumber.Length - 4, 4));
+                Helpers.Email email = new Helpers.Email();
+                email.EmailFrom = template.GetProperty("emailFrom").Value.ToString();
+                email.Subject = template.GetProperty("emailSubject").Value.ToString();
+                email.Body = emailBody;
+                email.IsBodyHtml = true;
+                List<string> emails = new List<string> { model.Email };
+                if(!string.IsNullOrEmpty(toAlt))
+                    emails.AddRange(toAlt.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList());
+                email.EmailToList = emails;
+                email.SendEmail();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<Registrations>("ERROR on Email Send (PaymentConfirmation): ", ex);
+            }
         }
     }
 }

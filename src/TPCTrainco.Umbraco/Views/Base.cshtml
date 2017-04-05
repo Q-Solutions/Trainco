@@ -53,6 +53,7 @@
     bool homePage = false;
     bool seminarDetailPage = false;
     bool dashboard = false;
+    bool offlinePayment = false;
 
     if (currentPage.DocumentTypeAlias != "Dashboard")
     {
@@ -96,6 +97,10 @@
     else if (currentPage.DocumentTypeAlias == "RegisterSuccess")
     {
         checkoutSuccess = true;
+    }
+    else if (currentPage.DocumentTypeAlias == "OfflinePayment")
+    {
+        offlinePayment = true;
     }
 
     if (searchPage || homePage || seminarDetailPage)
@@ -356,6 +361,10 @@
     else if (true == checkoutSuccess)
     {
         <script type="text/javascript" src="/assets/js/checkout2/success.js?@cacheVer"></script>
+    }
+    else if (offlinePayment)
+    {
+        <script type="text/javascript" src="/assets/js/custom/offlinePayment.js?@cacheVer"></script>
     }
     else if (false == searchPage && false == homePage && false == seminarDetailPage)
     {

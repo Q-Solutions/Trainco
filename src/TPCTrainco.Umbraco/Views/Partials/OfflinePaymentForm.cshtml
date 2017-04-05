@@ -1,0 +1,149 @@
+﻿@model TPCTrainco.Umbraco.Extensions.Models.CheckoutCustomer
+@{
+    IPublishedContent currentNode = UmbracoContext.Current.PublishedContentRequest.PublishedContent;
+
+    if (Model == null)
+    {
+        Response.Redirect("/");
+    }
+    else if (false == string.IsNullOrEmpty(Model.Redirect))
+    {
+        Response.Redirect(Model.Redirect);
+    }
+
+    string alertMessage = "";
+    if (ViewBag.isError != null) 
+    {
+        alertMessage = "<strong>Credit Card Error</strong><br />\r\nThere was a problem processing your credit card. Please check your credit card and personal information.";
+    }
+}
+@if (!string.IsNullOrEmpty(alertMessage))
+{
+    <div class="alert alert-danger">@Html.Raw(alertMessage)</div>
+}
+<div class="register-standalone offline-payment-form">
+    <div class="container-fluid">
+        <div class="col-md-12 form-item-wrapper">
+            @using (Html.BeginUmbracoForm<TPCTrainco.Umbraco.Controllers.OfflinePaymentController>("HandleFormSubmit"))
+            {
+                <div>
+                    <div class="company-profile-container form-container">
+                        <div class="col-xs-12 col-md-12">
+                            <h2 class="form-head">Personal Information</h2>
+                        </div>
+                        <div class="billing-opts-wrapper company-profile-wrap">
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.FirstName, new { @class = "form-control required", placeholder = "First Name" })
+                                    @Html.ValidationMessageFor(p => p.FirstName)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.LastName, new { @class = "form-control required", placeholder = "Last Name" })
+                                    @Html.ValidationMessageFor(p => p.LastName)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-12">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.Email, new { @class = "form-control required", placeholder = "Email Address" })
+                                    @Html.ValidationMessageFor(p => p.Email)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-12">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.Company, new { @class = "form-control required", placeholder = "Company Name" })
+                                    @Html.ValidationMessageFor(p => p.Company)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 col-md-3">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.Phone, new { @class = "form-control", placeholder = "Phone Number" })
+                                    @Html.ValidationMessageFor(p => p.Phone)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 col-md-3">
+                                <div class="form-group">
+                                    <div class="extension-container">
+                                        <div class="extension-label-container"><label class="label-extension" for="PhoneExt">Ext.</label></div>
+                                        <div class="extension-input-container">
+                                            @Html.TextBoxFor(p => p.PhoneExt, new { @class = "form-control", placeholder = "Phone Extension" })
+                                            @Html.ValidationMessageFor(p => p.PhoneExt)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="company-profile-container form-container">
+                        <!-- start credit card info -->
+                            <div class="col-xs-12 col-md-12">
+                                <h2 class="form-head">Payment Information</h2>
+                            </div>
+                            <div class="col-xs-12 col-md-12">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.InvoiceNumber, new { @class = "form-control required", placeholder = "Invoice Number" })
+                                    @Html.ValidationMessageFor(p => p.InvoiceNumber)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-12">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.Amount, new { @class = "form-control required", placeholder = "Amount" })
+                                    @Html.ValidationMessageFor(p => p.Amount)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-12">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.CCName, new { @class = "form-control required", placeholder = "Credit Card Name" })
+                                    @Html.ValidationMessageFor(p => p.CCName)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-12">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.CCNumber, new { @class = "form-control required", placeholder = "Credit Card number" })
+                                    @Html.ValidationMessageFor(p => p.CCNumber)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-3">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.CCExpiration, new { @class = "form-control required", placeholder = "Expiration: MM/YY" })
+                                    @Html.ValidationMessageFor(p => p.CCExpiration)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-3">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.CVVCode, new { @class = "form-control required", placeholder = "CVV" })
+                                    @Html.ValidationMessageFor(p => p.CVVCode)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-3">
+                                <div class="cvv-info form-group">
+                                    <p class="cvv-text">
+                                        What's this?
+                                        <span>
+                                            <img src="/assets/images/cvv_visa.gif">Three-digit number on the back of your card.
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        <!-- end credit card info -->
+                        @Html.HiddenFor(p => p.OfflinePayment)
+                        @Html.HiddenFor(p => p.PaymentType)
+                    </div>
+                    <div class="card-submit-wrap col-xs-12 col-md-12">
+                        <button type="submit" id="button-submit" class="btn btn-reg btn-blue-solid btn-submit">Process Payment</button>
+                        <div class="spinner card-loader">
+                            <div class="bounce1"></div>
+                            <div class="bounce2"></div>
+                            <div class="bounce3"></div>
+                        </div>
+                        <p class="processing-msg"></p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
