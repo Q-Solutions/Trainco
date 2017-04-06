@@ -56,6 +56,7 @@ namespace TPCTrainco.Umbraco.Extensions
         public virtual DbSet<WebAccount> WebAccounts { get; set; }
         public virtual DbSet<Attendees_ClassHistory> Attendees_ClassHistory { get; set; }
         public virtual DbSet<CC_Payments> CC_Payments { get; set; }
+        public virtual DbSet<CourseRelation> CourseRelations { get; set; }
     
         public virtual int add_CC_Log(Nullable<int> p1, Nullable<int> p2, string p3, string p4, Nullable<decimal> p5, string p6, string p7)
         {

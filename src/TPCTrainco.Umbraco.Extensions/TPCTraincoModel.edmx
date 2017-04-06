@@ -178,6 +178,15 @@
           <Property Name="MngtNotes" Type="varchar(max)" />
           <Property Name="PreferredText" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="CourseRelations">
+          <Key>
+            <PropertyRef Name="CourseRelationID" />
+          </Key>
+          <Property Name="CourseRelationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OpenID" Type="int" />
+          <Property Name="SimulcastID" Type="int" />
+          <Property Name="LiveOnlineID" Type="int" />
+        </EntityType>
         <EntityType Name="COURSES">
           <Key>
             <PropertyRef Name="CourseID" />
@@ -751,6 +760,7 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <EntitySet Name="Countries" EntityType="Self.Countries" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseFormats" EntityType="Self.CourseFormats" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseInstructors" EntityType="Self.CourseInstructors" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CourseRelations" EntityType="Self.CourseRelations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="COURSES" EntityType="Self.COURSES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseTopics" EntityType="Self.CourseTopics" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseTypes" EntityType="Self.CourseTypes" Schema="dbo" store:Type="Tables" />
@@ -1357,6 +1367,7 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <EntitySet Name="WebAccounts" EntityType="americantraincoModel.WebAccount" />
           <EntitySet Name="Attendees_ClassHistory" EntityType="americantraincoModel.Attendees_ClassHistory" />
           <EntitySet Name="CC_Payments" EntityType="americantraincoModel.CC_Payments" />
+          <EntitySet Name="CourseRelations" EntityType="americantraincoModel.CourseRelation" />
         </EntityContainer>
         <EntityType Name="CourseTopic">
           <Key>
@@ -1595,6 +1606,15 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <Property Name="AppliedDate" Type="DateTime" Precision="3" />
           <Property Name="AppliedAmount" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="AppliedReference" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CourseRelation">
+          <Key>
+            <PropertyRef Name="CourseRelationID" />
+          </Key>
+          <Property Name="CourseRelationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OpenID" Type="Int32" />
+          <Property Name="SimulcastID" Type="Int32" />
+          <Property Name="LiveOnlineID" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2328,6 +2348,16 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
                 <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
                 <ScalarProperty Name="ProcessedDate" ColumnName="ProcessedDate" />
                 <ScalarProperty Name="Seq" ColumnName="Seq" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CourseRelations">
+            <EntityTypeMapping TypeName="americantraincoModel.CourseRelation">
+              <MappingFragment StoreEntitySet="CourseRelations">
+                <ScalarProperty Name="LiveOnlineID" ColumnName="LiveOnlineID" />
+                <ScalarProperty Name="SimulcastID" ColumnName="SimulcastID" />
+                <ScalarProperty Name="OpenID" ColumnName="OpenID" />
+                <ScalarProperty Name="CourseRelationID" ColumnName="CourseRelationID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

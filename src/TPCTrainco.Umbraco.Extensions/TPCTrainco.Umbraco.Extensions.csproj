@@ -328,6 +328,9 @@
     <Compile Include="CourseInstructor.cs">
       <DependentUpon>TPCTraincoModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="CourseRelation.cs">
+      <DependentUpon>TPCTraincoModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="CourseTopic.cs">
       <DependentUpon>TPCTraincoModel.tt</DependentUpon>
     </Compile>

@@ -54,7 +54,6 @@ namespace TPCTrainco.Cache.Controllers
             try
             {
                 ProcessCourses();
-
                 ProcessSeminars();
 
                 DebugApp("Contact Website to Refresh Cache...", ref DebugStr);
@@ -79,7 +78,6 @@ namespace TPCTrainco.Cache.Controllers
 
             return CacheMessage;
         }
-
 
         [HttpGet]
         public CacheMessage LocationLookup(string key2)
@@ -267,9 +265,8 @@ namespace TPCTrainco.Cache.Controllers
         private void ProcessSeminars()
         {
             var db = new Database("umbracoDbDSN");
-
+            Dictionary<int, int> courseRelations = CacheObjects.GetCourseRelations().ToDictionary(x => x.SimulcastID.Value, x => x.OpenID.Value);
             List<LocationScheduleDetail> locationScheduleDetailListCurrent = null;
-
             DebugApp("GETTING CURRENT SEMINARS...", ref DebugStr);
             locationScheduleDetailListCurrent = db.Query<LocationScheduleDetail>("SELECT * FROM CacheLocationScheduleDetail").ToList();
             DebugApp("CURRENT SEMINARS - Done: " + (locationScheduleDetailListCurrent != null ? locationScheduleDetailListCurrent.Count.ToString() : "null"), ref DebugStr);
@@ -277,7 +274,7 @@ namespace TPCTrainco.Cache.Controllers
             DebugApp("", ref DebugStr);
 
             DebugApp("GETTING UPDATED SEMINARS...", ref DebugStr);
-            List<LocationScheduleDetail> locationScheduleDetailList = GetLocationScheduleDetailList();
+            List<LocationScheduleDetail> locationScheduleDetailList = GetLocationScheduleDetailList(courseRelations);
             DebugApp("UPDATED SEMINARS - Done: " + (locationScheduleDetailList != null ? locationScheduleDetailList.Count.ToString() : "null"), ref DebugStr);
 
             DebugApp("", ref DebugStr);
@@ -290,17 +287,15 @@ namespace TPCTrainco.Cache.Controllers
                 foreach (LocationScheduleDetail seminar in locationScheduleDetailList)
                 {
                     DebugApp(" - Seminar Id: " + seminar.Id, ref DebugStr);
-
                     LocationScheduleDetail checkCurrentSeminar = locationScheduleDetailListCurrent.Where(p => p.Id == seminar.Id).FirstOrDefault();
-
                     if (checkCurrentSeminar != null)
                     {
                         DebugApp(" - Updated Seminar: " + seminar.Id, ref DebugStr);
-
+                        if (seminar.ScheduleType.ToLower() == "simulcast" && courseRelations.ContainsKey(seminar.CourseId))
+                            seminar.CourseId = courseRelations[seminar.CourseId];
                         using (var db2 = new Database("umbracoDbDSN"))
                         {
                             db2.Update(seminar);
-
                             locationScheduleDetailListCurrent.Remove(checkCurrentSeminar);
                         }
                     }
@@ -400,7 +395,7 @@ namespace TPCTrainco.Cache.Controllers
         }
 
 
-        private List<LocationScheduleDetail> GetLocationScheduleDetailList()
+        private List<LocationScheduleDetail> GetLocationScheduleDetailList(Dictionary<int,int> courseRelations)
         {
             int inc = 0;
 
@@ -421,13 +416,15 @@ namespace TPCTrainco.Cache.Controllers
                     DebugApp(" - Count: " + seminarList.Count, ref DebugStr);
 
                     locationScheduleDetailList = new List<LocationScheduleDetail>();
-
                     foreach (SCHEDULE legacySchedule in seminarList)
                     {
                         LocationScheduleDetail locationScheduleDetail = new LocationScheduleDetail();
 
                         ScheduleCourseInstructor scheduleCourse = scheduleCourseInstructorList.Where(p => p.ScheduleID == legacySchedule.ScheduleID).FirstOrDefault();
-                        COURS legacyCourse = CacheObjects.GetCourseList().Where(p => p.CourseID == scheduleCourse.CourseID).FirstOrDefault();
+                        int courseID = scheduleCourse.CourseID;
+                        if (legacySchedule.ScheduleType.ToLower() == "simulcast" && courseRelations.ContainsKey(courseID))
+                            courseID = courseRelations[courseID];
+                        COURS legacyCourse = CacheObjects.GetCourseList().Where(p => p.CourseID == courseID).FirstOrDefault();
                         State legacyState = CacheObjects.GetStateList().Where(p => p.StateID == legacySchedule.StateID).FirstOrDefault();
                         City legacyCity = CacheObjects.GetCityAllList().Where(p => p.CityID == legacySchedule.CityID).FirstOrDefault();
 
@@ -443,7 +440,7 @@ namespace TPCTrainco.Cache.Controllers
                                     locationScheduleDetail.ParentId = legacySchedule.ScheduleParentID ?? 0;
                                     locationScheduleDetail.ScheduleSeminarNumber = legacySchedule.ScheduleSeminarNumber;
                                     locationScheduleDetail.TopicId = legacyCourse.CourseTopicID;
-                                    locationScheduleDetail.CourseId = scheduleCourse.CourseID;
+                                    locationScheduleDetail.CourseId = courseID;
                                     locationScheduleDetail.DaysTitle = CacheObjects.GetDaysTitle(course.CourseFormatID);
                                     locationScheduleDetail.DaysDescription = course.CertTitle1 + (false == string.IsNullOrWhiteSpace(course.CertTitle2) ? " - " + course.CertTitle2 : "");
                                     locationScheduleDetail.Date = legacySchedule.ScheduleDateDescription;
@@ -470,11 +467,9 @@ namespace TPCTrainco.Cache.Controllers
                                     locationScheduleDetail.DateFilter = legacySchedule.ScheduleDate;
                                     locationScheduleDetail.DateMonthYear = locationScheduleDetail.DateFilter.ToString("M-yyyy");
                                     locationScheduleDetail.Distance = 0;
-
-                                    locationScheduleDetail.SeminarId = scheduleCourse.CourseID;
+                                    locationScheduleDetail.SeminarId = courseID;
                                     locationScheduleDetail.SeminarTitle = legacyCourse.TitlePlain;
                                 }
-
                                 locationScheduleDetailList.Add(locationScheduleDetail);
                             }
                         }

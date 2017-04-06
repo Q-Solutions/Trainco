@@ -529,5 +529,15 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
 
             return output;
         }
+
+        public static List<CourseRelation> GetCourseRelations()
+        {
+            List<CourseRelation> courseRelations = new List<CourseRelation>();
+            using (var db = new americantraincoEntities())
+            {
+                courseRelations = db.CourseRelations.Where(p => p.OpenID.HasValue && p.SimulcastID.HasValue).ToList();
+            }
+            return courseRelations;
+        }
     }
 }
