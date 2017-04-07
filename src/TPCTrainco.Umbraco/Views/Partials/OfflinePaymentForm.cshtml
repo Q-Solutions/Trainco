@@ -90,13 +90,13 @@
                             </div>
                             <div class="col-xs-12 col-md-12">
                                 <div class="form-group">
-                                    @Html.TextBoxFor(p => p.Amount, new { @class = "form-control required amount", placeholder = "Amount" })
+                                    @Html.TextBoxFor(p => p.Amount, new { @class = "form-control required amount", placeholder = "Dollar Amount" })
                                     @Html.ValidationMessageFor(p => p.Amount)
                                 </div>
                             </div>
                             <div class="col-xs-12 col-md-12">
                                 <div class="form-group">
-                                    @Html.TextBoxFor(p => p.CCName, new { @class = "form-control required", placeholder = "Credit Card Name" })
+                                    @Html.TextBoxFor(p => p.CCName, new { @class = "form-control required", placeholder = "Name on Credit Card" })
                                     @Html.ValidationMessageFor(p => p.CCName)
                                 </div>
                             </div>

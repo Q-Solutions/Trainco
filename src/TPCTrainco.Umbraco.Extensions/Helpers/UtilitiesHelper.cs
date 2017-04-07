@@ -40,5 +40,30 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
                 return null;
             }
         }
+
+        public static void LogException(Exception exception,string path)
+        {
+            System.IO.FileStream fs = new System.IO.FileStream(path, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.ReadWrite);
+            System.IO.StreamWriter s = new System.IO.StreamWriter(fs);
+            s.BaseStream.Seek(0, System.IO.SeekOrigin.End);
+            s.WriteLine("=============================================================================================================");
+            s.WriteLine("-------------------------------------------------------------------------------------------------------------");
+            s.WriteLine("ERROR DATE \t: " + System.DateTime.UtcNow.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            s.WriteLine("-------------------------------------------------------------------------------------------------------------");
+            s.WriteLine("ERROR MESSAGE \t: " + exception.Message);
+            s.WriteLine("-------------------------------------------------------------------------------------------------------------");
+            s.WriteLine("INNER EXCEPTION MESSAGE \t: " + exception.InnerException.ToString());
+            s.WriteLine("-------------------------------------------------------------------------------------------------------------");
+            s.WriteLine("SOURCE \t: " + exception.Source);
+            s.WriteLine("-------------------------------------------------------------------------------------------------------------");
+            s.WriteLine("FORM NAME \t: " + System.Web.HttpContext.Current.Request.Url.ToString());
+            s.WriteLine("-------------------------------------------------------------------------------------------------------------");
+            s.WriteLine("TARGETSITE \t: " + exception.TargetSite.ToString());
+            s.WriteLine("-------------------------------------------------------------------------------------------------------------");
+            s.WriteLine("STACKTRACE \t: " + exception.StackTrace + System.Diagnostics.EventLogEntryType.Error);
+            s.WriteLine("-------------------------------------------------------------------------------------------------------------");
+            s.WriteLine("=============================================================================================================");
+            s.Close();
+        } 
     }
 }
