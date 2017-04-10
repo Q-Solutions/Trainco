@@ -1146,6 +1146,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
         public void AddToCCPayments(CheckoutCustomer oObj)
         {
             CC_Payments obj = new CC_Payments();
+            obj.ProcessedDate = DateTime.Now;
             obj.InvoiceNumber = oObj.InvoiceNumber;
             obj.PaymentAmount = oObj.Amount;
             obj.CompanyName = oObj.Company;

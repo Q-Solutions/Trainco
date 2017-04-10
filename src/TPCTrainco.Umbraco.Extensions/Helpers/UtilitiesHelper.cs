@@ -52,7 +52,7 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
             s.WriteLine("-------------------------------------------------------------------------------------------------------------");
             s.WriteLine("ERROR MESSAGE \t: " + exception.Message);
             s.WriteLine("-------------------------------------------------------------------------------------------------------------");
-            s.WriteLine("INNER EXCEPTION MESSAGE \t: " + exception.InnerException.ToString());
+            s.WriteLine("INNER EXCEPTION \t: " + exception.InnerException.ToString());
             s.WriteLine("-------------------------------------------------------------------------------------------------------------");
             s.WriteLine("SOURCE \t: " + exception.Source);
             s.WriteLine("-------------------------------------------------------------------------------------------------------------");
