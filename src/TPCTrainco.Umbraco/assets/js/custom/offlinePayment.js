@@ -10,7 +10,7 @@ $(document).on('click', '#button-submit', function (e) {
     var bValid = true;
     try {
         var form = obj.parents('form');
-        $('input.required', form).each(function () {
+        $('.required', form).each(function () {
             if ($(this).val() == '') {
                 $(this).addClass('error');
                 $(this).after('<span class="field-validation-error">' + $(this).attr('placeholder') + ' is required</span>');

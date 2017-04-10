@@ -1096,7 +1096,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     dict.Add("customer_reference_id", "" + customerCode + "");
                     dict.Add("invoice_id", "" + oObj.InvoiceNumber + "");
                     dict.Add("description", "" + StringUtilities.StringMaxLength(description, 255) + "");
-                    dict.Add("billing_address", new Dictionary<string, string> { { "name", "" + StringUtilities.StringMaxLength(oObj.CCName, 50) + "" } });
+                    dict.Add("billing_address", new Dictionary<string, string> { { "name", oObj.CCName }, { "street_address", oObj.Address }, { "city", oObj.City }, { "state", oObj.State }, { "zip", oObj.Zip }, { "country", oObj.Country } });
                     dict.Add("shipping_address", new Dictionary<string, string> { { "name", "" + StringUtilities.StringMaxLength(oObj.FirstName + " " + oObj.LastName, 50) + "" } });
                     dict.Add("email", "" + StringUtilities.StringMaxLength(oObj.Email, 100) + "");
                     string json = JsonConvert.SerializeObject(dict);

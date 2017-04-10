@@ -41,7 +41,7 @@ namespace TPCTrainco.Umbraco.Extensions.Models
         [StringLength(255)]
         public string Title { get; set; }
 
-        [RequiredIfFalse("OfflinePayment", ErrorMessage = "Address is requied.")]
+        [Required]
         [StringLength(255)]
         public string Address { get; set; }
 
@@ -49,19 +49,19 @@ namespace TPCTrainco.Umbraco.Extensions.Models
         [DisplayName("Address 2")]
         public string Address2 { get; set; }
 
-        [RequiredIfFalse("OfflinePayment", ErrorMessage = "City is requied.")]
+        [Required]
         [StringLength(255)]
         public string City { get; set; }
 
-        [RequiredIfFalse("OfflinePayment", ErrorMessage = "State is requied.")]
+        [Required]
         [StringLength(3)]
         public string State { get; set; }
 
-        [RequiredIfFalse("OfflinePayment", ErrorMessage = "Zip is requied.")]
+        [Required]
         [StringLength(12)]
         public string Zip { get; set; }
 
-        [RequiredIfFalse("OfflinePayment", ErrorMessage = "Country is requied.")]
+        [Required]
         [StringLength(200)]
         public string Country { get; set; }
 

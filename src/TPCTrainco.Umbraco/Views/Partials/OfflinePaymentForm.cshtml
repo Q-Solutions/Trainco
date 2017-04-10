@@ -56,6 +56,37 @@
                                     @Html.ValidationMessageFor(p => p.Company)
                                 </div>
                             </div>
+                            <div class="col-xs-12 col-md-12">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.Address, new { @class = "form-control required", placeholder = "Billing Address" })
+                                    @Html.ValidationMessageFor(p => p.Address)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-3">
+                                <div class="form-group">
+                                    @Html.DropDownListFor(p => p.Country, TPCTrainco.Umbraco.Extensions.Objects.FormUtilities.GetCountryList(true), new { @class = "form-control required", placeholder = "Country" })
+                                    @Html.ValidationMessageFor(p => p.Country)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-3">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.City, new { @class = "form-control required", placeholder = "City" })
+                                    @Html.ValidationMessageFor(p => p.City)
+                                </div>
+                            </div>
+                            <!-- 2 -->
+                            <div class="col-xs-12 col-sm-6 col-md-3">
+                                <div class="form-group">
+                                    @Html.DropDownListFor(p => p.State, TPCTrainco.Umbraco.Extensions.Objects.FormUtilities.GetStateList(), new { @class = "form-control required", placeholder = "State/Province" })
+                                    @Html.ValidationMessageFor(p => p.State)
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-3">
+                                <div class="form-group">
+                                    @Html.TextBoxFor(p => p.Zip, new { @class = "form-control required", placeholder = "Zip Code" })
+                                    @Html.ValidationMessageFor(p => p.Zip)
+                                </div>
+                            </div>
                             <div class="col-xs-12 col-sm-3 col-md-3">
                                 <div class="form-group">
                                     @Html.TextBoxFor(p => p.Phone, new { @class = "form-control", placeholder = "Phone Number" })
@@ -64,13 +95,8 @@
                             </div>
                             <div class="col-xs-12 col-sm-3 col-md-3">
                                 <div class="form-group">
-                                    <div class="extension-container">
-                                        <div class="extension-label-container"><label class="label-extension" for="PhoneExt">Ext.</label></div>
-                                        <div class="extension-input-container">
-                                            @Html.TextBoxFor(p => p.PhoneExt, new { @class = "form-control", placeholder = "Phone Extension" })
-                                            @Html.ValidationMessageFor(p => p.PhoneExt)
-                                        </div>
-                                    </div>
+                                    @Html.TextBoxFor(p => p.PhoneExt, new { @class = "form-control", placeholder = "Phone Extension" })
+                                    @Html.ValidationMessageFor(p => p.PhoneExt)
                                 </div>
                             </div>
                         </div>
