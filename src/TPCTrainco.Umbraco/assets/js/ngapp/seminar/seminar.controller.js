@@ -49,7 +49,7 @@
      *
      */
     vm.addItemToCart = function(item, qty, $event) {
-      cartService.addItem(item, qty)
+      cartService.addItem(item, (qty || 1))
 
       vm.cartItemList = cartService.getCartItems() || [];
       vm.cartTotalPrice = UtilitySvc.calculateTotalPrice(vm.cartItemList);
@@ -99,7 +99,7 @@
         showTicksValues: true,
         stepsArray: combinedMonthNames,
         onEnd: function(modelValue) {
-          watchHandles()
+            watchHandles()
         }
       }
     };
@@ -199,7 +199,7 @@
         }
       }
     }
-    watchHandles()
+    watchHandles();
     function activate() {
       var classId = localStorage.getItem('classId');
     }
@@ -215,15 +215,8 @@
     }
 
     function receiveSeminarData(seminarsData) {
-        console.log(seminarsData);
         vm.seminarLocations = seminarsData.locationSchedules;
         vm.seminarSimulcast = seminarsData.simulcastSchedules;
-        console.log(seminarsData);
-      //var seminarLocationsArray = vm.seminarLocations;
-      //seminarLocationsArray.forEach(function(location, index) {
-      //  var dateF = location.dateFilter;
-      //  return dateF;
-      //});
     }
 
     vm.toggleSimulcastDescription = function ($e) {

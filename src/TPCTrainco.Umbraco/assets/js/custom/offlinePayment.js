@@ -26,7 +26,7 @@ $(document).on('click', '#button-submit', function (e) {
         if(bValid)
             obj.fadeOut(300, function () {
                 $('.card-loader').fadeIn();
-                $('.processing-msg').fadeIn().text('Order processing may take several seconds. Please wait...');
+                $('.processing-msg').fadeIn().text('Processing payment may take several seconds. Please wait...');
             });
     }
     catch (ex) {
