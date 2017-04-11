@@ -53,7 +53,7 @@
       </div>
       
       <ul ng-if="seminar.seminarSimulcast.length > 0" class="no-margin">
-          <div ng-class="{'seminar-loc--block simulcast': filteredSeminars.length > 0}">
+          <li ng-class="{'seminar-loc--block simulcast': filteredSeminars.length > 0}">
               <div ng-repeat="event in seminar.seminarSimulcast | filter: seminar.isBetween(event.dateMonthYear) as filteredSeminars">
                   <div ng-if="$first">
                       <h3 class="state-name no-margin"><strong>Simulcast Web-Based Option</strong></h3>
@@ -81,7 +81,7 @@
                   </div>
                   <div class="clearfix"></div>
               </div>
-          </div>
+          </li>
     </ul>
     <ul ng-if="seminar.seminarLocations.length > 0">
       <li class="seminar-loc--block" ng-repeat="location in seminar.seminarLocations | filter: seminar.isBetween(location.dateMonthYear) | groupBy:'state'">
