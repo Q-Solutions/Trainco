@@ -89,6 +89,12 @@
     {
         Response.Redirect("/search-seminars/?error=11");
     }
+    IPublishedContent node = TPCTrainco.Umbraco.Extensions.Helpers.Nodes.Instance.SeminarSearch;
+    string simulcastMessage = "";
+    if (node != null && node.HasProperty("simulcastAttendeeMessage"))
+    {
+        simulcastMessage = node.GetPropertyValue("simulcastAttendeeMessage").ToString();        
+    }
 }
 
 @Html.Partial("Cart/ReadOnlyCart")
@@ -190,8 +196,9 @@
                                 </form>
                             }
                             <div class="clearfix"></div>
-                            @if (bSimulcast) {
-                            <div class="helper-text"><strong>PLEASE NOTE:</strong> An email address is required for EACH simulcast attendee. Every attendee on your team must be registered in order to receive course materials, participate in the simulcast, and receive CEUs.</div>
+                            @if (bSimulcast)
+                            {
+                                <div class="helper-text">@Html.Raw(simulcastMessage)</div>
                             }
                         </div>
 
