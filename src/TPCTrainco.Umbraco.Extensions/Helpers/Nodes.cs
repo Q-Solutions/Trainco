@@ -166,5 +166,22 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
 
             return redirectLIst;
         }
+
+        public static string OnSiteSeminarLinks()
+        {
+            string sLinks = "";
+            try {
+                IPublishedContent node = Nodes.Instance.SeminarSearch;
+                if (node == null)
+                    throw new Exception("");
+                if (!node.HasProperty("onSiteCourses") || !node.GetProperty("onSiteCourses").HasValue)
+                    throw new Exception("");
+                sLinks = node.GetProperty("onSiteCourses").Value.ToString();
+            }
+            catch(Exception ex) {
+                sLinks = "";
+            }
+            return sLinks;
+        }
     }
 }

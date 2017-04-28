@@ -1,10 +1,14 @@
 ﻿@using TPCTrainco.Umbraco.Extensions.Helpers
 @inherits Umbraco.Web.Mvc.UmbracoViewPage<IPublishedContent>
 @{
-    IEnumerable<IPublishedContent> seminarCategoryList = Nodes.SeminarCategoryList();
+    //IEnumerable<IPublishedContent> seminarCategoryList = Nodes.SeminarCategoryList();
+    string htmlContent = Nodes.OnSiteSeminarLinks();
 }
-<!-- course-list -->
 <div class="col-xs-12 col-md-6">
+    @Html.Raw(htmlContent)
+</div>
+<!-- course-list -->
+@*<div class="col-xs-12 col-md-6">
     @if (seminarCategoryList != null && seminarCategoryList.Any())
             {
         <h3>Our courses available for on-site training include:</h3>
@@ -22,6 +26,10 @@
                     {
                         foreach (IPublishedContent subSubItem in subItem.Children)
                         {
+                            if (!subSubItem.HasProperty("onSiteTrainingLink") || !subSubItem.GetPropertyValue<Boolean>("onSiteTrainingLink"))
+                            {
+                                continue;
+                            }
                             <li><a href="@subSubItem.Url">@(subSubItem.Name)</a></li>
                         }
                     }
@@ -31,12 +39,16 @@
             {
                 <ul>
                     @foreach (IPublishedContent subItem in node.Children)
+                    {
+                        if (!subItem.HasProperty("onSiteTrainingLink") || !subItem.GetPropertyValue<Boolean>("onSiteTrainingLink"))
                         {
+                            continue;
+                        }
                         <li><a href="@subItem.Url">@(subItem.Name)</a></li>
                     }
                 </ul>
             }
         }
     }
-</div>
+</div>*@
 <!-- end course-list -->
