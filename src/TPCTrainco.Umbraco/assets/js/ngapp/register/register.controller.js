@@ -23,6 +23,7 @@
       }
     vm.locSearchFilter.locationAll = false;
     vm.locSearchFilter.simulcast = false;
+    vm.locSearchFilter.locationPage = false;
     var searchAPI = CONSTANTS.API_URL;
     vm.dateRange = {};
     vm.$storage = $localStorage;
@@ -85,14 +86,24 @@
     activate();
 
     function receiveSeminarData(seminarsData) {
-          vm.initialDirections = false;
-          var seminarLocations = [];
-          vm.seminarLocations = seminarsData;
-        // below is to calculate the pagination
-          var length = vm.seminarLocations.length / 4
-          if(length < 1 && vm.seminarLocations.length > 0)
-              length = 1;
-          vm.semLocLength = length;
+        vm.initialDirections = false;
+        var seminarLocations = [];
+        var bLoc = angular.element('input[type="hidden"][name="location"]').length > 0;
+        if (!bLoc) {
+            // below is to calculate the pagination
+            seminarLocations = seminarsData;
+            var length = seminarLocations.length / 4
+            if (length < 1 && seminarLocations.length > 0)
+                length = 1;
+            vm.semLocLength = length;
+        }
+        else {
+            for (var i = 0; i < seminarsData.length; i += 2) {
+                seminarLocations.push(seminarsData.slice(i, i + 2));
+            }
+        }
+        vm.seminarLocations = seminarLocations;
+        
     }
 
     /**
@@ -120,15 +131,26 @@
     function activate() {
       var keywordParam = '';
       vm.initialDirections = true;
-      vm.locSearchFilter.location = vm.$storage.SearchLocation;
-      vm.categories.hvac = !!vm.$storage.SearchTopic1;
-      vm.categories.electrical = !!vm.$storage.SearchTopic2;
-      vm.categories.mechanical = !!vm.$storage.SearchTopic3;
-      vm.categories.management = !!vm.$storage.SearchTopic4;
-      vm.categories.all = !!vm.$storage.SearchTopic5;
+      var oLoc = angular.element('input[type="hidden"][name="location"]');
+      var bLoc = oLoc.length > 0;
+      if (bLoc > 0) {
+          vm.locSearchFilter.location = oLoc.val();
+          vm.locSearchFilter.locationPage = true;
+          vm.mileRange.value = 100;
+          var today = new Date();
+          vm.dateRange.start = today.getMonth() + 1;
+          vm.dateRange.end = today.getMonth() + 12;
+      }
+      else {
+          vm.locSearchFilter.location = vm.$storage.SearchLocation;
+          vm.categories.hvac = !!vm.$storage.SearchTopic1;
+          vm.categories.electrical = !!vm.$storage.SearchTopic2;
+          vm.categories.mechanical = !!vm.$storage.SearchTopic3;
+          vm.categories.management = !!vm.$storage.SearchTopic4;
+          vm.categories.all = !!vm.$storage.SearchTopic5;
+      }
 
-
-      if (!vm.$storage.SearchLocation) {
+      if (!bLoc && !vm.$storage.SearchLocation) {
         // showDirections displays the default blank state message
         vm.showDirections = true;
       } else {
@@ -136,8 +158,10 @@
         vm.topicParam2 = vm.$storage.SearchTopic2;
         vm.topicParam3 = vm.$storage.SearchTopic3;
         vm.topicParam4 = vm.$storage.SearchTopic4;
-        vm.dateRange.end = vm.$storage.SearchDRmax;
-        vm.dateRange.start = vm.$storage.SearchDRmin;
+        if (!bLoc) {
+            vm.dateRange.end = vm.$storage.SearchDRmax;
+            vm.dateRange.start = vm.$storage.SearchDRmin;
+        }
         doParamSearch();
       }
 
@@ -367,7 +391,8 @@
         defStart: vm.dateRange.start || thisMonth,
         startYear: checkYear('start'),
         defEnd: vm.dateRange.end || (thisMonth + 11),
-        endYear: checkYear('end')
+        endYear: checkYear('end'),
+        locationPage: vm.locSearchFilter.locationPage ? '1' : '0'
       }
 
       // $log.debug(searchObj, vm.topicParam2)
@@ -394,6 +419,7 @@
         receiveSeminarData(seminarsData);
         // Set true to show error.
         vm.searchFired = true;
+        $loading.finish('courses');
         return seminarsData;
       });
     }
@@ -413,6 +439,7 @@
       vm.topicParam1 = vm.topicParam2 = vm.topicParam3 = vm.topicParam4 = '';
       vm.locSearchFilter.locationAll = false;
       vm.locSearchFilter.simulcast = false;
+      vm.locSearchFilter.locationPage = false;
     }
 
     vm.clearFilters = function () {

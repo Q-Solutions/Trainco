@@ -17,6 +17,7 @@ namespace TPCTrainco.Umbraco.Extensions.Models.SearchRequest
         public bool ReturnChildSchedules { get; set; }
         public int Page { get; set; }
         public bool Simulcast { get; set; }
+        public bool bLocationPage { get; set; }
     }
 
     public class DateRange

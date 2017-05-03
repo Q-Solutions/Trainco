@@ -93,29 +93,25 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                 else
                 {
                     debug += "LocationCoordinates IS NULL!\r\n";
-
-                    List<LocationScheduleDetail> locationSearch = CacheObjects.GetLocationScheduleDetailList();
-
-                    debug += "Trying lookup method...\r\n";
-
-                    if (locationSearch != null && locationSearch.Any())
-                    {
-                        LocationScheduleDetail findLocation = locationSearch.Where(p => request.Location.ToLower().IndexOf(p.City.ToLower()) >= 0).FirstOrDefault();
-
-                        if (findLocation != null)
-                        {
-                            debug += "FOUND!\r\n";
-
-                            locationCoordinates = new CoordinateDetails();
-
-                            locationCoordinates.City = findLocation.City;
-                            locationCoordinates.DbGeography = findLocation.CoordinatesObj;
-                            locationCoordinates.Latitude = locationCoordinates.DbGeography.Latitude ?? 0;
-                            locationCoordinates.Longitude = locationCoordinates.DbGeography.Longitude ?? 0;
-                            locationCoordinates.State = findLocation.State;
-                            locationCoordinates.StateCode = findLocation.StateCode;
-                        }
-                    }
+                    //List<LocationScheduleDetail> locationSearch = CacheObjects.GetLocationScheduleDetailList();
+                    //debug += "Trying lookup method...\r\n";
+                    if(request.bLocationPage)
+                        locationScheduleDetailList = locationScheduleDetailList.Where(x => x.ScheduleType.ToLower() == "simulcast").ToList();
+                    //if (locationSearch != null && locationSearch.Any())
+                    //{
+                    //    LocationScheduleDetail findLocation = locationSearch.Where(p => request.Location.ToLower().IndexOf(p.City.ToLower()) >= 0).FirstOrDefault();
+                    //    if (findLocation != null)
+                    //    {
+                    //        debug += "FOUND!\r\n";
+                    //        locationCoordinates = new CoordinateDetails();
+                    //        locationCoordinates.City = findLocation.City;
+                    //        locationCoordinates.DbGeography = findLocation.CoordinatesObj;
+                    //        locationCoordinates.Latitude = locationCoordinates.DbGeography.Latitude ?? 0;
+                    //        locationCoordinates.Longitude = locationCoordinates.DbGeography.Longitude ?? 0;
+                    //        locationCoordinates.State = findLocation.State;
+                    //        locationCoordinates.StateCode = findLocation.StateCode;
+                    //    }
+                    //}
                 }
             }
 

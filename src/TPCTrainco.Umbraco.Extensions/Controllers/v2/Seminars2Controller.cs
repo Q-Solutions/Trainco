@@ -28,6 +28,7 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers.v2
                 searchRequest.DateRage.Min = DateTime.Parse(DateTime.Now.ToString("M/1/yyyy"));
                 searchRequest.DateRage.Max = DateTime.Parse(searchRequest.DateRage.Min.AddMonths(4).AddDays(-1).ToString("M/d/yyyy"));
                 bool bSimulcast = HttpContext.Current.Request.QueryString["simulcast"] == "1";
+                searchRequest.bLocationPage = HttpContext.Current.Request.QueryString["locationPage"] == "1";
                 if (false == string.IsNullOrWhiteSpace(HttpContext.Current.Request.QueryString["keyword"]))
                 {
                     searchRequest.Keywords = HttpContext.Current.Request.QueryString.Get("keyword");

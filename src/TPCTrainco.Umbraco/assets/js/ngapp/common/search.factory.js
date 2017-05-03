@@ -29,7 +29,8 @@
           '&topics=' + theTopics +
           '&date-start=' + searchObj.startYear + '-' + searchObj.defStart + '-01' +
           '&date-end=' + endDate.getFullYear() + '-' + (endDate.getMonth() + 1) + '-' + endDate.getDate() +
-          '&simulcast=' + searchObj.simulcast)
+          '&simulcast=' + searchObj.simulcast + 
+          '&locationPage=' + searchObj.locationPage)
         .then(getSearchComplete)
         .catch(getSearchFailed);
 
