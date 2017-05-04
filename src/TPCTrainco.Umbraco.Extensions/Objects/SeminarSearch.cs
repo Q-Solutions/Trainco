@@ -102,9 +102,12 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     locationSchedule = ConvertLocationScheduleToViewModel(locationScheduleDetail);
                     if (!string.IsNullOrEmpty(locationScheduleDetail.ScheduleType) && locationScheduleDetail.ScheduleType.ToLower() == "simulcast")
                     {
-                        locationSchedule.City = "Simulcast";
-                        locationSchedule.State = "";
-                        seminar.SimulcastSchedules.Add(locationSchedule);
+                        if (!request.bLocationPage)
+                        {
+                            locationSchedule.City = "Simulcast";
+                            locationSchedule.State = "";
+                            seminar.SimulcastSchedules.Add(locationSchedule);
+                        }
                     }
                     else
                         seminar.LocationSchedules.Add(locationSchedule);

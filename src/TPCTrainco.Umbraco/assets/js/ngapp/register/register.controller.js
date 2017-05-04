@@ -139,7 +139,7 @@
           vm.mileRange.value = 100;
           var today = new Date();
           vm.dateRange.start = today.getMonth() + 1;
-          vm.dateRange.end = today.getMonth() + 12;
+          vm.dateRange.end = today.getMonth() + 6;
       }
       else {
           vm.locSearchFilter.location = vm.$storage.SearchLocation;

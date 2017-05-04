@@ -17,7 +17,7 @@
         <!-- END No Results -->
         <!-- Search Results -->
         <div class="course-list" ng-if="ctrl.seminarLocations.length">
-            <div class="row" ng-repeat="courses in ctrl.seminarLocations">
+            <div class="row course-row" ng-repeat="courses in ctrl.seminarLocations">
                 <div class="col-md-6 location-course" ng-repeat="course in courses | flatten" ng-init="ctrl.setLimit(course.id,course.locationSchedules.length)">
                     <div class="faceted-result no-margin">
                         <section class="row">
@@ -35,7 +35,7 @@
                             <div class="col-xs-5 hide-responsive">Seminar Information</div>
                             <div class="col-sm-2 col-xs-3 result-attendee-wrapper">Attendees</div>
                         </section>
-                        <section class="row result-table-body simulcast" ng-if="course.simulcastSchedules.length > 0">
+                        @*<section class="row result-table-body simulcast" ng-if="course.simulcastSchedules.length > 0">
                             <h3 class="no-margin">Simulcast Courses <span><span class="small btn-learnmore" ng-click="ctrl.toggleSimulcastDescription($event)">( <span class="action">+</span> What's a simulcast? )</span></span></h3>
                             <span class="result-course-subtitle">In addition to classroom locations shown below, this course is also available as a simulcast - a live, web-based connection to a classroom seminar.</span>
                             <div class="text-learnmore result-course-subtitle hide">
@@ -62,10 +62,10 @@
                                            ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
                                 </div>
                             </div>
-                        </section>
+                        </section>*@
                         <section class="row result-table-body" ng-if="course.locationSchedules.length > 0">
-                            <h3 class="no-margin">Classroom Courses</h3>
-                            <hr class="no-margin" />
+                            @*<h3 class="no-margin">Classroom Courses</h3>*@
+                            @*<hr class="no-margin" />*@
                             <div class="result-location-row"
                                  ng-repeat="location in course.locationSchedules | limitTo: ctrl.limits[course.id].limit">
                                 <div class="col-md-5 col-sm-10 col-xs-9 result-location">
