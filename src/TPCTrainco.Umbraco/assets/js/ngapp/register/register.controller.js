@@ -35,6 +35,8 @@
       vm.listingData = res.seminars;
     });
     vm.selectedSeminar = {};
+    var startMonth = 1;
+    var endMonth = 6;
     /**
      * THIS IS DISABLED DONT DELETE
      * -- Seminar Dropdown search feature.
@@ -138,8 +140,8 @@
           vm.locSearchFilter.locationPage = true;
           vm.mileRange.value = 100;
           var today = new Date();
-          vm.dateRange.start = today.getMonth() + 1;
-          vm.dateRange.end = today.getMonth() + 6;
+          vm.dateRange.start = today.getMonth() + startMonth;
+          vm.dateRange.end = today.getMonth() + endMonth;
       }
       else {
           vm.locSearchFilter.location = vm.$storage.SearchLocation;
@@ -493,6 +495,39 @@
             angular.element('span.action', obj).text('x');
         else
             angular.element('span.action', obj).text('+');
+    };
+    var today = new Date();
+    var thisMonth = today.getMonth();
+    var monthAbrvNames = MonthSvc.getAbrvMonths();
+    var startingMonthArray = monthAbrvNames.slice(thisMonth);
+    function fixEndingArray(endingMonthArray) {
+        var first = endingMonthArray[0];
+        var num = parseInt(first.name.slice(3))
+        var trunc = first.name.slice(0, 3)
+        first.name = trunc + (num + 1);
+        return endingMonthArray;
+    }
+    var endingMonthArray = thisMonth > 0 ? fixEndingArray(monthAbrvNames.slice(0, thisMonth)) : [];
+    var combinedMonthsArray = startingMonthArray.concat(endingMonthArray);
+    var combinedMonthNames = _.map(combinedMonthsArray, _.property('name'));
+    vm.monthsSlider = {
+        minValue: 0,
+        maxValue: 5,
+        options: {
+            floor: 0,
+            ceil: 11,
+            showTicks: true,
+            showSelectionBarEnd: true,
+            showTicksValues: true,
+            stepsArray: combinedMonthNames,
+            onEnd: function (sliderId, modelValue, highValue) {
+                if (modelValue == null || highValue == null)
+                    return;
+                startMonth = modelValue + 1;
+                endMonth = highValue + 1;
+                activate();
+            }
+        }
     };
   }
 })();

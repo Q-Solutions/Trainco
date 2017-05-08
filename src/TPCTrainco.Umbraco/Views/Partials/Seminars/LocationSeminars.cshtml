@@ -6,7 +6,10 @@
 }
 <div class="location-courses-page ng-cloak"  ng-controller="RegisterController as ctrl">
     @Html.Hidden("location", location)
-    <div>
+    <div class="slider-wrap" id="register-seminars">
+        <rzslider rz-slider-model="ctrl.monthsSlider.minValue" ng-model="ctrl.monthsSlider" rz-slider-high="ctrl.monthsSlider.maxValue" rz-slider-options="ctrl.monthsSlider.options"></rzslider>
+    </div>
+    <div dw-loading="courses" dw-loading-options="ctrl.options">
         <!-- No Results -->
         <div class="empty-results" ng-if="ctrl.seminarLocations.length == 0">
             @if (settingsPage != null && false == string.IsNullOrEmpty(settingsPage.GetPropertyValue<string>("emptyResultsText")))
@@ -36,33 +39,33 @@
                             <div class="col-sm-2 col-xs-3 result-attendee-wrapper">Attendees</div>
                         </section>
                         @*<section class="row result-table-body simulcast" ng-if="course.simulcastSchedules.length > 0">
-                            <h3 class="no-margin">Simulcast Courses <span><span class="small btn-learnmore" ng-click="ctrl.toggleSimulcastDescription($event)">( <span class="action">+</span> What's a simulcast? )</span></span></h3>
-                            <span class="result-course-subtitle">In addition to classroom locations shown below, this course is also available as a simulcast - a live, web-based connection to a classroom seminar.</span>
-                            <div class="text-learnmore result-course-subtitle hide">
-                                <p>Our simulcast option allows students to connect to a live classroom seminar via a web link, with the ability to participate fully in the classroom dialogue, exercises, and Q&A throughout the 2-day live course.</p>
-                                <p>Simulcast students receive all classroom materials electronically, full technical support during the event, a certificate of completion for 1.6 CEUs, and the same No-Risk Registration and Money-Back Guarantee as our classroom students.</p>
-                            </div>
-                            <hr class="no-margin" />
-                            <div class="result-location-row" ng-repeat="location in course.simulcastSchedules">
-                                <div class="col-md-5 col-sm-10 col-xs-9 result-location">
-                                    <span class="city">{{::location.city}}</span>
-                                    <span class="date-responsive">{{::location.date}}</span>
+                                <h3 class="no-margin">Simulcast Courses <span><span class="small btn-learnmore" ng-click="ctrl.toggleSimulcastDescription($event)">( <span class="action">+</span> What's a simulcast? )</span></span></h3>
+                                <span class="result-course-subtitle">In addition to classroom locations shown below, this course is also available as a simulcast - a live, web-based connection to a classroom seminar.</span>
+                                <div class="text-learnmore result-course-subtitle hide">
+                                    <p>Our simulcast option allows students to connect to a live classroom seminar via a web link, with the ability to participate fully in the classroom dialogue, exercises, and Q&A throughout the 2-day live course.</p>
+                                    <p>Simulcast students receive all classroom materials electronically, full technical support during the event, a certificate of completion for 1.6 CEUs, and the same No-Risk Registration and Money-Back Guarantee as our classroom students.</p>
                                 </div>
-                                <div class="col-xs-5 result-date">
-                                    {{::location.date}}
-                                    <span>{{location.locationDetails}}</span>
-                                </div>
+                                <hr class="no-margin" />
+                                <div class="result-location-row" ng-repeat="location in course.simulcastSchedules">
+                                    <div class="col-md-5 col-sm-10 col-xs-9 result-location">
+                                        <span class="city">{{::location.city}}</span>
+                                        <span class="date-responsive">{{::location.date}}</span>
+                                    </div>
+                                    <div class="col-xs-5 result-date">
+                                        {{::location.date}}
+                                        <span>{{location.locationDetails}}</span>
+                                    </div>
 
-                                <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
-                                    <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
-                                    <input class="cart-btn btn btn-reg btn-blue-solid"
-                                           type="button"
-                                           value="Add to Cart"
-                                           ng-show="location.qty > 0"
-                                           ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
+                                    <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
+                                        <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
+                                        <input class="cart-btn btn btn-reg btn-blue-solid"
+                                               type="button"
+                                               value="Add to Cart"
+                                               ng-show="location.qty > 0"
+                                               ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
+                                    </div>
                                 </div>
-                            </div>
-                        </section>*@
+                            </section>*@
                         <section class="row result-table-body" ng-if="course.locationSchedules.length > 0">
                             @*<h3 class="no-margin">Classroom Courses</h3>*@
                             @*<hr class="no-margin" />*@
@@ -111,5 +114,5 @@
                 </button>
             </li>
         </ul>-->
-        </div>
+    </div>
 </div>
