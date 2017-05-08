@@ -1,0 +1,14 @@
+﻿{
+    propertyEditors: [
+		{
+			alias: "TPCTraincoCitiesDropdown",
+			name: "TPC Trainco Cities Dropdown",
+			editor: {
+				view: "~/App_Plugins/TPCTraincoCitiesDropdown/tpctrainco.citiesdropdown.html"
+			}
+		}
+    ],
+    javascript: [
+		'~/App_Plugins/TPCTraincoCitiesDropdown/tpctrainco.citiesdropdown.controller.js'
+    ]
+}

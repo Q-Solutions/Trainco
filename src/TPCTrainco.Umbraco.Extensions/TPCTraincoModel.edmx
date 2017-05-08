@@ -725,6 +725,18 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <Property Name="Coordinates" Type="geography" />
           <Property Name="CourseTier" Type="int" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SeminarCitiesActive">
+          <Key>
+            <PropertyRef Name="CityID" />
+            <PropertyRef Name="CityName" />
+            <PropertyRef Name="StateAbbrv" />
+          </Key>
+          <Property Name="CityID" Type="int" Nullable="false" />
+          <Property Name="CityName" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="StateAbbrv" Type="varchar" MaxLength="5" Nullable="false" />
+        </EntityType>
         <Association Name="FK__CATEGORY__CATEGO__457442E6">
           <End Role="CATEGORYTYPE" Type="Self.CATEGORYTYPE" Multiplicity="1" />
           <End Role="CATEGORY" Type="Self.CATEGORY" Multiplicity="*" />
@@ -828,6 +840,13 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
     [Seminar_Catalog].[Coordinates] AS [Coordinates], 
     [Seminar_Catalog].[CourseTier] AS [CourseTier]
     FROM [dbo].[Seminar_Catalog] AS [Seminar_Catalog]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SeminarCitiesActive" EntityType="Self.SeminarCitiesActive" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SeminarCitiesActive].[CityID] AS [CityID], 
+    [SeminarCitiesActive].[CityName] AS [CityName], 
+    [SeminarCitiesActive].[StateAbbrv] AS [StateAbbrv]
+    FROM [dbo].[SeminarCitiesActive] AS [SeminarCitiesActive]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK__CATEGORY__CATEGO__457442E6" Association="Self.FK__CATEGORY__CATEGO__457442E6">
             <End Role="CATEGORYTYPE" EntitySet="CATEGORYTYPE" />
@@ -1368,6 +1387,7 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <EntitySet Name="Attendees_ClassHistory" EntityType="americantraincoModel.Attendees_ClassHistory" />
           <EntitySet Name="CC_Payments" EntityType="americantraincoModel.CC_Payments" />
           <EntitySet Name="CourseRelations" EntityType="americantraincoModel.CourseRelation" />
+          <EntitySet Name="SeminarCitiesActives" EntityType="americantraincoModel.SeminarCitiesActive" />
         </EntityContainer>
         <EntityType Name="CourseTopic">
           <Key>
@@ -1615,6 +1635,16 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
           <Property Name="OpenID" Type="Int32" />
           <Property Name="SimulcastID" Type="Int32" />
           <Property Name="LiveOnlineID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="SeminarCitiesActive">
+          <Key>
+            <PropertyRef Name="CityID" />
+            <PropertyRef Name="CityName" />
+            <PropertyRef Name="StateAbbrv" />
+          </Key>
+          <Property Name="CityID" Type="Int32" Nullable="false" />
+          <Property Name="CityName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="StateAbbrv" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2358,6 +2388,15 @@ warning 6002: The table/view 'americantrainco.dbo.Seminar_Catalog' does not have
                 <ScalarProperty Name="SimulcastID" ColumnName="SimulcastID" />
                 <ScalarProperty Name="OpenID" ColumnName="OpenID" />
                 <ScalarProperty Name="CourseRelationID" ColumnName="CourseRelationID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SeminarCitiesActives">
+            <EntityTypeMapping TypeName="americantraincoModel.SeminarCitiesActive">
+              <MappingFragment StoreEntitySet="SeminarCitiesActive">
+                <ScalarProperty Name="StateAbbrv" ColumnName="StateAbbrv" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+                <ScalarProperty Name="CityID" ColumnName="CityID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

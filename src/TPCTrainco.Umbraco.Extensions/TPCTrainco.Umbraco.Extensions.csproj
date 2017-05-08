@@ -302,6 +302,7 @@
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CacheUpdateController.cs" />
+    <Compile Include="Controllers\CitiesController.cs" />
     <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\CheckoutController.cs" />
     <Compile Include="Controllers\CourseApiController.cs" />
@@ -447,6 +448,9 @@
       <DependentUpon>TPCTraincoModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ScheduleCourseInstructor.cs">
+      <DependentUpon>TPCTraincoModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SeminarCitiesActive.cs">
       <DependentUpon>TPCTraincoModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Seminar_Catalog.cs">

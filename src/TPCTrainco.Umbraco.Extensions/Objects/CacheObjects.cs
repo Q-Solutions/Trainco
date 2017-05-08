@@ -539,5 +539,26 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             }
             return courseRelations;
         }
+
+
+        public static List<SeminarCitiesActive> GetAcitveCitiesList()
+        {
+            string cacheKey = "ActiveCitiesList";
+            int cacheUpdateInMinutes = Convert.ToInt32(ConfigurationManager.AppSettings.Get("Caching:Minutes:ActiveCitiesList"));
+            ObjectCache cache = MemoryCache.Default;
+            List<SeminarCitiesActive> cityList = cache.Get(cacheKey) as List<SeminarCitiesActive>;
+            if (cityList != null)
+                return cityList;
+            Debug.WriteLine("Adding Active Cities List to Cache...");
+            using (var db = new americantraincoEntities())
+            {
+                cityList = db.SeminarCitiesActives.DistinctBy(x => x.CityName).ToList();
+            }
+            CacheItemPolicy policy = new CacheItemPolicy { AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(cacheUpdateInMinutes) };
+            cache.Add(cacheKey, cityList, policy);
+            Debug.WriteLine(" - Active Cities List Cache Updated");
+            Debug.WriteLine("");
+            return cityList;
+        }
     }
 }
