@@ -25,7 +25,10 @@
                         <div class="inner">
                             <h2 class="callout-headline">@headline</h2>
                             @Html.Raw(message)
-                            <a href="@link.Url" class="btn-reg btn-white" role="button">@buttonText</a>
+                            @if (!string.IsNullOrEmpty(link.Url) && !string.IsNullOrEmpty(buttonText))
+                            {
+                                <a href="@link.Url" class="btn-reg btn-white" role="button">@buttonText</a>
+                            }
                         </div>
                     </div>
                 </div>

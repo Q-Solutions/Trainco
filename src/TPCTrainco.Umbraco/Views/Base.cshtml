@@ -334,17 +334,26 @@
                     function(){ $(this).addClass('open') },
                     function(){ $(this).removeClass('open') }
                 );
+
+                $('a[href^="#"]:not(.link-geolocation)').click(function (e) {
+                    e.preventDefault();
+                    var hash = $(this).attr('href');
+                    if ($(hash).length == 0)
+                        return false;
+                    $('html, body').stop(true).animate({
+                        scrollTop:
+                         $(hash).offset().top - 125
+                    }, 500);
+                });
+
+                $(document).on('click', 'a.link-geolocation', function (e) {
+                    e.preventDefault();
+                    if (typeof window.geoLocationLink === 'undefined' || window.geoLocationLink == '')
+                        return false;
+                    window.location.href = window.location.origin + window.geoLocationLink;
+                });
             });
         </script>
-        <script>
-        $('a[href^="#"]').click(function(e) {
-           e.preventDefault();
-           var hash = $(this).attr('href');
-           $('html, body').stop(true).animate({scrollTop:
-            $(hash).offset().top - 125}, 500);
-           });
-        </script>
-
     }
     @if (true == checkoutRegistration)
     {

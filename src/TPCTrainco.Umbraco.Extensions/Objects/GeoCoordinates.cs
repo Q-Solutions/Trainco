@@ -52,25 +52,29 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     }
                     else if (ipAddress != "::1")
                     {
-                        using (var reader = new DatabaseReader(HttpContext.Current.Server.MapPath("/ip-db/GeoLite2-City.mmdb")))
+                        try
                         {
-                            MaxMind.GeoIP2.Responses.CityResponse cityResponse = reader.City(ipAddress);
-
-                            if (cityResponse != null)
+                            using (var reader = new DatabaseReader(HttpContext.Current.Server.MapPath("/ip-db/GeoLite2-City.mmdb")))
                             {
-                                geoLocation = new GeoLocationLookup();
+                                MaxMind.GeoIP2.Responses.CityResponse cityResponse = reader.City(ipAddress);
 
-                                geoLocation.City = cityResponse.City.Name;
-                                geoLocation.RegionCode = cityResponse.MostSpecificSubdivision.IsoCode;
-                                geoLocation.RegionName = cityResponse.MostSpecificSubdivision.Name;
-                                geoLocation.Ip = ipAddress;
-                                geoLocation.ZipCode = cityResponse.Postal.Code;
-                                geoLocation.Latitude = cityResponse.Location.Latitude ?? 0;
-                                geoLocation.Longitude = cityResponse.Location.Longitude ?? 0;
-                                geoLocation.CountryCode = cityResponse.Country.IsoCode;
-                                geoLocation.CountryName = cityResponse.Country.Name;
+                                if (cityResponse != null)
+                                {
+                                    geoLocation = new GeoLocationLookup();
+
+                                    geoLocation.City = cityResponse.City.Name;
+                                    geoLocation.RegionCode = cityResponse.MostSpecificSubdivision.IsoCode;
+                                    geoLocation.RegionName = cityResponse.MostSpecificSubdivision.Name;
+                                    geoLocation.Ip = ipAddress;
+                                    geoLocation.ZipCode = cityResponse.Postal.Code;
+                                    geoLocation.Latitude = cityResponse.Location.Latitude ?? 0;
+                                    geoLocation.Longitude = cityResponse.Location.Longitude ?? 0;
+                                    geoLocation.CountryCode = cityResponse.Country.IsoCode;
+                                    geoLocation.CountryName = cityResponse.Country.Name;
+                                }
                             }
                         }
+                        catch { }
 
                         if (geoLocation == null || true == string.IsNullOrEmpty(geoLocation.City))
                         {

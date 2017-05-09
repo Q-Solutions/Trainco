@@ -8,6 +8,7 @@
 @{
     string searchButtonId = Model.DocumentTypeAlias == "HomePage" ? "search-btn-home" : "search-btn";
     string currentCityState = "";
+    string geolocationLink = "";
 
     IPublishedContent homePage = Model.AncestorsOrSelf(1).First();
     IPublishedContent searchSeminarNode = Nodes.Instance.SeminarSearch;
@@ -44,17 +45,26 @@
     {
         //Get current GeoCoordinate
         string ipAddress = System.Web.HttpContext.Current.Request.UserHostAddress;
-
         TPCTrainco.Umbraco.Extensions.Models.CoordinateDetails coordDetails = GeoCoordinates.GetCoordinateDetailsFromIp(ipAddress);
-
         if (coordDetails != null)
         {
-            currentCityState = coordDetails.City + ", " + coordDetails.StateCode;
+            string city = coordDetails.City;
+            currentCityState = city + ", " + coordDetails.StateCode;
+            IEnumerable<IPublishedContent> locationNodes = homePage.Children.Where(x => x.IsDocumentType("LocationSeminar"));
+            if (locationNodes.Count() > 0)
+            {
+                IPublishedContent node = locationNodes.Where(x => x.HasProperty("location") && x.GetPropertyValue("location").ToString() == city).FirstOrDefault();
+                if (node != null)
+                {
+                    geolocationLink = umbraco.library.NiceUrl(node.Id);
+                }
+            }
         }
     }
 }
 <script>
-	window.currentCityValue = '@currentCityState';
+    window.currentCityValue = '@currentCityState';
+    window.geoLocationLink = '@geolocationLink';
 </script>
 <div ng-controller="MainSearchController as vm">
   <div class="row">
