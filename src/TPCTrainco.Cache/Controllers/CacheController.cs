@@ -422,7 +422,8 @@ namespace TPCTrainco.Cache.Controllers
 
                         ScheduleCourseInstructor scheduleCourse = scheduleCourseInstructorList.Where(p => p.ScheduleID == legacySchedule.ScheduleID).FirstOrDefault();
                         int courseID = scheduleCourse.CourseID;
-                        if (legacySchedule.ScheduleType.ToLower() == "simulcast" && courseRelations.ContainsKey(courseID))
+                        bool bSimulcast = legacySchedule.ScheduleType.ToLower() == "simulcast";
+                        if (bSimulcast && courseRelations.ContainsKey(courseID))
                             courseID = courseRelations[courseID];
                         COURS legacyCourse = CacheObjects.GetCourseList().Where(p => p.CourseID == courseID).FirstOrDefault();
                         State legacyState = CacheObjects.GetStateList().Where(p => p.StateID == legacySchedule.StateID).FirstOrDefault();
@@ -454,13 +455,13 @@ namespace TPCTrainco.Cache.Controllers
                                     // get exact location
                                     Location locationDetail = CacheObjects.GetLocationList().Where(p => p.LocationID == legacySchedule.LocationID).FirstOrDefault();
 
-                                    if (locationDetail != null)
+                                    if (!bSimulcast && locationDetail != null)
                                     {
                                         locationScheduleDetail.LocationDetails = CacheObjects.GetLocationDetails(locationDetail, locationScheduleDetail);
                                     }
                                     else
                                     {
-                                        locationScheduleDetail.LocationDetails = legacySchedule.ScheduleType.ToLower() == "simulcast" ? defaultSimulcastText : defaultSearchLocationText;
+                                        locationScheduleDetail.LocationDetails = bSimulcast ? defaultSimulcastText : defaultSearchLocationText;
                                     }
 
                                     locationScheduleDetail.CoordinatesObj = legacyCity.Coordinates;
