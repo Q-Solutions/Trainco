@@ -27,7 +27,7 @@ else
 
          <div id="contour_form_@{@Model.FormName.Replace(" ", "")}" class="contour @Model.CssClass">
 
-             @using (Html.BeginUmbracoForm<Umbraco.Forms.Web.Controllers.UmbracoFormsController>("HandleForm"))
+             @using (Html.BeginUmbracoForm<Umbraco.Forms.Web.Controllers.UmbracoFormsController>("HandleForm", null, new { @id = Model.FormName.Replace(" ","_").ToLower() }))
              {
                  <input type="hidden" name="FormId" value="@Model.FormId" />
                  @Html.HiddenFor(x => Model.FormName)
@@ -71,9 +71,9 @@ else
                                                 {
                                                     <label for="@f.Id" class="fieldLabel">
                                                         @Html.Raw(f.Caption) @if (f.ShowIndicator)
-                                                        {
+                                                                             {
                                                             <span class="contourIndicator">@Model.Indicator</span>
-                                                        }
+                                                                             }
                                                     </label>
                                                 }
                                                 @if (!string.IsNullOrEmpty(f.ToolTip))
