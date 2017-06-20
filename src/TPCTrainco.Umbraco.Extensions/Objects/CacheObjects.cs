@@ -63,7 +63,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
 
                 using (var db = new americantraincoEntities())
                 {
-                    DateTime dateStart = DateTime.Now.AddDays(-7);
+                    DateTime dateStart = DateTime.Now.AddDays(-1);
                     DateTime dateEnd = DateTime.Now.AddMonths(18);
 
                     scheduleList = db.SCHEDULES.Where(p => p.Active == 1 && p.ScheduleDate >= dateStart && p.ScheduleDate < dateEnd).ToList();
