@@ -38,8 +38,8 @@ namespace TPCTrainco.Cache.Controllers
         [HttpGet]
         public CacheMessage Index(string key)
         {
+            logCacheLog();
             string apiDomain = ConfigurationManager.AppSettings.Get("Cache:UmbracoCourseApiDomain");
-
             DebugApp("-= CACHE PROCESS START =-", ref DebugStr);
             DebugApp("", ref DebugStr);
 
@@ -529,6 +529,19 @@ namespace TPCTrainco.Cache.Controllers
             Debug.WriteLine(line);
             debug.AppendLine(line);
         }
+
+        private void logCacheLog()
+        {
+            string referrer = HttpContext.Current.Request.Headers["Referer"];
+            using (var db = new americantraincoEntities())
+            {
+                Cache_Log oObj = new Cache_Log();
+                oObj.triggered_on = DateTime.Now;
+                oObj.triggered_by = referrer;
+                db.Cache_Log.Add(oObj);
+                db.SaveChanges();
+            }
+        } 
     }
 
     public class CacheMessage

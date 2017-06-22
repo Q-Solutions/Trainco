@@ -5,6 +5,17 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="americantraincoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'americantrainco.dbo.Cache_Log' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Cache_Log">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="triggered_on" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="triggered_on" Type="datetime" Nullable="false" />
+          <Property Name="triggered_by" Type="varchar" MaxLength="500" />
+        </EntityType>
         <EntityType Name="cart">
           <Key>
             <PropertyRef Name="cartSeq" />
@@ -790,6 +801,13 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="temp_Reg" EntityType="Self.temp_Reg" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WebAccounts" EntityType="Self.WebAccounts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WebSignups" EntityType="Self.WebSignups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Cache_Log" EntityType="Self.Cache_Log" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Cache_Log].[id] AS [id], 
+    [Cache_Log].[triggered_on] AS [triggered_on], 
+    [Cache_Log].[triggered_by] AS [triggered_by]
+    FROM [dbo].[Cache_Log] AS [Cache_Log]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="Attendees_ClassHistory" EntityType="Self.Attendees_ClassHistory" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [Attendees_ClassHistory].[AttendeeID] AS [AttendeeID], 
@@ -1388,6 +1406,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="CC_Payments" EntityType="americantraincoModel.CC_Payments" />
           <EntitySet Name="CourseRelations" EntityType="americantraincoModel.CourseRelation" />
           <EntitySet Name="SeminarCitiesActives" EntityType="americantraincoModel.SeminarCitiesActive" />
+          <EntitySet Name="Cache_Log" EntityType="americantraincoModel.Cache_Log" />
         </EntityContainer>
         <EntityType Name="CourseTopic">
           <Key>
@@ -1645,6 +1664,15 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Property Name="CityID" Type="Int32" Nullable="false" />
           <Property Name="CityName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="StateAbbrv" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Cache_Log">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="triggered_on" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="triggered_on" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="triggered_by" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2397,6 +2425,15 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
                 <ScalarProperty Name="StateAbbrv" ColumnName="StateAbbrv" />
                 <ScalarProperty Name="CityName" ColumnName="CityName" />
                 <ScalarProperty Name="CityID" ColumnName="CityID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cache_Log">
+            <EntityTypeMapping TypeName="americantraincoModel.Cache_Log">
+              <MappingFragment StoreEntitySet="Cache_Log">
+                <ScalarProperty Name="triggered_by" ColumnName="triggered_by" />
+                <ScalarProperty Name="triggered_on" ColumnName="triggered_on" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
