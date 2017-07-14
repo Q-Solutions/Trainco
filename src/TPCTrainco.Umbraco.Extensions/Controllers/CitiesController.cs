@@ -16,7 +16,7 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers
         public IEnumerable<object> GetCities()
         {
             List<object> data = new List<object>();
-            List<SeminarCitiesActive> dtList = CacheObjects.GetAcitveCitiesList().OrderBy(x => x.CityName).ToList();
+            List<SeminarCitiesActive> dtList = CacheObjects.GetAcitveCitiesList();
             foreach (SeminarCitiesActive oObj in dtList)
             {
                 var oCity = new { CityID = oObj.CityID, CityName = oObj.CityName, State = oObj.StateAbbrv, Title = oObj.CityName + ", " + oObj.StateAbbrv };

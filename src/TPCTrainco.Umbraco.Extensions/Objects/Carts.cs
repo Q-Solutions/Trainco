@@ -546,6 +546,8 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
 
                 if (!websiteTestMode)
                 {
+                    ServicePointManager.Expect100Continue = true;
+                    ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
                     int ccMonth = checkout.tempCust.ccMonth ?? 1;
                     int ccYear = checkout.tempCust.ccYear ?? 2000;
 

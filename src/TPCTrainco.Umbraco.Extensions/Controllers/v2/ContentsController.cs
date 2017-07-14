@@ -119,7 +119,13 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers.v2
             string output = "";
             try
             {
-                output = Nodes.Instance.SeminarSearch.GetPropertyValue<string>((string.IsNullOrEmpty(id) ? "locationMessage" : "simulcastLocationMessage"));
+                string key = "locationMessage";
+                int iId = Convert.ToInt32(id);
+                if(iId == 1)
+                    key = "simulcastLocationMessage";
+                else if(iId == 2)
+                    key = "liveOnlineLocationMessage";
+                output = Nodes.Instance.SeminarSearch.GetPropertyValue<string>(key);
             }
             catch (Exception ex) {}
             return output;

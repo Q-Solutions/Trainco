@@ -3107,6 +3107,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CheckoutSummarySurfaceController.cs" />
     <Compile Include="Controllers\CheckoutCustomerSurfaceController.cs" />
+    <Compile Include="Controllers\LiveOnlineTrainingController.cs" />
     <Compile Include="Controllers\OfflinePaymentController.cs" />
     <Compile Include="Models\RegisterAttendeeViewModel.cs" />
     <Compile Include="Models\RegisterFormViewModel.cs" />
@@ -3306,6 +3307,8 @@
     <Content Include="Views\Partials\OfflinePaymentForm.cshtml" />
     <Content Include="Views\Partials\Seminars\LocationSeminars.cshtml" />
     <Content Include="Views\LocationwiseSeminar.cshtml" />
+    <Content Include="Views\LiveOnlineTraining.cshtml" />
+    <Content Include="Views\Partials\OnlineTrainingRegistration.cshtml" />
     <None Include="Web.Debug-Trainco.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

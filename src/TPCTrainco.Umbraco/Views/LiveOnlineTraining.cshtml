@@ -1,0 +1,27 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    Layout = "Base.cshtml";
+    IPublishedContent currentPage = Model.Content;
+    string trainingKey = currentPage.GetPropertyValue<string>("trainingKey");
+    int amount = Convert.ToInt32(currentPage.GetPropertyValue<string>("trainingAmount"));
+}
+<div class="container-fluid headline-section">
+    <div class="container">
+        <div class="jumbotron">
+            <h1 id="js-counter-start">@(currentPage.GetPropertyValue<string>("pageHeadline", currentPage.Name))</h1>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid main-content offline-payment gradient-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 text-wrap">
+                <h2>@(currentPage.GetPropertyValue<string>("pageTitle", currentPage.Name))</h2>
+                @Html.Raw(currentPage.GetPropertyValue<string>("mainContent"))
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        @Html.Action("Index", "LiveOnlineTraining", new { trainingKey = trainingKey, amount = amount });
+    </div>
+</div>

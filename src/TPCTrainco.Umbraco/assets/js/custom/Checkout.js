@@ -49,8 +49,9 @@
   	$('input').next('span').remove().css('border-color', '#d7d7d7');
 
   	$.ajax({
-  	    url: 'https://www.tpctrainco.com/api/checkout/submit',
+  	    //url: 'https://www.tpctrainco.com/api/checkout/submit',
   	    //url: 'http://test.tpctrainco.com/api/checkout/submit',
+        url: window.location.origin + "/api/checkout/submit",
   		data: JSON.stringify(checkoutData),
   		type: "POST",
   		contentType: "application/json"

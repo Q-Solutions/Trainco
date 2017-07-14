@@ -34,6 +34,7 @@
     vm.location = {};
     vm.seminarLocations = [];
     vm.seminarSimulcast = [];
+    vm.seminarLiveOnline = [];
 
     /**
      * adds item to the cart or updates the quantity
@@ -217,6 +218,7 @@
     function receiveSeminarData(seminarsData) {
         vm.seminarLocations = seminarsData.locationSchedules;
         vm.seminarSimulcast = seminarsData.simulcastSchedules;
+        vm.seminarLiveOnline = seminarsData.liveOnlineSchedules;
     }
 
     vm.toggleSimulcastDescription = function ($e) {

@@ -44,5 +44,6 @@ namespace TPCTrainco.Umbraco.Extensions
         public Nullable<bool> Display_Ops { get; set; }
         public string Ops_Status { get; set; }
         public Nullable<System.DateTime> CorpDisk_Processed { get; set; }
+        public string TrainingKey { get; set; }
     }
 }

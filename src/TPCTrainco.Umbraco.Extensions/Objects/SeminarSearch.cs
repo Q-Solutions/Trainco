@@ -55,7 +55,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             if (!request.Simulcast)
                 FilterByLocation(ref locationScheduleDetailList, request);
             else
-                locationScheduleDetailList = locationScheduleDetailList.Where(x => x.ScheduleType.ToLower() == "simulcast").ToList();
+                locationScheduleDetailList = locationScheduleDetailList.Where(x => x.ScheduleType.ToLower() == "simulcast" || x.ScheduleType.ToLower() == "liveonline").ToList();
             FilterByTopic(ref courseDetailList, ref locationScheduleDetailList, request);
             FilterByKeyword(ref locationScheduleDetailList, request);
 
@@ -88,6 +88,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
 
                 seminar.LocationSchedules = new List<LocationSchedule>();
                 seminar.SimulcastSchedules = new List<LocationSchedule>();
+                seminar.LiveOnlineSchedules = new List<LocationSchedule>();
 
                 locationScheduleDetailList = locationScheduleDetailList.OrderBy(p => p.Distance).ThenBy(p => p.DateFilter).ToList();
 
@@ -100,19 +101,29 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     locationScheduleDetail.SeminarId = seminar.Id;
                     locationScheduleDetail.SeminarTitle = seminar.Title;
                     locationSchedule = ConvertLocationScheduleToViewModel(locationScheduleDetail);
-                    if (!string.IsNullOrEmpty(locationScheduleDetail.ScheduleType) && locationScheduleDetail.ScheduleType.ToLower() == "simulcast")
+                    string scheduleType = !string.IsNullOrEmpty(locationScheduleDetail.ScheduleType) ? locationScheduleDetail.ScheduleType.ToLower() : "";
+                    bool bSimulcast = scheduleType == "simulcast";
+                    bool bOnline = scheduleType == "liveonline";
+                    if((bSimulcast || bOnline) && request.bLocationPage)
+                        continue;
+                    if (bSimulcast)
                     {
-                        if (!request.bLocationPage)
-                        {
-                            locationSchedule.City = "Simulcast";
-                            locationSchedule.State = "";
-                            seminar.SimulcastSchedules.Add(locationSchedule);
-                        }
+                        locationSchedule.City = "Simulcast";
+                        locationSchedule.State = "";
+                        seminar.SimulcastSchedules.Add(locationSchedule);
+                    }
+                    else if (bOnline)
+                    {
+                        if (string.IsNullOrEmpty(locationScheduleDetail.TrainingKey) || !Registrations.DoesOnlineTrainingExist(locationScheduleDetail.TrainingKey))
+                            continue;
+                        locationSchedule.City = "Goto Training";
+                        locationSchedule.State = "";
+                        seminar.LiveOnlineSchedules.Add(locationSchedule);
                     }
                     else
                         seminar.LocationSchedules.Add(locationSchedule);
                 }
-                int count = seminar.LocationSchedules.Count + seminar.SimulcastSchedules.Count;
+                int count = seminar.LocationSchedules.Count + seminar.SimulcastSchedules.Count + seminar.LiveOnlineSchedules.Count;
                 int pageTotal = Convert.ToInt32(Math.Ceiling((double) count/ (double)SchedulePageCount));
                 seminar.PageTotal = pageTotal - 1;
                 if (seminar.PageTotal < 0)
@@ -143,7 +154,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                 seminarViewModelList.Add(seminar);
             }
 
-            seminarViewModelList = seminarViewModelList.Where(p => p.LocationSchedules.Count > 0 || p.SimulcastSchedules.Count > 0).ToList();
+            seminarViewModelList = seminarViewModelList.Where(p => p.LocationSchedules.Count > 0 || p.SimulcastSchedules.Count > 0 || p.LiveOnlineSchedules.Count > 0).ToList();
             return seminarViewModelList;
         }
 

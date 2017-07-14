@@ -11,6 +11,11 @@
         Response.Redirect(Model.Redirect);
     }
 
+    string sClass = "form-control";
+    if (!string.IsNullOrEmpty(Model.PaymentType))
+    {
+        sClass += " disabled";
+    }
 }
 
 @Html.Partial("Messages/MessagesTop", currentNode)
@@ -30,7 +35,7 @@
         </div>
     </div>
     <div class="container-fluid">
-        <div class="col-md-11 form-item-wrapper">
+        <div class="col-md-12 form-item-wrapper">
             @using (Html.BeginUmbracoForm<TPCTrainco.Umbraco.Controllers.CheckoutCustomerSurfaceController>("HandleFormSubmit"))
             {
                 <div>
@@ -278,6 +283,7 @@
                             </div>
                         </div>
                         <!-- end form fields that appear when checkbox is checked -->
+                        
                         <div class="billing-opts-container">
                             <div>
                                 <div class="col-xs-12 col-sm-4 col-md-3">
@@ -286,7 +292,7 @@
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-sm-6 col-md-5">
-                                    @Html.DropDownListFor(p => p.PaymentType, TPCTrainco.Umbraco.Extensions.Objects.FormUtilities.PaymentTypeList(), new { @class = "form-control" })
+                                    @Html.DropDownListFor(p => p.PaymentType, TPCTrainco.Umbraco.Extensions.Objects.FormUtilities.PaymentTypeList(), new { @class = sClass })
                                     @Html.ValidationMessageFor(p => p.PaymentType)
                                 </div>
                             </div>

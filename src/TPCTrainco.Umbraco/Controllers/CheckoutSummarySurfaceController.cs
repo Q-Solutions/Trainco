@@ -360,6 +360,17 @@ namespace TPCTrainco.Umbraco.Controllers
 
                                             if (reg != null && reg.RegistrationID > 0)
                                             {
+                                                foreach(temp_Reg sem in tempRegList) {
+                                                    SCHEDULE schedule = db.SCHEDULES.Where(x => x.ScheduleID == sem.sem_SID).FirstOrDefault();
+                                                    if (schedule == null || schedule.ScheduleType.ToLower() != "liveonline")
+                                                        continue;
+                                                    string trainingKey = schedule.TrainingKey;
+                                                    List<temp_Att> dtAttendees = tempAttList.Where(p => p.reg_SEQ == sem.reg_SEQ).ToList();
+                                                    foreach(temp_Att attendee in dtAttendees) {
+                                                        string registrantKey = Registrations.RegisterTrainingAttendee(trainingKey, new Dictionary<string, string>() { { "email", attendee.att_Email }, { "givenName", attendee.att_FName }, { "surname", attendee.att_LName } });
+                                                    }
+                                                }
+                                                
                                                 Session["RegistrationId"] = reg.RegistrationID;
                                                 Session["RegistrationTotal"] = string.Format("{0:N2}", reg.RegOrderTotal ?? 0);
 

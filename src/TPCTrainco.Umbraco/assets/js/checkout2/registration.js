@@ -1,6 +1,7 @@
-﻿var BASEURL = 'https://www.tpctrainco.com/api';
+﻿//var BASEURL = 'https://www.tpctrainco.com/api';
 
 //var BASEURL = 'http://test.tpctrainco.com/api';
+var BASEURL = window.location.origin + "/api";
 
 $(document).ready(function () {
     SubmitRegForm();

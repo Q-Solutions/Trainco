@@ -119,7 +119,6 @@ namespace TPCTrainco.Umbraco.Controllers
                     Carts cartsObj = new Carts();
 
                     cartList = cartsObj.GetCart(cartGuid);
-
                     if (cartList == null)
                     {
                         checkoutCustomer.Redirect = "/register/?cart=" + Server.UrlEncode(cartGuid);
@@ -129,7 +128,7 @@ namespace TPCTrainco.Umbraco.Controllers
                         Session["CartId"] = cartGuid;
 
                         temp_Cust tempCust = null;
-
+                        bool bOnline = false;
                         using (var db = new americantraincoEntities())
                         {
                             int regId = cartList[0].reg_ID;
@@ -142,7 +141,18 @@ namespace TPCTrainco.Umbraco.Controllers
                                 checkoutCustomer = cartsObj.ConvertTempCustToCheckoutCustomer(tempCust);
                                 checkoutCustomer.BillingDifferent = true;
                             }
+                            foreach (temp_Reg sem in cartList)
+                            {
+                                SCHEDULE schedule = db.SCHEDULES.Where(x => x.ScheduleID == sem.sem_SID).FirstOrDefault();
+                                if (schedule != null && schedule.ScheduleType.ToLower() == "liveonline")
+                                {
+                                    bOnline = true;
+                                    break;
+                                }
+                            }
                         }
+                        if (bOnline)
+                            checkoutCustomer.PaymentType = "credit";
 
                         checkoutCustomer.CartGuid = CartCookies.EncryptCartGuid(cartGuid + "|" + checkoutCustomer.RegId + "|" + Request.UserHostAddress);
 

@@ -17,5 +17,6 @@ namespace TPCTrainco.Umbraco.Extensions.ViewModels.Search
         public int PageTotal { get; set; }
         public List<LocationSchedule> LocationSchedules { get; set; }
         public List<LocationSchedule> SimulcastSchedules { get; set; }
+        public List<LocationSchedule> LiveOnlineSchedules { get; set; }
     }
 }

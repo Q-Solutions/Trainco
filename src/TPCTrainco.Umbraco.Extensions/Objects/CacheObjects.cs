@@ -552,7 +552,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             Debug.WriteLine("Adding Active Cities List to Cache...");
             using (var db = new americantraincoEntities())
             {
-                cityList = db.SeminarCitiesActives.DistinctBy(x => x.CityName).OrderBy(x => x.CityName).ToList();
+                cityList = db.SeminarCitiesActives.OrderBy(x => x.CityName).ToList();
             }
             CacheItemPolicy policy = new CacheItemPolicy { AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(cacheUpdateInMinutes) };
             cache.Add(cacheKey, cityList, policy);

@@ -95,8 +95,9 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     debug += "LocationCoordinates IS NULL!\r\n";
                     //List<LocationScheduleDetail> locationSearch = CacheObjects.GetLocationScheduleDetailList();
                     //debug += "Trying lookup method...\r\n";
-                    if(request.bLocationPage)
-                        locationScheduleDetailList = locationScheduleDetailList.Where(x => x.ScheduleType.ToLower() == "simulcast").ToList();
+                    if (request.bLocationPage)
+                        locationScheduleDetailList.Clear();
+                        //locationScheduleDetailList = locationScheduleDetailList.Where(x => x.ScheduleType.ToLower() == "simulcast").ToList();
                     //if (locationSearch != null && locationSearch.Any())
                     //{
                     //    LocationScheduleDetail findLocation = locationSearch.Where(p => request.Location.ToLower().IndexOf(p.City.ToLower()) >= 0).FirstOrDefault();
