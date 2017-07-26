@@ -398,13 +398,8 @@ namespace TPCTrainco.Cache.Controllers
         private List<LocationScheduleDetail> GetLocationScheduleDetailList(Dictionary<int,int> courseRelations)
         {
             int inc = 0;
-
-            string defaultSearchLocationText = GetUmbracoSummaryText();
-            string defaultSimulcastText = GetUmbracoSummaryText(true);
             List<ScheduleCourseInstructor> scheduleCourseInstructorList = CacheObjects.GetScheduleCourseList(true);
-
             List<LocationScheduleDetail> locationScheduleDetailList = null;
-
             if (locationScheduleDetailList == null)
             {
                 DebugApp("Location Schedule Detail List to Cache...", ref DebugStr);
@@ -423,7 +418,8 @@ namespace TPCTrainco.Cache.Controllers
                         ScheduleCourseInstructor scheduleCourse = scheduleCourseInstructorList.Where(p => p.ScheduleID == legacySchedule.ScheduleID).FirstOrDefault();
                         int courseID = scheduleCourse.CourseID;
                         bool bSimulcast = legacySchedule.ScheduleType.ToLower() == "simulcast";
-                        if (bSimulcast && courseRelations.ContainsKey(courseID))
+                        bool bOnline = legacySchedule.ScheduleType.ToLower() == "liveonline";
+                        if ((bSimulcast || bOnline) && courseRelations.ContainsKey(courseID))
                             courseID = courseRelations[courseID];
                         COURS legacyCourse = CacheObjects.GetCourseList().Where(p => p.CourseID == courseID).FirstOrDefault();
                         State legacyState = CacheObjects.GetStateList().Where(p => p.StateID == legacySchedule.StateID).FirstOrDefault();
@@ -452,18 +448,17 @@ namespace TPCTrainco.Cache.Controllers
                                     locationScheduleDetail.StateCode = legacyState.StateAbbreviation;
                                     locationScheduleDetail.State = legacyState.StateName;
                                     locationScheduleDetail.ScheduleType = legacySchedule.ScheduleType;
+                                    locationScheduleDetail.TrainingKey = legacySchedule.TrainingKey;
                                     // get exact location
                                     Location locationDetail = CacheObjects.GetLocationList().Where(p => p.LocationID == legacySchedule.LocationID).FirstOrDefault();
-
-                                    if (!bSimulcast && locationDetail != null)
-                                    {
-                                        locationScheduleDetail.LocationDetails = CacheObjects.GetLocationDetails(locationDetail, locationScheduleDetail);
-                                    }
-                                    else
-                                    {
-                                        locationScheduleDetail.LocationDetails = bSimulcast ? defaultSimulcastText : defaultSearchLocationText;
-                                    }
-
+                                    string sLocationDetails = GetUmbracoSummaryText();
+                                    if (!bSimulcast && !bOnline && locationDetail != null)
+                                        sLocationDetails = CacheObjects.GetLocationDetails(locationDetail, locationScheduleDetail);
+                                    else if (bSimulcast)
+                                        sLocationDetails = GetUmbracoSummaryText(1);
+                                    else if(bOnline)
+                                        sLocationDetails = GetUmbracoSummaryText(2);
+                                    locationScheduleDetail.LocationDetails = sLocationDetails;
                                     locationScheduleDetail.CoordinatesObj = legacyCity.Coordinates;
                                     locationScheduleDetail.DateFilter = legacySchedule.ScheduleDate;
                                     locationScheduleDetail.DateMonthYear = locationScheduleDetail.DateFilter.ToString("M-yyyy");
@@ -502,7 +497,7 @@ namespace TPCTrainco.Cache.Controllers
         }
 
 
-        private string GetUmbracoSummaryText(bool bSimulcast = false)
+        private string GetUmbracoSummaryText(int iType = 0)
         {
             string output = null;
 
@@ -511,7 +506,7 @@ namespace TPCTrainco.Cache.Controllers
 
             try
             {
-                HttpResponseMessage response = client.GetAsync(apiDomain + "/api/contents/SummaryText" + (bSimulcast ? "/1" : "")).Result;
+                HttpResponseMessage response = client.GetAsync(apiDomain + "/api/contents/SummaryText" + (iType > 0 ? "/" + iType : "")).Result;
                 response.EnsureSuccessStatusCode();
                 output = response.Content.ReadAsStringAsync().Result;
                 output = output.Trim("\"");

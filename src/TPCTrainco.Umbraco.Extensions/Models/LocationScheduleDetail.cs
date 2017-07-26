@@ -69,5 +69,6 @@ namespace TPCTrainco.Umbraco.Extensions.Models
         public long SeminarId { get; set; }
         public string SeminarTitle { get; set; }
         public string ScheduleType { get; set; }
+        public string TrainingKey { get; set; }
     }
 }
