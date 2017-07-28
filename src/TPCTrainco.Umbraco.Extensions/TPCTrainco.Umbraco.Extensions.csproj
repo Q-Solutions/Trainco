@@ -342,6 +342,9 @@
       <DependentUpon>TPCTraincoModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Events\UmbracoApplicationStartUp.cs" />
+    <Compile Include="GotoTrainingRegistration.cs">
+      <DependentUpon>TPCTraincoModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\AccountHelper.cs" />
     <Compile Include="Helpers\Email.cs" />
     <Compile Include="Helpers\GenerateJavascript.cs" />

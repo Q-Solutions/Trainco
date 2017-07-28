@@ -271,6 +271,26 @@
           <Property Name="CreatedMemberID" Type="int" Nullable="false" />
           <Property Name="ModifiedMemberID" Type="int" />
         </EntityType>
+        <EntityType Name="GotoTrainingRegistrations">
+          <Key>
+            <PropertyRef Name="RegistrationID" />
+          </Key>
+          <Property Name="RegistrationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TrainingKey" Type="varchar" MaxLength="50" />
+          <Property Name="FirstName" Type="varchar" MaxLength="255" />
+          <Property Name="LastName" Type="varchar" MaxLength="255" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="CompanyName" Type="varchar" MaxLength="255" />
+          <Property Name="BillingAddress" Type="varchar" MaxLength="500" />
+          <Property Name="CountryCode" Type="varchar" MaxLength="10" />
+          <Property Name="City" Type="varchar" MaxLength="255" />
+          <Property Name="StateCode" Type="varchar" MaxLength="10" />
+          <Property Name="ZipCode" Type="varchar" MaxLength="50" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="100" />
+          <Property Name="PhoneExt" Type="varchar" MaxLength="10" />
+          <Property Name="RegisteredAt" Type="datetime" />
+          <Property Name="RegistrantKey" Type="varchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="Locations">
           <Key>
             <PropertyRef Name="LocationID" />
@@ -786,6 +806,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="COURSES" EntityType="Self.COURSES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseTopics" EntityType="Self.CourseTopics" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseTypes" EntityType="Self.CourseTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GotoTrainingRegistrations" EntityType="Self.GotoTrainingRegistrations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Locations" EntityType="Self.Locations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocationTypes" EntityType="Self.LocationTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegistrationAttendees" EntityType="Self.RegistrationAttendees" Schema="dbo" store:Type="Tables" />
@@ -1399,6 +1420,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="CourseRelations" EntityType="americantraincoModel.CourseRelation" />
           <EntitySet Name="SeminarCitiesActives" EntityType="americantraincoModel.SeminarCitiesActive" />
           <EntitySet Name="Cache_Log" EntityType="americantraincoModel.Cache_Log" />
+          <EntitySet Name="GotoTrainingRegistrations" EntityType="americantraincoModel.GotoTrainingRegistration" />
         </EntityContainer>
         <EntityType Name="CourseTopic">
           <Key>
@@ -1665,6 +1687,26 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="triggered_on" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="triggered_by" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="GotoTrainingRegistration">
+          <Key>
+            <PropertyRef Name="RegistrationID" />
+          </Key>
+          <Property Name="RegistrationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TrainingKey" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="CompanyName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="BillingAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="CountryCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="StateCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ZipCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneExt" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="RegisteredAt" Type="DateTime" Precision="3" />
+          <Property Name="RegistrantKey" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2427,6 +2469,27 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
                 <ScalarProperty Name="triggered_by" ColumnName="triggered_by" />
                 <ScalarProperty Name="triggered_on" ColumnName="triggered_on" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GotoTrainingRegistrations">
+            <EntityTypeMapping TypeName="americantraincoModel.GotoTrainingRegistration">
+              <MappingFragment StoreEntitySet="GotoTrainingRegistrations">
+                <ScalarProperty Name="RegistrantKey" ColumnName="RegistrantKey" />
+                <ScalarProperty Name="RegisteredAt" ColumnName="RegisteredAt" />
+                <ScalarProperty Name="PhoneExt" ColumnName="PhoneExt" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
+                <ScalarProperty Name="StateCode" ColumnName="StateCode" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+                <ScalarProperty Name="BillingAddress" ColumnName="BillingAddress" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="TrainingKey" ColumnName="TrainingKey" />
+                <ScalarProperty Name="RegistrationID" ColumnName="RegistrationID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

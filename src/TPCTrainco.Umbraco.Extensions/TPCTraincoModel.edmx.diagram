@@ -38,6 +38,7 @@
         <EntityTypeShape EntityType="americantraincoModel.CourseRelation" Width="1.5" PointX="3.375" PointY="19.75" />
         <EntityTypeShape EntityType="americantraincoModel.SeminarCitiesActive" Width="1.5" PointX="19.375" PointY="6.75" />
         <EntityTypeShape EntityType="americantraincoModel.Cache_Log" Width="1.5" PointX="19.375" PointY="9.75" />
+        <EntityTypeShape EntityType="americantraincoModel.GotoTrainingRegistration" Width="1.5" PointX="19.375" PointY="12.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

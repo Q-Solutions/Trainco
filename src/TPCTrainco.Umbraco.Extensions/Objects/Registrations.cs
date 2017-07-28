@@ -818,6 +818,45 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             }
             return registrantKey;
         }
+
+        public static bool CheckRegistrantExists(string trainingKey, string email)
+        {
+            bool bExists = false;
+            try
+            {
+                using (var db = new americantraincoEntities())
+                {
+                    if (db.GotoTrainingRegistrations.Where(x => x.TrainingKey == trainingKey && x.Email == email).Count() > 0)
+                        bExists = true;
+                }
+            }
+            catch (Exception ex){}
+            return bExists;
+        }
+
+        public static void AddGotoTrainingRegistrant(CheckoutCustomer model, string registrantKey)
+        {
+            GotoTrainingRegistration oObj = new GotoTrainingRegistration();
+            oObj.TrainingKey = model.InvoiceNumber;
+            oObj.FirstName = model.FirstName;
+            oObj.LastName = model.LastName;
+            oObj.Email = model.Email;
+            oObj.CompanyName = model.Company;
+            oObj.BillingAddress = model.Address;
+            oObj.CountryCode = model.Country;
+            oObj.City = model.City;
+            oObj.StateCode = model.State;
+            oObj.ZipCode = model.Zip;
+            oObj.PhoneNumber = model.Phone;
+            oObj.PhoneExt = model.PhoneExt;
+            oObj.RegistrantKey = registrantKey;
+            oObj.RegisteredAt = DateTime.Now;
+            using (var db = new americantraincoEntities())
+            {
+                db.GotoTrainingRegistrations.Add(oObj);
+                db.SaveChanges();
+            }
+        }
     }
 }
 

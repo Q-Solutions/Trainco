@@ -35,6 +35,11 @@ namespace TPCTrainco.Umbraco.Controllers
                     ViewBag.isCCError = true;
                     throw new Exception("");
                 }
+                if (!Registrations.CheckRegistrantExists(model.InvoiceNumber, model.Email))
+                {
+                    ViewBag.isExistsError = true;
+                    throw new Exception("");
+                }
                 Carts cartsObj = new Carts();
                 CreditCardResult creditCardResult = cartsObj.ProcessCreditCard(model);
                 if (creditCardResult.ErrorCode != 0)
@@ -43,15 +48,16 @@ namespace TPCTrainco.Umbraco.Controllers
                     throw new Exception("");
                 }
                 string registrantKey = Registrations.RegisterTrainingAttendee(model.InvoiceNumber, new Dictionary<string, string>() { { "email", model.Email }, { "givenName", model.FirstName }, { "surname", model.LastName } });
+                Registrations.AddGotoTrainingRegistrant(model, registrantKey);
                 if (string.IsNullOrEmpty(registrantKey))
                     throw new Exception("");
-                return Redirect("/payment-success/");
+                ViewBag.success = "You have registered for this training successfully";
             }
             catch (Exception ex)
             {
                 ViewBag.isError = true;
-                return CurrentUmbracoPage();
             }
+            return CurrentUmbracoPage();
         }
     }
 }

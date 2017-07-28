@@ -14,12 +14,29 @@
     string alertMessage = "";
     if (ViewBag.isError != null)
     {
-        alertMessage = ViewBag.isCCError != null ? "<strong>Credit Card Error</strong><br />\r\nThere was a problem processing your credit card. Please check your credit card and personal information." : "<strong>Registration Error</strong><br />\r\nThere was a problem processing your registration request. Please try again later.";
+        alertMessage = "<strong>Registration Error</strong><br />\r\nThere was a problem processing your registration request. Please try again later.";
+        if(ViewBag.isCCError != null) 
+        {
+            alertMessage = "<strong>Credit Card Error</strong><br />\r\nThere was a problem processing your credit card. Please check your credit card and personal information.";
+        }
+        else if (ViewBag.isExistsError != null)
+        {
+            alertMessage = "<strong>Registration Error</strong><br />\r\nEmail address has already been registered.";
+        }
+    }
+    string successMessage = "";
+    if (ViewBag.success != null)
+    {
+        successMessage = ViewBag.success;
     }
 }
 @if (!string.IsNullOrEmpty(alertMessage))
 {
     <div class="alert alert-danger">@Html.Raw(alertMessage)</div>
+}
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success">@Html.Raw(successMessage)</div>
 }
 <div class="register-standalone offline-payment-form">
     <div class="container-fluid">
