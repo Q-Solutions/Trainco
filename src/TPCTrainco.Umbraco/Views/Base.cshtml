@@ -335,7 +335,7 @@
                     function(){ $(this).removeClass('open') }
                 );
 
-                $('a[href^="#"]:not(.link-geolocation)').click(function (e) {
+                $('a[href^="#"]:not(.link-geolocation):not(data-toggle="collapse")').click(function (e) {
                     e.preventDefault();
                     var hash = $(this).attr('href');
                     if ($(hash).length == 0)
