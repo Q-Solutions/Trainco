@@ -4,6 +4,11 @@
     IPublishedContent currentPage = Model.Content;
     string trainingKey = currentPage.GetPropertyValue<string>("trainingKey");
     int amount = Convert.ToInt32(currentPage.GetPropertyValue<string>("trainingAmount"));
+    string successMessage = "";
+    if (TempData.ContainsKey("success") && TempData["success"] != null)
+    {
+        successMessage = TempData["success"].ToString();
+    }
 }
 <div class="container-fluid headline-section">
     <div class="container">
@@ -17,6 +22,10 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2 text-wrap">
+                @if (!string.IsNullOrEmpty(successMessage))
+                {
+                    <div class="alert alert-success">@Html.Raw(successMessage)</div>
+                }
                 <h2>@(currentPage.GetPropertyValue<string>("pageTitle", currentPage.Name))</h2>
                 @Html.Raw(currentPage.GetPropertyValue<string>("mainContent"))
             </div>

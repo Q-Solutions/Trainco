@@ -24,19 +24,10 @@
             alertMessage = "<strong>Registration Error</strong><br />\r\nEmail address has already been registered.";
         }
     }
-    string successMessage = "";
-    if (ViewBag.success != null)
-    {
-        successMessage = ViewBag.success;
-    }
 }
 @if (!string.IsNullOrEmpty(alertMessage))
 {
-    <div class="alert alert-danger">@Html.Raw(alertMessage)</div>
-}
-@if (!string.IsNullOrEmpty(successMessage))
-{
-    <div class="alert alert-success">@Html.Raw(successMessage)</div>
+    <div class="alert alert-danger alert-visible">@Html.Raw(alertMessage)</div>
 }
 <div class="register-standalone offline-payment-form">
     <div class="container-fluid">

@@ -35,7 +35,7 @@ namespace TPCTrainco.Umbraco.Controllers
                     ViewBag.isCCError = true;
                     throw new Exception("");
                 }
-                if (!Registrations.CheckRegistrantExists(model.InvoiceNumber, model.Email))
+                if (Registrations.CheckRegistrantExists(model.InvoiceNumber, model.Email))
                 {
                     ViewBag.isExistsError = true;
                     throw new Exception("");
@@ -51,13 +51,15 @@ namespace TPCTrainco.Umbraco.Controllers
                 Registrations.AddGotoTrainingRegistrant(model, registrantKey);
                 if (string.IsNullOrEmpty(registrantKey))
                     throw new Exception("");
-                ViewBag.success = "You have registered for this training successfully";
+                TempData["success"] = "You have registered for this training successfully";
+                return RedirectToCurrentUmbracoPage();
             }
             catch (Exception ex)
             {
                 ViewBag.isError = true;
+                return CurrentUmbracoPage();
             }
-            return CurrentUmbracoPage();
+            
         }
     }
 }

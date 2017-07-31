@@ -335,7 +335,7 @@
                     function(){ $(this).removeClass('open') }
                 );
 
-                $('a[href^="#"]:not(.link-geolocation):not(data-toggle="collapse")').click(function (e) {
+                $('a[href^="#"]:not(.link-geolocation):not([data-toggle="collapse"])').click(function (e) {
                     e.preventDefault();
                     var hash = $(this).attr('href');
                     if ($(hash).length == 0)
@@ -352,6 +352,16 @@
                         return false;
                     window.location.href = window.location.origin + window.geoLocationLink;
                 });
+
+                if ($('.alert-visible').length > 0) {
+                    $('html body').animate({ scrollTop: $('.alert-visible:first').offset().top - 125 });
+                }
+
+                if ($('.alert-success').length > 0) {
+                    setTimeout(function () {
+                        $('.alert-success').fadeOut(400, function () { $(this).remove(); });
+                    }, 5000);
+                }
             });
         </script>
     }
