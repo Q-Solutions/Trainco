@@ -353,6 +353,9 @@
     <Compile Include="Helpers\RedirectHelper.cs" />
     <Compile Include="Helpers\StringUtilities.cs" />
     <Compile Include="Helpers\UtilitiesHelper.cs" />
+    <Compile Include="Helpers\WebClientExtended.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Helpers\WebDownload.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -422,6 +425,8 @@
     <Compile Include="Models\SearchRequest\SeminarsSearchRequest.cs" />
     <Compile Include="Models\StateLookup.cs" />
     <Compile Include="Models\UmbracoCourseDetail.cs" />
+    <Compile Include="Objects\ArloAPI.cs" />
+    <Compile Include="Objects\ArloAPIObjects.cs" />
     <Compile Include="Objects\CacheObjects.cs" />
     <Compile Include="Objects\RegCookies.cs" />
     <Compile Include="Objects\CartCookies.cs" />

@@ -23,6 +23,7 @@ using Newtonsoft.Json;
 using Umbraco.Core.Persistence;
 using Umbraco.Core;
 using System.Net;
+using System.ServiceModel;
 using Umbraco.Core.Services;
 
 namespace TPCTrainco.Cache.Controllers
@@ -190,6 +191,31 @@ namespace TPCTrainco.Cache.Controllers
             return CacheMessage;
         }
 
+        [HttpGet]
+        public CacheMessage Arlo()
+        {
+            SyncArloEventTemplates();  
+            SyncArloEvents();
+            return CacheMessage;
+        }
+
+        private void SyncArloEventTemplates()
+        {
+            string endPoint = ConfigurationManager.AppSettings.Get("Caching:Arlo:EventTemplate:Url");
+            string username = ConfigurationManager.AppSettings.Get("Caching:Arlo:Username");
+            string password = ConfigurationManager.AppSettings.Get("Caching:Arlo:Password");
+            ArloAPI api = new ArloAPI(endPoint,username,password);
+            EventTemplates oEventTemplates = api.GetArloResponce<EventTemplates>();
+        }
+
+        private void SyncArloEvents()
+        {
+            string endPoint = ConfigurationManager.AppSettings.Get("Caching:Arlo:Events:Url");
+            string username = ConfigurationManager.AppSettings.Get("Caching:Arlo:Username");
+            string password = ConfigurationManager.AppSettings.Get("Caching:Arlo:Password");
+            ArloAPI api = new ArloAPI(endPoint, username, password);
+            Events oEvents = api.GetArloResponce<Events>();
+        }
 
         private void ProcessCourses()
         {
