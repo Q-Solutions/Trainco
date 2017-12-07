@@ -91,7 +91,7 @@
     var combinedMonthValues = _.map(combinedMonthsArray, _.property('value'));
     vm.monthsSlider = {
       minValue: 0,
-      maxValue: 5,
+      maxValue: 7,
       options: {
         floor: 0,
         ceil: 11,
