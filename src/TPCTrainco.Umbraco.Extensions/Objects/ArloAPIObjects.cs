@@ -9,137 +9,137 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
 {
 
     #region EventTemplates
-
-    [XmlRoot(ElementName = "EventTemplates")]
-    public class EventTemplates
-    {
-        [XmlElement("Link")]
-        public Link[] Links { get; set; }
-    }
-
-    public class Link
-    {
-        [XmlElement("EventTemplate")]
-        public EventTemplate EventTemplate { get; set; }
-
-        [XmlAttribute(AttributeName = "href")]
-        public string href { get; set; }
-
-        [XmlAttribute(AttributeName = "title")]
-        public string title { get; set; }
-    }
-
     public class EventTemplate
     {
-        [XmlElement("TemplateID")]
-        public int TemplateID { get; set; }
-
-        [XmlElement("UniqueIdentifier")]
+        public string TemplateID { get; set; }
         public string UniqueIdentifier { get; set; }
-
-        [XmlElement("Name")]
         public string Name { get; set; }
-
-        [XmlElement("Code")]
         public string Code { get; set; }
-
-        [XmlElement("AdvertisedDuration")]
         public string AdvertisedDuration { get; set; }
-
-        [XmlElement("TemplateHosting")]
         public string TemplateHosting { get; set; }
-
-        [XmlElement("IsPrivate")]
         public bool IsPrivate { get; set; }
-
-        [XmlElement("DefaultEventSessionType")]
         public string DefaultEventSessionType { get; set; }
-
-        [XmlElement("Status")]
         public string Status { get; set; }
-
-        [XmlElement("PublishOnWebsite")]
         public bool PublishOnWebsite { get; set; }
-
-        [XmlElement("CreatedDateTime")]
         public DateTime CreatedDateTime { get; set; }
-
-        [XmlElement("LastModifiedDateTime")]
         public DateTime LastModifiedDateTime { get; set; }
-
-        [XmlElement("Link")]
-        public EventTempleteLink[] Link { get; set; }
+        public List<object> Link { get; set; }
     }
-
-    public class EventTempleteLink
-    {
-        [XmlAttribute(AttributeName = "href")]
-        public string href { get; set; }
-        [XmlAttribute(AttributeName = "title")]
-        public string title { get; set; }
-    }
-
     #endregion
 
     #region Events
 
-    [XmlRoot(ElementName = "Events")]
-    public class Events
-    {
-        [XmlElement("Link")]
-        public EventBaseLink[] Links { get; set; }
-    }
-
-    public class EventBaseLink
-    {
-        [XmlElement("Event")]
-        public Event Event { get; set; }
-
-        [XmlAttribute(AttributeName = "href")]
-        public string href { get; set; }
-
-        [XmlAttribute(AttributeName = "title")]
-        public string title { get; set; }
-    }
-
     public class Event
     {
-        [XmlElement("EventID")]
-        public int EventID { get; set; }
-
-        [XmlElement("UniqueIdentifier")]
+        public string EventID { get; set; }
         public string UniqueIdentifier { get; set; }
-
-        [XmlElement("Code")]
         public string Code { get; set; }
-
-        [XmlElement("StartDateTime")]
         public DateTime StartDateTime { get; set; }
-
-        [XmlElement("FinishDateTime")]
         public DateTime FinishDateTime { get; set; }
-
-        [XmlElement("Description")]
         public string Description { get; set; }
-
-        [XmlElement("LocationName")]
         public string LocationName { get; set; }
-
-        [XmlElement("IsPrivate")]
         public bool IsPrivate { get; set; }
-
-        [XmlElement("Status")]
         public string Status { get; set; }
-
-        [XmlElement("CreatedDateTime")]
         public DateTime CreatedDateTime { get; set; }
-
-        [XmlElement("LastModifiedDateTime")]
         public DateTime LastModifiedDateTime { get; set; }
-
-        [XmlElement("Link")]
-        public EventTempleteLink[] Link { get; set; }
+        public List<object> Link { get; set; }
+        public EventTemplate Template { get; set; }
+        public Dictionary<string,string> CustomFields { get; set; }
+        public Region Region { get; set; }
+        public List<string> Tags { get; set; }
+        public List<Session> Sessions { get; set; }
     }
 
+    public class Session
+    {
+        public string SessionID { get; set; }
+        public DateTime StartDateTime { get; set; }
+        public DateTime FinishDateTime { get; set; }
+        public string SessionType { get; set; }
+        public string Description { get; set; }
+        public string Status { get; set; }
+        public List<string> Tags { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public Dictionary<string, string> CustomFields { get; set; }
+        public Venue Venue { get; set; }
+        public ArloContact Presenter { get; set; }
+        public DateTime LastModifiedDateTime { get; set; }
+        public List<object> Link { get; set; }
+    }
+
+    public class Venue
+    {
+        public string VenueID { get; set; }
+        public string Name { get; set; }
+        public string Phone { get; set; }
+        public string Status { get; set; }
+        public string Description { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime LastModifiedDateTime { get; set; }
+        public Address PhysicalAddress { get; set; }
+        public List<object> Link { get; set; }
+    }
+
+    public class ArloContact
+    {
+        public string ContactID { get; set; }
+        public string UniqueIdentifier { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string PhoneWork { get; set; }
+        public string PhoneHome { get; set; }
+        public string CodePrimary { get; set; }
+        public string Status { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime LastModifiedDateTime { get; set; }
+    }
+
+    public class Address
+    {
+        public string StreetLine1 { get; set; }
+        public string StreetLine2 { get; set; }
+        public string StreetLine3 { get; set; }
+        public string StreetLine4 { get; set; }
+        public string SuburbOrRegion { get; set; }
+        public string City { get; set; }
+        public string StateOrProvince { get; set; }
+        public string PostCode { get; set; }
+        public string Country { get; set; }
+    }
+
+    public class Region 
+    {
+        public string RegionID { get; set; }
+        public string Name { get; set; }
+        public string ShortName { get; set; }
+    }
+
+    public class PublicEvents
+    {
+        public int TotalCount { get; set; }
+        public int StartIndex { get; set; }
+        public int Count { get; set; }
+        public List<PublicEvent> Items { get; set; }
+    }
+
+    public class PublicEvent
+    {
+        public int EventID { get; set; }
+        public string Name { get; set; }
+        public Dictionary<string, string> RegistrationInfo { get; set; }
+        public string ViewUri { get; set; }
+        public List<AdvertisedOffer> AdvertisedOffers { get; set; }
+        public List<Dictionary<string, object>> Categories { get; set; }
+        public List<string> Tags { get; set; }
+    }
+
+    public class AdvertisedOffer
+    {
+        public int OfferID { get; set; }
+        public string Label { get; set; }
+        public bool IsDiscountOffer { get; set; }
+        public Dictionary<string, object> OfferAmount { get; set; }
+    }
     #endregion
 }

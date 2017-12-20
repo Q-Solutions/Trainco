@@ -13,6 +13,8 @@ using Umbraco.Core.Models;
 using TPCTrainco.Umbraco.Extensions.Helpers;
 using System.Text.RegularExpressions;
 using Umbraco.Core.Persistence;
+using System.Reflection;
+using System.Transactions;
 
 namespace TPCTrainco.Umbraco.Extensions.Objects
 {
@@ -558,6 +560,174 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             cache.Add(cacheKey, cityList, policy);
             Debug.WriteLine(" - Active Cities List Cache Updated");
             return cityList;
+        }
+
+        public static bool SaveCourses(List<Event> oEvents,Dictionary<int,PublicEvent> publicEvents)
+        {
+            bool bSaved = false;
+            using (TransactionScope scope = new TransactionScope()) 
+            { 
+                using (var db = new americantraincoEntities())
+                {
+                    foreach (Event eventObj in oEvents)
+                    {
+                        COURS course = db.COURSES.Where(x => x.ArloID == eventObj.UniqueIdentifier).FirstOrDefault();
+                        bool bCreated = false;
+                        if (course == null)
+                        {
+                            course = new COURS();
+                            course.Created = DateTime.UtcNow;
+                            bCreated = true;
+                        }
+                        else
+                        {
+                            List<int> scheduleIds = db.ScheduleCourseInstructors.Where(x => x.CourseID == course.CourseID).Select(x => x.ScheduleID).ToList();
+                            db.SCHEDULES.RemoveRange(db.SCHEDULES.Where(x => scheduleIds.Contains(x.ScheduleID)));
+                            db.ScheduleCourseInstructors.RemoveRange(db.ScheduleCourseInstructors.Where(x => x.CourseID == course.CourseID));
+                        }
+                        course.ArloID = eventObj.UniqueIdentifier;
+                        course.CourseTitle = eventObj.Template.Name;
+                        course.CourseSubtitle = eventObj.Description;
+                        CourseFormat format = db.CourseFormats.Where(x => x.CourseFormatName == eventObj.Template.AdvertisedDuration).FirstOrDefault();
+                        course.CourseFormatID = format != null ? format.CourseFormatID : 0;
+                        bool bSimulcast = eventObj.Template.Name.ToLower().Contains("simlcast");
+                        if (eventObj.CustomFields.ContainsKey("CourseType"))
+                        {
+                            CourseType type = db.CourseTypes.Where(x => x.CourseTypeName.ToLower() == eventObj.CustomFields["CourseType"].ToLower()).FirstOrDefault();
+                            course.CourseTypeID = type != null ? type.CourseTypeID : 0;
+                        }
+                        Country country = db.Countries.Where(x => x.CountryCode == eventObj.Region.ShortName).FirstOrDefault();
+                        course.CountryID = (country != null ? country.Seq : 0);
+                        course.WebHeading = eventObj.Template.Name;
+                        course.WebToolTip = eventObj.Description;
+                        course.TitlePlain = eventObj.Template.Name;
+                        course.Acronym = eventObj.Template.Code;
+                        course.Active = (eventObj.Status.ToLower() == "active" ? 1 : 0);
+                        course.Modified = DateTime.UtcNow;
+                        foreach (var field in eventObj.CustomFields)
+                        {
+                            PropertyInfo prop = course.GetType().GetProperty(field.Key);
+                            if (prop == null)
+                                continue;
+                            prop.SetValue(course, Convert.ChangeType(field.Value, prop.PropertyType));
+                        }
+                        int eventId = Convert.ToInt32(eventObj.EventID);
+                        if (publicEvents.ContainsKey(eventId))
+                        {
+                            PublicEvent publicEvent = publicEvents[eventId];
+                            course.CourseTitle = publicEvent.Name;
+                            var offers = publicEvent.AdvertisedOffers.Where(x => !x.IsDiscountOffer).ToList();
+                            if (offers != null && offers.Count > 0)
+                            {
+                                course.CourseFee = Convert.ToInt32(offers[0].OfferAmount["AmountTaxInclusive"]);
+                                course.CourseFeeDescription = offers[0].Label;
+                            }
+                            course.ViewUri = publicEvent.ViewUri;
+                            course.RegisterUri = publicEvent.RegistrationInfo["RegisterUri"];
+                            if (publicEvent.Categories != null && publicEvent.Categories.Count > 0 && publicEvent.Categories[0].ContainsKey("Name"))
+                            {
+                                string category = publicEvent.Categories[0]["Name"].ToString();
+                                CourseTopic topic = db.CourseTopics.Where(x => x.CourseTopicName.ToLower() == category.ToLower()).FirstOrDefault();
+                                course.CourseTopicID = topic != null ? topic.CourseTopicID : 0;
+                                course.CourseTier = Convert.ToInt32(publicEvent.Categories[0]["CategoryID"]);
+                            }
+                            course.Keywords = publicEvent.Tags != null && publicEvent.Tags.Count > 0 ? string.Join(",", publicEvent.Tags) : "";
+                        }
+                        if (bCreated)
+                            db.COURSES.Add(course);
+                        db.SaveChanges();
+                        if (eventObj.Sessions != null && eventObj.Sessions.Count > 0)
+                            SaveSchedules(course.CourseID, eventObj.Sessions, db);
+                    }
+                }
+                scope.Complete();
+            }
+            return bSaved;
+        }
+
+        public static void SaveSchedules(int courseId, List<Session> sessions,americantraincoEntities db)
+        {
+            foreach(Session session in sessions)
+            {
+                if (session.Status.ToLower() != "active" || session.Presenter == null || session.Presenter.Status.ToLower() != "active")
+                    continue;
+
+                SCHEDULE schedule = new SCHEDULE();
+                schedule.ScheduleType = session.SessionType.ToLower() == "online" ? "Simulcast" : session.SessionType;
+                schedule.Active = (Int16) (session.Status.ToLower() == "active" ? 1 : 0);
+                DateTime startDate = session.StartDateTime.ToCentralTime();
+                DateTime finishDate = session.FinishDateTime.ToCentralTime();
+                schedule.Created = session.CreatedDateTime;
+                schedule.Modified = session.LastModifiedDateTime;
+                Location location = db.Locations.Where(x => x.LocationName.ToLower() == session.Venue.Name.ToLower()).FirstOrDefault();
+                schedule.LocationID = (location != null ? location.LocationID : 0);
+                City city = db.Cities.Where(x => x.CityName == session.Venue.PhysicalAddress.City).FirstOrDefault();
+                schedule.CityID = (city != null ? city.CityID : 0);
+                State state = db.States.Where(x => x.StateAbbreviation == session.Venue.PhysicalAddress.StateOrProvince).FirstOrDefault();
+                schedule.StateID = (state != null ? state.StateID : 0);
+                schedule.ScheduleDate = startDate;
+                schedule.ScheduleDateDescription = StringUtilities.GetDateDescription(startDate, finishDate);
+                schedule.ScheduleDateQuarter = StringUtilities.ToDateQuarter(startDate);
+                schedule.ScheduleDateDays = StringUtilities.GetDateDays(startDate, finishDate);
+                schedule.ScheduleDateWeek = StringUtilities.StartOfWeek(startDate, DayOfWeek.Monday);
+                schedule.ScheduleStatus = (Int16) (session.Status.ToLower() == "active" ? 1 : 0);
+                foreach (var field in session.CustomFields)
+                {
+                    PropertyInfo prop = schedule.GetType().GetProperty(field.Key);
+                    if (prop == null)
+                        continue;
+                    prop.SetValue(schedule, Convert.ChangeType(field.Value, prop.PropertyType));
+                }
+
+                db.SCHEDULES.Add(schedule);
+                db.SaveChanges();
+                MEMBER member = db.MEMBERS.Where(x => x.EMAIL == session.Presenter.Email).FirstOrDefault();
+                if (member == null)
+                {
+                    member = new MEMBER();
+                    member.FIRSTNAME = session.Presenter.FirstName;
+                    member.LASTNAME = session.Presenter.LastName;
+                    member.FullName = session.Presenter.FirstName + " " + session.Presenter.LastName;
+                    member.EMAIL = session.Presenter.Email;
+                    member.LOGIN = session.Presenter.Email.Substring(0, session.Presenter.Email.IndexOf("@"));
+                    member.CREATED = session.Presenter.CreatedDateTime.ToCentralTime();
+                    member.MODIFIED = session.Presenter.LastModifiedDateTime.ToCentralTime();
+                    member.Menu = "Instructor";
+                    member.INSTRUCTORID = -1;
+                    member.INACTIVE = 0;
+                    db.MEMBERS.Add(member);
+                    db.SaveChanges();
+                }
+                INSTRUCTOR instructor = db.INSTRUCTORS.Where(x => x.InstructorID == member.INSTRUCTORID).FirstOrDefault();
+                if (instructor == null)
+                {
+                    Contact contact = new Contact();
+                    contact.ContactTypeID = 4;
+                    contact.ContactCode = session.Presenter.CodePrimary;
+                    contact.ContactFirstName = session.Presenter.FirstName;
+                    contact.ContactLastName = session.Presenter.LastName;
+                    contact.ContactFullName = session.Presenter.FirstName + " " + session.Presenter.LastName;
+                    contact.Created = session.Presenter.CreatedDateTime.ToCentralTime();
+                    contact.Active = 1;
+                    db.Contacts.Add(contact);
+                    db.SaveChanges();
+                    instructor = new INSTRUCTOR();
+                    instructor.MemberID = member.MEMBERID;
+                    instructor.ContactID = contact.ContactID;
+                    instructor.Active = 1;
+                    instructor.Created = session.Presenter.CreatedDateTime.ToCentralTime();
+                    instructor.CreatedMemberID = member.MEMBERID;
+                    db.INSTRUCTORS.Add(instructor);
+                    db.SaveChanges();
+                }
+                member.INSTRUCTORID = instructor.InstructorID;
+                ScheduleCourseInstructor courseInstructor = new ScheduleCourseInstructor();
+                courseInstructor.CourseID = courseId;
+                courseInstructor.ScheduleID = schedule.ScheduleID;
+                courseInstructor.InstructorID = instructor.InstructorID;
+                db.ScheduleCourseInstructors.Add(courseInstructor);
+                db.SaveChanges();
+            }
         }
     }
 }

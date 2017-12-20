@@ -64,6 +64,11 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
             s.WriteLine("-------------------------------------------------------------------------------------------------------------");
             s.WriteLine("=============================================================================================================");
             s.Close();
-        } 
+        }
+
+        public static DateTime ToCentralTime(this DateTime dt)
+        {
+            return TimeZoneInfo.ConvertTime(dt.ToUniversalTime(), TimeZoneInfo.Utc, TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time"));
+        }
     }
 }

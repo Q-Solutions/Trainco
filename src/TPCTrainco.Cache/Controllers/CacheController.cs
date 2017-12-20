@@ -25,6 +25,8 @@ using Umbraco.Core;
 using System.Net;
 using System.ServiceModel;
 using Umbraco.Core.Services;
+using System.Dynamic;
+using TPCTrainco.Cache.Extension;
 
 namespace TPCTrainco.Cache.Controllers
 {
@@ -40,6 +42,7 @@ namespace TPCTrainco.Cache.Controllers
         public CacheMessage Index(string key)
         {
             logCacheLog();
+            //SyncArloEvents();
             string apiDomain = ConfigurationManager.AppSettings.Get("Cache:UmbracoCourseApiDomain");
             DebugApp("-= CACHE PROCESS START =-", ref DebugStr);
             DebugApp("", ref DebugStr);
@@ -191,30 +194,289 @@ namespace TPCTrainco.Cache.Controllers
             return CacheMessage;
         }
 
-        [HttpGet]
-        public CacheMessage Arlo()
-        {
-            SyncArloEventTemplates();  
-            SyncArloEvents();
-            return CacheMessage;
-        }
-
-        private void SyncArloEventTemplates()
-        {
-            string endPoint = ConfigurationManager.AppSettings.Get("Caching:Arlo:EventTemplate:Url");
-            string username = ConfigurationManager.AppSettings.Get("Caching:Arlo:Username");
-            string password = ConfigurationManager.AppSettings.Get("Caching:Arlo:Password");
-            ArloAPI api = new ArloAPI(endPoint,username,password);
-            EventTemplates oEventTemplates = api.GetArloResponce<EventTemplates>();
-        }
-
         private void SyncArloEvents()
         {
             string endPoint = ConfigurationManager.AppSettings.Get("Caching:Arlo:Events:Url");
             string username = ConfigurationManager.AppSettings.Get("Caching:Arlo:Username");
             string password = ConfigurationManager.AppSettings.Get("Caching:Arlo:Password");
-            ArloAPI api = new ArloAPI(endPoint, username, password);
-            Events oEvents = api.GetArloResponce<Events>();
+            string publicEndpoint = ConfigurationManager.AppSettings.Get("Caching:Arlo:PublicEvents:Url") + "&top=200&includeTotalCount=true&format=json";
+            Dictionary<int, PublicEvent> publicEvents = GetPublicEvents(publicEndpoint);
+            List<Event> events = new List<Event>();
+            events = GetEvents(username, password, endPoint, events);
+            CacheObjects.SaveCourses(events, publicEvents);
+        }
+
+        private Dictionary<int, PublicEvent> GetPublicEvents(string endPoint)
+        {
+            Dictionary<int, PublicEvent> events = new Dictionary<int, PublicEvent>();
+            WebClient client = new WebClient();
+            int totalEvents = 0;
+            int iteratedEvents = 0;
+            do
+            {
+                var response = client.DownloadString(endPoint + "&skip=" + iteratedEvents); 
+                if (string.IsNullOrEmpty(response))
+                    break;
+                PublicEvents oObj = JsonConvert.DeserializeObject<PublicEvents>(response);
+                if (oObj == null)
+                    break;
+                totalEvents = oObj.TotalCount;
+                var items = oObj.Items.ToDictionary(x => x.EventID, x => x);
+                events = events.Union(items).ToDictionary(x => x.Key, x => x.Value);
+                iteratedEvents += oObj.Count;
+            } while (iteratedEvents < totalEvents);
+            return events;
+        }
+
+        private List<Event> GetEvents(string username, string password, string endpoint, List<Event> events)
+        {
+            ArloAPI api = new ArloAPI(endpoint, username, password);
+            dynamic oEvents = api.GetArloResponse();
+            if (oEvents == null || !((IDictionary<String, object>)oEvents).ContainsKey("Events"))
+                return events;
+            foreach (dynamic linkObj in oEvents.Events.Link)
+            {
+                if (linkObj == null)
+                    continue;
+                string rel = ((IDictionary<String, object>)linkObj)["@rel"].ToString();
+                if (rel == "next")
+                {
+                    events = GetEvents(username, password, ((IDictionary<String, object>)linkObj)["@href"].ToString(), events);
+                    break;
+                }
+                if (!((IDictionary<String, object>)linkObj).ContainsKey("Event"))
+                    continue;
+                Event oObj = ((ExpandoObject)linkObj.Event).ToObject<Event>();
+                if (oObj == null)
+                    continue;
+                foreach (dynamic link in oObj.Link)
+                {
+                    IDictionary<String, object> dict = (IDictionary<String, object>)link;
+                    string href = dict["@href"].ToString();
+                    if (!dict.ContainsKey("@title"))
+                        continue;
+                    string title = dict["@title"].ToString();
+                    if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(href))
+                        continue;
+                    switch (title)
+                    {
+                        case "EventTemplate":
+                            oObj.Template = GetEventTemplate(username, password, href);
+                            break;
+                        case "CustomFields":
+                            oObj.CustomFields = GetCustomFields(username, password, href);
+                            break;
+                        case "AdvertisedRegions":
+                            oObj.Region = GetEventRegion(username, password, href);
+                            break;
+                        case "Sessions":
+                            oObj.Sessions = GetEventSessions(username, password, href);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                events.Add(oObj);
+            }
+            return events;
+        }
+
+        private List<Session> GetEventSessions(string username, string password, string href)
+        {
+            ArloAPI api = new ArloAPI(href, username, password);
+            List<Session> sessions = new List<Session>();
+            dynamic oObj = api.GetArloResponse();
+            if (oObj == null || !((IDictionary<String, object>)oObj).ContainsKey("Sessions"))
+                return sessions;
+            foreach (dynamic link in oObj.Sessions.Link)
+            {
+                IDictionary<String, object> dict = (IDictionary<String, object>)link;
+                if (!dict.ContainsKey("@title"))
+                    continue;
+                if (dict["@title"].ToString() == "EventSession")
+                {
+                    ArloAPI sessionApi = new ArloAPI(dict["@href"].ToString(), username, password);
+                    dynamic sessionObj = sessionApi.GetArloResponse();
+                    if (sessionObj == null || !((IDictionary<String, object>)sessionObj).ContainsKey("EventSession"))
+                        continue;
+                    sessions.Add(GetEventSession(username, password, sessionObj));
+                }
+            }
+            return sessions;
+        }
+
+        private Session GetEventSession(string username, string password,dynamic oObj)
+        {
+            Session session = ((ExpandoObject)oObj.EventSession).ToObject<Session>();
+            foreach (dynamic link in session.Link)
+            {
+                IDictionary<String, object> dict = (IDictionary<String, object>)link;
+                string href = dict["@href"].ToString();
+                if (!dict.ContainsKey("@title"))
+                    continue;
+                string title = dict["@title"].ToString();
+                if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(href))
+                    continue;
+                switch (title)
+                {
+                    case "VenueDetails":
+                        session.Venue = GetSessionVenue(username, password, href);
+                        break;
+                    case "CustomFields":
+                        session.CustomFields = GetCustomFields(username, password, href);
+                        break;
+                    case "Presenters":
+                        session.Presenter = GetSessionPresenter(username, password, href);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return session;
+        }
+
+        private ArloContact GetSessionPresenter(string username, string password, string href)
+        {
+            ArloAPI api = new ArloAPI(href, username, password);
+            dynamic oObj = api.GetArloResponse();
+            ArloContact contact = null;
+            if (oObj == null || !((IDictionary<String, object>)oObj).ContainsKey("Contacts"))
+                return null;
+            foreach (dynamic link in oObj.Contacts.Link)
+            {
+                try
+                {
+                    IDictionary<String, object> dict = (IDictionary<String, object>)link;
+                    string linkHref = dict["@href"].ToString();
+                    if (!dict.ContainsKey("@title"))
+                        continue;
+                    string title = dict["@title"].ToString();
+                    if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(linkHref) || title != "Contact")
+                        continue;
+                    ArloAPI contactApi = new ArloAPI(linkHref, username, password);
+                    dynamic contactObj = contactApi.GetArloResponse();
+                    if (contactObj == null || !((IDictionary<String, object>)contactObj).ContainsKey("Contact"))
+                        continue;
+                    contact = ((ExpandoObject)contactObj.Contact).ToObject<ArloContact>();
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
+            }
+            return contact;
+        }
+
+        private Venue GetSessionVenue(string username, string password, string href)
+        {
+            ArloAPI api = new ArloAPI(href, username, password);
+            Venue venue = new Venue();
+            dynamic oObj = api.GetArloResponse();
+            if (oObj == null || !((IDictionary<String, object>)oObj).ContainsKey("EventSessionVenueDetails"))
+                return venue;
+            foreach (dynamic link in oObj.EventSessionVenueDetails.Link)
+            {
+                IDictionary<String, object> dict = (IDictionary<String, object>)link;
+                if (!dict.ContainsKey("@title"))
+                    continue;
+                if (dict["@title"].ToString() == "Venue")
+                {
+                    ArloAPI venueApi = new ArloAPI(dict["@href"].ToString(), username, password);
+                    dynamic venueObj = venueApi.GetArloResponse();
+                    if (venueObj == null || !((IDictionary<String, object>)venueObj).ContainsKey("Venue"))
+                        continue;
+                    venue = ((ExpandoObject)venueObj.Venue).ToObject<Venue>();
+                    foreach (dynamic venueLink in venue.Link)
+                    {
+                        IDictionary<String, object> venueDict = (IDictionary<String, object>)venueLink;
+                        if (!venueDict.ContainsKey("@title"))
+                            continue;
+                        ArloAPI addressApi = new ArloAPI(venueDict["@href"].ToString(), username, password);
+                        switch(venueDict["@title"].ToString()) 
+                        {
+                            case "PhysicalAddress":
+                                dynamic addressoObj = addressApi.GetArloResponse();
+                                if (addressoObj == null || !((IDictionary<String, object>)addressoObj).ContainsKey("Address"))
+                                    continue;
+                                venue.PhysicalAddress = ((ExpandoObject)addressoObj.Address).ToObject<Address>();
+                                break;
+                            case "FacilityInformation":
+                                dynamic facilityObj = addressApi.GetArloResponse();
+                                if (facilityObj == null || !((IDictionary<String, object>)facilityObj).ContainsKey("VenueFacilityInformation"))
+                                    continue;
+                                venue.Description = Convert.ToString(facilityObj.VenueFacilityInformation.Directions);
+                                break;
+                        }
+                    }
+                    break;
+                }
+            }
+            return venue;
+        }
+
+        private Region GetEventRegion(string username, string password, string href)
+        {
+            ArloAPI api = new ArloAPI(href, username, password);
+            Region region = null;
+            dynamic oObj = api.GetArloResponse();
+            if (oObj == null || !((IDictionary<String, object>)oObj).ContainsKey("Regions"))
+                return region;
+            foreach (dynamic link in oObj.Regions.Link)
+            {
+                IDictionary<String, object> dict = (IDictionary<String, object>)link;
+                if (!dict.ContainsKey("@title"))
+                    continue;
+                if (dict["@title"].ToString() == "Region")
+                {
+                    ArloAPI regionApi = new ArloAPI(dict["@href"].ToString(), username, password);
+                    dynamic regionObj = regionApi.GetArloResponse();
+                    if (regionObj == null || !((IDictionary<String, object>)regionObj).ContainsKey("Region"))
+                        continue;
+                    region = ((ExpandoObject)regionObj.Region).ToObject<Region>();
+                    break;
+                }
+            }
+            return region;
+        }
+
+        private EventTemplate GetEventTemplate(string username, string password, string href)
+        {
+            ArloAPI api = new ArloAPI(href, username, password);
+            dynamic oObj = api.GetArloResponse();
+            if (oObj == null || !((IDictionary<String, object>)oObj).ContainsKey("EventTemplate"))
+                return null;
+            return ((ExpandoObject)oObj.EventTemplate).ToObject<EventTemplate>();
+        }
+
+        private Dictionary<string, string> GetCustomFields(string username, string password, string href)
+        {
+            Dictionary<string, string> customFields = new Dictionary<string, string>();
+            ArloAPI api = new ArloAPI(href, username, password);
+            dynamic oObj = api.GetArloResponse();
+            if (oObj == null || !((IDictionary<String, object>)oObj).ContainsKey("CustomFields"))
+                return customFields;
+            IDictionary<String, object> dict = (IDictionary<String, object>)oObj.CustomFields;
+            if (!dict.ContainsKey("Field"))
+                return customFields;
+            List<object> fields = new List<object>();
+            if (dict["Field"].GetType() == typeof(ExpandoObject))
+                fields.Add(dict["Field"]);
+            else
+                fields = dict["Field"] as List<object>;
+            foreach (dynamic field in fields)
+            {
+                IDictionary<String,object> fieldDict = (IDictionary<String,object>) field;
+                if (!fieldDict.ContainsKey("Name") || !fieldDict.ContainsKey("Value"))
+                    continue;
+                customFields.Add(field.Name.ToString(), field.Value.String);
+            }
+            return customFields;
+        }
+
+        private void SaveCourse(Event oEvent)
+        {
+
         }
 
         private void ProcessCourses()

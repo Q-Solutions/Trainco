@@ -59,5 +59,8 @@ namespace TPCTrainco.Umbraco.Extensions
         public Nullable<decimal> OtherFixedCost { get; set; }
         public Nullable<decimal> PerStudentCost { get; set; }
         public Nullable<decimal> TotalFixedCost { get; set; }
+        public string ArloID { get; set; }
+        public string ViewUri { get; set; }
+        public string RegisterUri { get; set; }
     }
 }

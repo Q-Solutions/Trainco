@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Net;
 using System.ServiceModel;
@@ -33,10 +34,10 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             this.password = password;
         }
 
-        public T GetArloResponce<T>() where T : class, new()
+        public dynamic GetArloResponse()
         {
             string results = "<Result>NotFound</Result>";
-            T typeObj = null;
+            dynamic typeObj = null;
             try
             {
                 using (WebClientExtended webEx = new WebClientExtended())
@@ -50,7 +51,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     webEx.QueryString.Clear();
                     webEx.Encoding = Encoding.UTF8;
                     results = webEx.DownloadString(new Uri(_endpointAddress.ToString(), UriKind.Absolute));
-                    typeObj = ReadXMLSchema<T>(results);
+                    typeObj = ReadXMLSchema(results);
                 }
             }
             catch (Exception ex)
@@ -60,19 +61,21 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             return typeObj;
         }
 
-        public T ReadXMLSchema<T>(string ThisXml) where T : class, new()
+        public dynamic ReadXMLSchema(string ThisXml)
         {
             XDocument doc = XDocument.Parse(ThisXml);
-            T typeObj = Deserialize<T>(doc);
-            return typeObj;
+            string jsonText = JsonConvert.SerializeXNode(doc);
+            return JsonConvert.DeserializeObject<ExpandoObject>(jsonText);
+            //T typeObj = Deserialize(doc);
+            //return typeObj;
         }
 
-        private T Deserialize<T>(XDocument data) where T : class, new()
-        {
-            if (data == null)
-                return null;
-            var ser = new XmlSerializer(typeof(T));
-            return (T)ser.Deserialize(data.CreateReader());
-        }
+        //private T Deserialize(XDocument data)
+        //{
+        //    if (data == null)
+        //        return null;
+        //    var ser = new XmlSerializer(typeof(T));
+        //    return (T)ser.Deserialize(data.CreateReader());
+        //}
     }
 }

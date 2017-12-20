@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -202,6 +203,54 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
             catch { }
 
             return dtExpire;
+        }
+
+        public static double ToDateQuarter(DateTime date)
+        {
+            double quarter = 0;
+            int month = date.Month;
+            if (month <= 3)
+                quarter = 1;
+            else if (month > 3 && month <= 6)
+                quarter = 2;
+            else if (month > 6 && month <= 9)
+                quarter = 3;
+            else
+                quarter = 4;
+            return quarter;
+        }
+
+        public static string GetDateDescription(DateTime startDate, DateTime endDate)
+        {
+            string description = "";
+            if (startDate == endDate)
+                description = startDate.ToString("MMM dd, yyyy");
+            else
+            {
+                if (startDate.Month == endDate.Month)
+                    description = startDate.ToString("MMM dd") + "-" + endDate.ToString("dd, yyyy");
+                else if(startDate.Year != endDate.Year)
+                    description = startDate.ToString("MMM dd, yyyy") + "-" + endDate.ToString("MMM dd, yyyy");
+                else
+                    description = startDate.ToString("MMM dd") + "-" + endDate.ToString("MMM dd, yyyy");
+            }
+            return description;
+        }
+
+        public static string GetDateDays(DateTime startDate, DateTime endDate)
+        {
+            string[] weekDays = new String[] { "SU", "M", "T", "W", 
+                                                "R", "F", "S" };
+            List<string> days = new List<string>();
+            for (DateTime date = startDate; date.Date <= endDate.Date; date = date.AddDays(1))
+                days.Add(weekDays[(int) date.DayOfWeek]);
+            return string.Join(",",days);
+        }
+
+        public static DateTime StartOfWeek(DateTime dt, DayOfWeek startOfWeek)
+        {
+            int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+            return dt.AddDays(-1 * diff).Date;
         }
     }
 }

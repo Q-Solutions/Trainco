@@ -183,6 +183,7 @@
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Channels" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Cors, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -303,6 +304,9 @@
     <Compile Include="City.cs">
       <DependentUpon>TPCTraincoModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Contact.cs">
+      <DependentUpon>TPCTraincoModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CacheUpdateController.cs" />
     <Compile Include="Controllers\CitiesController.cs" />
@@ -359,10 +363,16 @@
     <Compile Include="Helpers\WebDownload.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="INSTRUCTOR.cs">
+      <DependentUpon>TPCTraincoModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Location.cs">
       <DependentUpon>TPCTraincoModel.tt</DependentUpon>
     </Compile>
     <Compile Include="LocationType.cs">
+      <DependentUpon>TPCTraincoModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MEMBER.cs">
       <DependentUpon>TPCTraincoModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Account\BillingModel.cs" />
