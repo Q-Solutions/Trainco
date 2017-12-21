@@ -255,7 +255,8 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
 
             result.SeminarId = locationScheduleDetail.SeminarId;
             result.SeminarTitle = locationScheduleDetail.SeminarTitle;
-
+            result.RegisterUri = locationScheduleDetail.RegisterUri;
+            result.ViewUri = locationScheduleDetail.ViewUri;
             return result;
         }
 

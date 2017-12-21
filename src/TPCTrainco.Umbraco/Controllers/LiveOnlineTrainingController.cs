@@ -48,9 +48,9 @@ namespace TPCTrainco.Umbraco.Controllers
                     throw new Exception("");
                 }
                 string registrantKey = Registrations.RegisterTrainingAttendee(model.InvoiceNumber, new Dictionary<string, string>() { { "email", model.Email }, { "givenName", model.FirstName }, { "surname", model.LastName } });
-                Registrations.AddGotoTrainingRegistrant(model, registrantKey);
                 if (string.IsNullOrEmpty(registrantKey))
                     throw new Exception("");
+                Registrations.AddGotoTrainingRegistrant(model, registrantKey);
                 TempData["success"] = "You have registered for this training successfully";
                 return RedirectToCurrentUmbracoPage();
             }

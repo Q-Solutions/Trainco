@@ -42,7 +42,7 @@ namespace TPCTrainco.Cache.Controllers
         public CacheMessage Index(string key)
         {
             logCacheLog();
-            //SyncArloEvents();
+            SyncArloEvents();
             string apiDomain = ConfigurationManager.AppSettings.Get("Cache:UmbracoCourseApiDomain");
             DebugApp("-= CACHE PROCESS START =-", ref DebugStr);
             DebugApp("", ref DebugStr);
@@ -753,6 +753,8 @@ namespace TPCTrainco.Cache.Controllers
                                     locationScheduleDetail.Distance = 0;
                                     locationScheduleDetail.SeminarId = courseID;
                                     locationScheduleDetail.SeminarTitle = legacyCourse.TitlePlain;
+                                    locationScheduleDetail.RegisterUri = course.RegisterUri;
+                                    locationScheduleDetail.ViewUri = course.ViewUri;
                                 }
                                 locationScheduleDetailList.Add(locationScheduleDetail);
                             }

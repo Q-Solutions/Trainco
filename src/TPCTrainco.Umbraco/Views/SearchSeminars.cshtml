@@ -11,9 +11,6 @@
 
 
 @Html.Partial("Messages/MessagesTop", currentPage)
-<div class="register-cart-wrap">
-  <shopping-cart></shopping-cart>
-</div>
 <div class="ng-cloak register-page" ng-controller="RegisterController as ctrl">
   <div class="responsive-sidebar-toggle">
     <img class="img-left" src="/assets/images/icon-search.png" alt="Search Icon" /> Search By
@@ -172,9 +169,9 @@
                   </div>
               </section>
               <section class="row result-table-head">
-                  <div class="col-md-5 col-sm-10 col-xs-9">Location</div>
-                  <div class="col-xs-5 hide-responsive">Seminar Information</div>
-                  <div class="col-sm-2 col-xs-3 result-attendee-wrapper">Attendees</div>
+                  <div class="col-md-4 col-sm-9 col-xs-8">Location</div>
+                  <div class="col-md-5 hidden-xs hidden-sm">Seminar Information</div>
+                  <div class="col-sm-3 col-md-3 col-xs-4 result-attendee-wrapper">Attendees</div>
               </section>
             <section class="row result-table-body simulcast" ng-if="course.simulcastSchedules.length > 0">
                 <h3 class="no-margin">Simulcast Courses <span><span class="small btn-learnmore" ng-click="ctrl.toggleSimulcastDescription($event)">( <span class="action">+</span> What's a simulcast? )</span></span></h3>
@@ -184,24 +181,20 @@
                     <p>Simulcast students receive all classroom materials electronically, full technical support during the event, a certificate of completion for 1.6 CEUs, and the same No-Risk Registration and Money-Back Guarantee as our classroom students.</p>
                 </div>
                 <hr class="no-margin"/>
-                <div class="result-location-row" ng-repeat="location in course.simulcastSchedules">
-                    <div class="col-md-5 col-sm-10 col-xs-9 result-location">
+                <div class="result-location-row row" ng-repeat="location in course.simulcastSchedules">
+                    <div class="col-md-4 col-sm-9 col-xs-8 result-location">
                         <span class="city">{{::location.city}}</span>
                         <span class="date-responsive">{{::location.date}}</span>
                     </div>
-                    <div class="col-xs-5 result-date">
+                    <div class="hidden-xs hidden-sm col-md-5 result-date">
                         {{::location.date}}
                         <span>{{location.locationDetails}}</span>
                     </div>
 
-                    <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
-                        <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
-                        <input class="cart-btn btn btn-reg btn-blue-solid"
-                                type="button"
-                                value="Add to Cart"
-                                ng-show="location.qty > 0"
-                                ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
+                    <div class="col-md-3 col-sm-3 col-xs-4 result-attendee-wrapper">
+                        <a class="btn btn-reg btn-blue-solid btn-block" href="{{ location.registerUri }}">Register</a>
                     </div>
+                    <div class="clearfix"></div>
                 </div>
             </section>
             <section class="row result-table-body simulcast" ng-if="course.liveOnlineSchedules.length > 0">
@@ -212,49 +205,41 @@
                     <p>Simulcast students receive all classroom materials electronically, full technical support during the event, a certificate of completion for 1.6 CEUs, and the same No-Risk Registration and Money-Back Guarantee as our classroom students.</p>
                 </div>
                 <hr class="no-margin" />
-                <div class="result-location-row" ng-repeat="location in course.liveOnlineSchedules">
-                    <div class="col-md-5 col-sm-10 col-xs-9 result-location">
+                <div class="result-location-row row" ng-repeat="location in course.liveOnlineSchedules">
+                    <div class="col-md-4 col-sm-9 col-xs-8 result-location">
                         <span class="city">{{::location.city}}</span>
-                        <span class="date-responsive">{{::location.date}}</span>
+                        <span class="visible-xs visible-sm">{{::location.date}}</span>
                     </div>
-                    <div class="col-xs-5 result-date">
+                    <div class="hidden-xs hidden-sm col-md-5 result-date">
                         {{::location.date}}
                         <span>{{location.locationDetails}}</span>
                     </div>
 
-                    <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
-                        <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
-                        <input class="cart-btn btn btn-reg btn-blue-solid"
-                               type="button"
-                               value="Add to Cart"
-                               ng-show="location.qty > 0"
-                               ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
+                    <div class="col-md-3 col-sm-3 col-xs-4 result-attendee-wrapper">
+                        <a class="btn btn-reg btn-blue-solid btn-block" href="{{ location.registerUri }}">Register</a>
                     </div>
+                    <div class="clearfix"></div>
                 </div>
             </section>
             <section class="row result-table-body" ng-if="course.locationSchedules.length > 0">
                 <h3 class="no-margin">Classroom Courses</h3>
                 <hr class="no-margin"/>
-                <div class="result-location-row"
+                <div class="result-location-row row"
                     ng-repeat="location in course.locationSchedules | limitTo: ctrl.limits[course.id].limit">
-                    <div class="col-md-5 col-sm-10 col-xs-9 result-location">
+                    <div class="col-md-4 col-sm-9 col-xs-8 result-location">
                         <span class="state">{{::location.state}}</span>
                         <span class="city">{{::location.city}}</span>
                         <span class="date-responsive">{{::location.date}}</span>
                     </div>
-                    <div class="col-xs-5 result-date">
+                    <div class="hidden-xs hidden-sm col-md-5 result-date">
                         {{::location.date}}
                         <span>{{location.locationDetails}}</span>
                     </div>
 
-                    <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
-                        <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
-                        <input class="cart-btn btn btn-reg btn-blue-solid"
-                                type="button"
-                                value="Add to Cart"
-                                ng-show="location.qty > 0"
-                                ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
+                    <div class="col-md-3 col-sm-3 col-xs-4 result-attendee-wrapper">
+                        <a class="btn btn-reg btn-blue-solid btn-block" href="{{ location.registerUri }}">Register</a>
                     </div>
+                    <div class="clearfix"></div>
                 </div>
                 @*<span class="additional-showing" ng-if="course.locationSchedules.length > 10" ng-click="ctrl.additionalClick()"><i class="fa fa-plus-circle"></i> Show additional seminars for this topic</span>*@
                 <span class="additional-showing" ng-if="ctrl.showAdditional(course.id)" ng-click="ctrl.additionalClick(course.id,$event)"><i class="fa fa-plus-circle"></i> Show additional seminars for this topic</span>
