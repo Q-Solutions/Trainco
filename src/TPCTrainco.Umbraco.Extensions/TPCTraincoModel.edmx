@@ -220,6 +220,7 @@
           <Property Name="OpenID" Type="int" />
           <Property Name="SimulcastID" Type="int" />
           <Property Name="LiveOnlineID" Type="int" />
+          <Property Name="EventCode" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="COURSES">
           <Key>
@@ -273,6 +274,7 @@
           <Property Name="TotalFixedCost" Type="numeric" Precision="10" Scale="0" StoreGeneratedPattern="Computed" />
           <Property Name="ViewUri" Type="varchar" MaxLength="200" />
           <Property Name="RegisterUri" Type="varchar" MaxLength="200" />
+          <Property Name="EventCode" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="CourseTopics">
           <Key>
@@ -1160,6 +1162,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Property Name="ArloID" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ViewUri" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="RegisterUri" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="EventCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
@@ -1753,6 +1756,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Property Name="OpenID" Type="Int32" />
           <Property Name="SimulcastID" Type="Int32" />
           <Property Name="LiveOnlineID" Type="Int32" />
+          <Property Name="EventCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="SeminarCitiesActive">
           <Key>
@@ -2021,6 +2025,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySetMapping Name="COURSES">
             <EntityTypeMapping TypeName="americantraincoModel.COURS">
               <MappingFragment StoreEntitySet="COURSES">
+                <ScalarProperty Name="EventCode" ColumnName="EventCode" />
                 <ScalarProperty Name="RegisterUri" ColumnName="RegisterUri" />
                 <ScalarProperty Name="ViewUri" ColumnName="ViewUri" />
                 <ScalarProperty Name="ArloID" ColumnName="ArloID" />
@@ -2606,6 +2611,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySetMapping Name="CourseRelations">
             <EntityTypeMapping TypeName="americantraincoModel.CourseRelation">
               <MappingFragment StoreEntitySet="CourseRelations">
+                <ScalarProperty Name="EventCode" ColumnName="EventCode" />
                 <ScalarProperty Name="LiveOnlineID" ColumnName="LiveOnlineID" />
                 <ScalarProperty Name="SimulcastID" ColumnName="SimulcastID" />
                 <ScalarProperty Name="OpenID" ColumnName="OpenID" />

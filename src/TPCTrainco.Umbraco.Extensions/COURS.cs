@@ -62,5 +62,6 @@ namespace TPCTrainco.Umbraco.Extensions
         public string ArloID { get; set; }
         public string ViewUri { get; set; }
         public string RegisterUri { get; set; }
+        public string EventCode { get; set; }
     }
 }

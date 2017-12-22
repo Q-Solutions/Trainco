@@ -18,5 +18,6 @@ namespace TPCTrainco.Umbraco.Extensions
         public Nullable<int> OpenID { get; set; }
         public Nullable<int> SimulcastID { get; set; }
         public Nullable<int> LiveOnlineID { get; set; }
+        public string EventCode { get; set; }
     }
 }

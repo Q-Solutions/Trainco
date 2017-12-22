@@ -62,7 +62,7 @@ if (seminarNodeList != null && seminarNodeList.Count() > 0)
     {
         COURS course = TPCTrainco.Umbraco.Extensions.Objects.CacheObjects.GetCourseList().Where(p => p.CourseID == seminarNode.GetPropertyValue<int>("courseLink")).FirstOrDefault();
 
-        if (course != null)
+        if (course != null && !string.IsNullOrEmpty(course.CourseFeeDescription))
         {
             cost = course.CourseFeeDescription.Replace(Environment.NewLine, " / ").ToLower();
         }

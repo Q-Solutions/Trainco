@@ -532,12 +532,12 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             return output;
         }
 
-        public static List<CourseRelation> GetCourseRelations()
+        public static Dictionary<int,int> GetCourseRelations()
         {
-            List<CourseRelation> courseRelations = new List<CourseRelation>();
+            Dictionary<int, int> courseRelations = new Dictionary<int, int>();
             using (var db = new americantraincoEntities())
             {
-                courseRelations = db.CourseRelations.Where(p => p.OpenID.HasValue && p.SimulcastID.HasValue).ToList();
+                courseRelations = db.CourseRelations.Join(db.COURSES, cr => cr.EventCode, c => c.EventCode, (cr, c) => new { SimulcastId = cr.SimulcastID, OpenId = c.CourseID }).Where(x => x.SimulcastId.HasValue).ToDictionary(x => x.SimulcastId.Value, x => x.OpenId);
             }
             return courseRelations;
         }
@@ -565,6 +565,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
         public static bool SaveCourses(List<Event> oEvents,Dictionary<int,PublicEvent> publicEvents)
         {
             bool bSaved = false;
+            Dictionary<int, string> parentEvents = new Dictionary<int, string>();
             using (TransactionScope scope = new TransactionScope()) 
             { 
                 using (var db = new americantraincoEntities())
@@ -586,14 +587,15 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                             db.ScheduleCourseInstructors.RemoveRange(db.ScheduleCourseInstructors.Where(x => x.CourseID == course.CourseID));
                         }
                         course.ArloID = eventObj.UniqueIdentifier;
+                        course.EventCode = eventObj.Code;
                         course.CourseTitle = eventObj.Template.Name;
                         course.CourseSubtitle = eventObj.Description;
                         CourseFormat format = db.CourseFormats.Where(x => x.CourseFormatName == eventObj.Template.AdvertisedDuration).FirstOrDefault();
                         course.CourseFormatID = format != null ? format.CourseFormatID : 0;
-                        bool bSimulcast = eventObj.Template.Name.ToLower().Contains("simlcast");
-                        if (eventObj.CustomFields.ContainsKey("CourseType"))
+                        bool bSimulcast = eventObj.Template.Name.ToLower().Contains("simulcast");
+                        if (eventObj.CustomFields.ContainsKey("coursetype"))
                         {
-                            CourseType type = db.CourseTypes.Where(x => x.CourseTypeName.ToLower() == eventObj.CustomFields["CourseType"].ToLower()).FirstOrDefault();
+                            CourseType type = db.CourseTypes.Where(x => x.CourseTypeName.ToLower() == eventObj.CustomFields["coursetype"].ToLower()).FirstOrDefault();
                             course.CourseTypeID = type != null ? type.CourseTypeID : 0;
                         }
                         Country country = db.Countries.Where(x => x.CountryCode == eventObj.Region.ShortName).FirstOrDefault();
@@ -636,6 +638,14 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                         if (bCreated)
                             db.COURSES.Add(course);
                         db.SaveChanges();
+                        if (eventObj.CustomFields.ContainsKey("parenteventcode"))
+                        {
+                            CourseRelation relation = new CourseRelation();
+                            relation.SimulcastID = course.CourseID;
+                            relation.EventCode = eventObj.CustomFields["parenteventcode"];
+                            db.CourseRelations.Add(relation);
+                            db.SaveChanges();
+                        }
                         if (eventObj.Sessions != null && eventObj.Sessions.Count > 0)
                             SaveSchedules(course.CourseID, eventObj.Sessions, db);
                     }
