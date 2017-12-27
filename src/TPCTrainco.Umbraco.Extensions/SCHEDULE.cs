@@ -45,5 +45,10 @@ namespace TPCTrainco.Umbraco.Extensions
         public string Ops_Status { get; set; }
         public Nullable<System.DateTime> CorpDisk_Processed { get; set; }
         public string TrainingKey { get; set; }
+        public string ArloIdentifier { get; set; }
+        public Nullable<int> ArloSessionID { get; set; }
+        public string ViewUri { get; set; }
+        public string RegisterUri { get; set; }
+        public string EventCode { get; set; }
     }
 }

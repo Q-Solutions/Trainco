@@ -7,6 +7,7 @@ using TPCTrainco.Umbraco.Extensions.Helpers;
 using TPCTrainco.Umbraco.Extensions.Models;
 using Umbraco.Core.Models;
 using Umbraco.Web;
+using Umbraco.Core.Services;
 
 namespace TPCTrainco.Umbraco.Extensions.Controllers.v2
 {
@@ -110,6 +111,49 @@ namespace TPCTrainco.Umbraco.Extensions.Controllers.v2
             }
 
             return seminarCourseList;
+        }
+
+        [HttpGet]
+        public void LinkSeminarToCourse()
+        {
+            try
+            {
+                UmbracoHelper UmbracoHelperObj = new UmbracoHelper(UmbracoContext.Current);
+                var contentService = new ContentService();
+                IEnumerable<IPublishedContent> seminarList = Helpers.Nodes.Instance.SeminarItems;
+                seminarList = Helpers.Nodes.SeminarItemList();
+                if (seminarList == null && seminarList.Count() == 0)
+                    return;
+                Dictionary<int, string> dtCourses = new Dictionary<int, string>();
+                using(var db = new americantraincoEntities()) {
+                    dtCourses = db.COURSES.Where(x => x.Active == 1).ToDictionary(x => x.CourseID, x => x.CourseTitle.ToLower());
+                }
+                if (dtCourses.Count == 0)
+                    return;
+                foreach (IPublishedContent seminarItem in seminarList)
+                {
+                    if (seminarItem == null)
+                        continue;
+                    int courseLink = seminarItem.GetPropertyValue<int>("courseLink");
+                    if (courseLink != 0 && dtCourses.ContainsKey(courseLink))
+                        continue;
+                    string title = seminarItem.Name;
+                    if(!string.IsNullOrEmpty(title))
+                        title = title.ToLower().Trim();
+                    var item = dtCourses.Where(x => title.Contains(x.Value)).FirstOrDefault();
+                    if (string.IsNullOrEmpty(item.Value))
+                        continue;
+                    var node = contentService.GetById(seminarItem.Id);
+                    if (node == null)
+                        continue;
+                    node.SetValue("courseLink", item.Key);
+                    contentService.SaveAndPublishWithStatus(node);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
 

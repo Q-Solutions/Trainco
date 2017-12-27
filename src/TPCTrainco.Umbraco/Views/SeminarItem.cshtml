@@ -96,22 +96,22 @@
 </div>
 
 <!-- include the cart template -->
-<div ng-include src="'/assets/js/ngapp/components/cart/cart.html'"></div>
+@*<div ng-include src="'/assets/js/ngapp/components/cart/cart.html'"></div>*@
 <!-- end include the cart template -->
 <div class="container-fluid gradient-bg main-content">
     <div class="row">
         <div class="col-md-8 col-md-offset-2 text-wrap" id="overview">
 
             <div class="row" ng-controller="SeminarItemController as vm">
-              <div class="col-md-10">
+              <div class="col-md-12">
                 <h2>Seminar Overview</h2>
                 @CurrentPage.seminarOverview
               </div>
-              <div class="col-md-2">
+              @*<div class="col-md-2">
                 <button class="btn-reg btn-blue-solid" ng-model="vm.savedBtn"
                   ng-click="vm.saveCourseToUser()" ng-show="vm.saveBtn">Save</button>
                 <span ng-show="!vm.saveBtn"><strong>Saved!</strong><br /><a href="/dashboard/saved">View My Saved Seminars</a></span>
-              </div>
+              </div>*@
             </div>
             @if (course != null && courseFormat != null)
             {
@@ -240,30 +240,6 @@
                     @seminarContainer.blockCopy
                 </div>
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
     </div>
 

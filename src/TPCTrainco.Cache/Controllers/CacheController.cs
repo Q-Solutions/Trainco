@@ -340,7 +340,6 @@ namespace TPCTrainco.Cache.Controllers
 
                 List<COURS> courseList = CacheObjects.GetCourseList(true);
 
-
                 DebugApp("Umbraco Course Detail List...", ref DebugStr);
                 List<UmbracoCourseDetail> umbracoCourseDetailList = GetUmbracoCourseDetailList();
 
@@ -498,6 +497,14 @@ namespace TPCTrainco.Cache.Controllers
             json = response.Content.ReadAsStringAsync().Result;
 
             return JsonConvert.DeserializeObject<List<UmbracoCourseDetail>>(json);
+        }
+
+        private void LinkSeminarsToCourses()
+        {
+            HttpClient client = new HttpClient();
+            string apiDomain = ConfigurationManager.AppSettings.Get("Cache:UmbracoCourseApiDomain");
+            HttpResponseMessage response = client.GetAsync(apiDomain + "/api/contents/LinkSeminarToCourse").Result;
+            response.EnsureSuccessStatusCode();
         }
 
 

@@ -24,7 +24,7 @@ namespace TPCTrainco.Umbraco.Extensions.ViewModels
 
                 if (courseList != null)
                 {
-                    courseList = courseList.Where(p => p.CourseTopicID == Id).ToList();
+                    courseList = courseList.Where(p => p.Active == 1 && p.CourseTopicID == Id).ToList();
 
                     if (courseList != null)
                     {
