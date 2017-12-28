@@ -267,7 +267,7 @@ namespace TPCTrainco.Cache.Controllers
                                 dynamic facilityObj = addressApi.GetArloResponse();
                                 if (facilityObj == null || !((IDictionary<String, object>)facilityObj).ContainsKey("VenueFacilityInformation"))
                                     continue;
-                                venue.Description = Convert.ToString(facilityObj.VenueFacilityInformation.Directions);
+                                venue.Description = Convert.ToString(facilityObj.VenueFacilityInformation.Directions.Content);
                                 break;
                         }
                     }

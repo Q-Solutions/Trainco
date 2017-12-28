@@ -50,5 +50,6 @@ namespace TPCTrainco.Umbraco.Extensions
         public string ViewUri { get; set; }
         public string RegisterUri { get; set; }
         public string EventCode { get; set; }
+        public Nullable<int> CourseID { get; set; }
     }
 }

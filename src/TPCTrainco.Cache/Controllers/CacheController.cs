@@ -442,7 +442,7 @@ namespace TPCTrainco.Cache.Controllers
                                     locationScheduleDetail.DaysTitle = CacheObjects.GetDaysTitle(course.CourseFormatID);
                                     locationScheduleDetail.DaysDescription = course.CertTitle1 + (false == string.IsNullOrWhiteSpace(course.CertTitle2) ? " - " + course.CertTitle2 : "");
                                     locationScheduleDetail.Date = legacySchedule.ScheduleDateDescription;
-                                    locationScheduleDetail.Price = Convert.ToDouble(scheduleCourse.CourseFee);
+                                    locationScheduleDetail.Price = Convert.ToDouble(legacyCourse.CourseFee);
                                     locationScheduleDetail.Description = course.GoogleDesc ?? course.TitlePlain;
 
                                     locationScheduleDetail.City = legacyCity.CityName;
@@ -466,8 +466,8 @@ namespace TPCTrainco.Cache.Controllers
                                     locationScheduleDetail.Distance = 0;
                                     locationScheduleDetail.SeminarId = courseID;
                                     locationScheduleDetail.SeminarTitle = legacyCourse.TitlePlain;
-                                    locationScheduleDetail.RegisterUri = course.RegisterUri;
-                                    locationScheduleDetail.ViewUri = course.ViewUri;
+                                    locationScheduleDetail.RegisterUri = legacySchedule.RegisterUri;
+                                    locationScheduleDetail.ViewUri = legacySchedule.ViewUri;
                                 }
                                 locationScheduleDetailList.Add(locationScheduleDetail);
                             }

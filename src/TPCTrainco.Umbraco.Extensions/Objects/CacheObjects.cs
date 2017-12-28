@@ -537,7 +537,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             Dictionary<int, int> courseRelations = new Dictionary<int, int>();
             using (var db = new americantraincoEntities())
             {
-                courseRelations = db.CourseRelations.Join(db.COURSES, cr => cr.EventCode, c => c.EventCode, (cr, c) => new { SimulcastId = cr.SimulcastID, OpenId = c.CourseID }).Where(x => x.SimulcastId.HasValue).DistinctBy(x => x.SimulcastId).ToDictionary(x => x.SimulcastId.Value, x => x.OpenId);
+                courseRelations = db.CourseRelations.Join(db.SCHEDULES, cr => cr.EventCode, c => c.EventCode, (cr, c) => new { SimulcastId = cr.SimulcastID, OpenId = c.CourseID }).Where(x => x.SimulcastId.HasValue && x.OpenId.HasValue).DistinctBy(x => x.SimulcastId).ToDictionary(x => x.SimulcastId.Value, x => x.OpenId.Value);
             }
             return courseRelations;
         }
@@ -610,7 +610,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                             course.Acronym = eventObj.Template.Code;
                             course.Active = (eventObj.Status.ToLower() == "active" ? 1 : 0);
                             course.Modified = DateTime.UtcNow;
-                            course.CourseFee = Convert.ToInt32(offers[0].OfferAmount["AmountTaxInclusive"]);
+                            course.CourseFee = fee;
                             course.CourseFeeDescription = offers[0].Label;
                             foreach (var field in eventObj.CustomFields)
                             {
@@ -646,7 +646,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                                 db.SaveChanges();
                             }
                             if (eventObj.Sessions != null && eventObj.Sessions.Count > 0)
-                                SaveSchedules(course.CourseID, eventObj.UniqueIdentifier, publicEvent.ViewUri, publicEvent.RegistrationInfo["RegisterUri"], eventObj.Code, eventObj.Sessions, db);
+                                SaveSchedules(course.CourseID, eventObj.UniqueIdentifier, publicEvent.ViewUri, publicEvent.RegistrationInfo["RegisterUri"], eventObj.Code, fee, eventObj.Sessions, db);
                         }
                     }
                     scope.Complete();
@@ -659,7 +659,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             return bSaved;
         }
 
-        public static void SaveSchedules(int courseId, string identifier, string viewUri, string registerUri, string eventCode, List<Session> sessions,americantraincoEntities db)
+        public static void SaveSchedules(int courseId, string identifier, string viewUri, string registerUri, string eventCode, decimal CourseFee, List<Session> sessions,americantraincoEntities db)
         {
             try
             {
@@ -668,7 +668,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     if (session.Status.ToLower() != "active" || session.Presenter == null || session.Presenter.Status.ToLower() != "active")
                         continue;
                     int sessionId = Convert.ToInt32(session.SessionID);
-                    SCHEDULE schedule = db.SCHEDULES.Where(x => x.ArloIdentifier == identifier && x.ArloSessionID == sessionId).FirstOrDefault();
+                    SCHEDULE schedule = db.SCHEDULES.Where(x => x.CourseID == courseId && x.ArloSessionID == sessionId).FirstOrDefault();
                     bool bCreated = false;
                     if (schedule == null)
                     {
@@ -684,8 +684,20 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     DateTime finishDate = session.FinishDateTime.ToCentralTime();
                     schedule.Modified = session.LastModifiedDateTime;
                     Location location = db.Locations.Where(x => x.LocationName.ToLower() == session.Venue.Name.ToLower()).FirstOrDefault();
+                    if (location == null)
+                    {
+                        location = new Location();
+                        location.LocationTypeID = 1;
+                        location.LocationName = session.Venue.Name;
+                        location.LocationNotes = session.Venue.Description;
+                        location.Active = session.Venue.Status.ToLower() == "active" ? 1 : 0;
+                        location.Created = session.Venue.CreatedDateTime;
+                        location.CreatedMemberID = 0;
+                        db.Locations.Add(location);
+                        db.SaveChanges();
+                    }
                     schedule.LocationID = (location != null ? location.LocationID : 0);
-                    City city = db.Cities.Where(x => x.CityName == session.Venue.PhysicalAddress.City).FirstOrDefault();
+                    City city = db.Cities.Where(x => x.CityName.ToLower() == session.Venue.PhysicalAddress.City.ToLower()).FirstOrDefault();
                     schedule.CityID = (city != null ? city.CityID : 0);
                     State state = db.States.Where(x => x.StateAbbreviation == session.Venue.PhysicalAddress.StateOrProvince).FirstOrDefault();
                     schedule.StateID = (state != null ? state.StateID : 0);
@@ -705,6 +717,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     schedule.EventCode = eventCode;
                     schedule.ViewUri = viewUri;
                     schedule.RegisterUri = registerUri;
+                    schedule.CourseID = courseId;
                     if(bCreated)
                         db.SCHEDULES.Add(schedule);
                     db.SaveChanges();
@@ -750,7 +763,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     member.INSTRUCTORID = instructor.InstructorID;
                     ScheduleCourseInstructor courseInstructor = db.ScheduleCourseInstructors.Where(x => x.CourseID == courseId && x.ScheduleID == schedule.ScheduleID).FirstOrDefault();
                     bool bInstructorCreated = false;
-                    if (courseInstructor != null)
+                    if (courseInstructor == null)
                     {
                         courseInstructor = new ScheduleCourseInstructor();
                         bInstructorCreated = true;
@@ -758,6 +771,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     courseInstructor.CourseID = courseId;
                     courseInstructor.ScheduleID = schedule.ScheduleID;
                     courseInstructor.InstructorID = instructor.InstructorID;
+                    courseInstructor.CourseFee = CourseFee;
                     if(bInstructorCreated)
                         db.ScheduleCourseInstructors.Add(courseInstructor);
                     db.SaveChanges();
