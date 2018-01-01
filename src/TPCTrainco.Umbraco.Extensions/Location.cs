@@ -26,5 +26,10 @@ namespace TPCTrainco.Umbraco.Extensions
         public Nullable<System.DateTime> Modified { get; set; }
         public int CreatedMemberID { get; set; }
         public Nullable<int> ModifiedMemberID { get; set; }
+        public string TimeZone { get; set; }
+        public string ContactName { get; set; }
+        public string ContactPhone { get; set; }
+        public string ContactFax { get; set; }
+        public string ContactEmail { get; set; }
     }
 }

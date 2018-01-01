@@ -581,6 +581,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                             var offers = publicEvent.AdvertisedOffers.Where(x => !x.IsDiscountOffer).ToList();
                             if (offers == null && offers.Count == 0)
                                 continue;
+                            bool bSimulcast = eventObj.Template.Name.ToLower().Contains("simulcast");
                             decimal fee = Convert.ToDecimal(offers[0].OfferAmount["AmountTaxInclusive"]);
                             COURS course = db.COURSES.Where(x => x.CourseTitle == publicEvent.Name && x.Acronym == eventObj.Template.Code && x.CourseFee == fee).FirstOrDefault();
                             bool bCreated = false;
@@ -596,7 +597,6 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                             course.CourseSubtitle = eventObj.Description;
                             CourseFormat format = db.CourseFormats.Where(x => x.CourseFormatName == eventObj.Template.AdvertisedDuration).FirstOrDefault();
                             course.CourseFormatID = format != null ? format.CourseFormatID : 0;
-                            bool bSimulcast = eventObj.Template.Name.ToLower().Contains("simulcast");
                             string courseType = "primary seminar";
                             if (eventObj.CustomFields.ContainsKey("coursetype"))
                                 courseType = eventObj.CustomFields["coursetype"].ToLower();
@@ -646,7 +646,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                                 db.SaveChanges();
                             }
                             if (eventObj.Sessions != null && eventObj.Sessions.Count > 0)
-                                SaveSchedules(course.CourseID, eventObj.UniqueIdentifier, publicEvent.ViewUri, publicEvent.RegistrationInfo["RegisterUri"], eventObj.Code, fee, eventObj.Sessions, db);
+                                SaveSchedules(course.CourseID, eventObj.UniqueIdentifier, publicEvent.ViewUri, publicEvent.RegistrationInfo["RegisterUri"], eventObj.Code, fee, bSimulcast, eventObj.CustomFields, eventObj.Sessions, db);
                         }
                     }
                     scope.Complete();
@@ -659,7 +659,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             return bSaved;
         }
 
-        public static void SaveSchedules(int courseId, string identifier, string viewUri, string registerUri, string eventCode, decimal CourseFee, List<Session> sessions,americantraincoEntities db)
+        public static void SaveSchedules(int courseId, string identifier, string viewUri, string registerUri, string eventCode, decimal CourseFee, bool bSimulcast, Dictionary<string,string> customFields, List<Session> sessions,americantraincoEntities db)
         {
             try
             {
@@ -678,12 +678,19 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                         schedule.Created = session.CreatedDateTime;
                         bCreated = true;
                     }                    
-                    schedule.ScheduleType = session.SessionType.ToLower() == "online" ? "Simulcast" : session.SessionType;
+                    schedule.ScheduleType = bSimulcast || session.SessionType.ToLower() == "online" ? "Simulcast" : session.SessionType;
                     schedule.Active = (Int16)(session.Status.ToLower() == "active" ? 1 : 0);
                     DateTime startDate = session.StartDateTime.ToCentralTime();
                     DateTime finishDate = session.FinishDateTime.ToCentralTime();
                     schedule.Modified = session.LastModifiedDateTime;
-                    Location location = db.Locations.Where(x => x.LocationName.ToLower() == session.Venue.Name.ToLower()).FirstOrDefault();
+                    Location location = null;
+                    if (customFields.ContainsKey("locationid") && !string.IsNullOrEmpty(customFields["locationid"]))
+                    {
+                        int locId = Convert.ToInt32(customFields["locationid"]);
+                        location = db.Locations.Where(x => x.LocationID == locId).FirstOrDefault();
+                    }
+                    if (location == null)
+                        location = db.Locations.Where(x => x.LocationName.ToLower() == session.Venue.Name.ToLower()).FirstOrDefault();
                     if (location == null)
                     {
                         location = new Location();
@@ -693,13 +700,33 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                         location.Active = session.Venue.Status.ToLower() == "active" ? 1 : 0;
                         location.Created = session.Venue.CreatedDateTime;
                         location.CreatedMemberID = 0;
+                        if (session.Venue.BookingContact != null)
+                        {
+                            location.ContactName = session.Venue.BookingContact.FirstName + " " + session.Venue.BookingContact.LastName;
+                            location.ContactPhone = !string.IsNullOrEmpty(session.Venue.BookingContact.PhoneHome) ? session.Venue.BookingContact.PhoneHome : session.Venue.BookingContact.PhoneWork;
+                            location.ContactEmail = session.Venue.BookingContact.Email;
+                        }
                         db.Locations.Add(location);
                         db.SaveChanges();
                     }
                     schedule.LocationID = (location != null ? location.LocationID : 0);
-                    City city = db.Cities.Where(x => x.CityName.ToLower() == session.Venue.PhysicalAddress.City.ToLower()).FirstOrDefault();
+                    City city = null;
+                    if (customFields.ContainsKey("cityid") && !string.IsNullOrEmpty(customFields["cityid"]))
+                    {
+                        int cityId = Convert.ToInt32(customFields["cityid"]);
+                        city = db.Cities.Where(x => x.CityID == cityId).FirstOrDefault();
+                    }
+                    if(city == null)
+                        city = db.Cities.Where(x => x.CityName.ToLower() == session.Venue.PhysicalAddress.City.ToLower()).FirstOrDefault();
                     schedule.CityID = (city != null ? city.CityID : 0);
-                    State state = db.States.Where(x => x.StateAbbreviation == session.Venue.PhysicalAddress.StateOrProvince).FirstOrDefault();
+                    State state = null;
+                    if (customFields.ContainsKey("stateid") && !string.IsNullOrEmpty(customFields["stateid"]))
+                    {
+                        int stateId = Convert.ToInt32(customFields["stateid"]);
+                        state = db.States.Where(x => x.StateID == stateId).FirstOrDefault();
+                    }
+                    if(state == null)
+                        state = db.States.Where(x => x.StateAbbreviation == session.Venue.PhysicalAddress.StateOrProvince).FirstOrDefault();
                     schedule.StateID = (state != null ? state.StateID : 0);
                     schedule.ScheduleDate = startDate;
                     schedule.ScheduleDateDescription = StringUtilities.GetDateDescription(startDate, finishDate);

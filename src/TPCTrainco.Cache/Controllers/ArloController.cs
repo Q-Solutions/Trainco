@@ -269,6 +269,14 @@ namespace TPCTrainco.Cache.Controllers
                                     continue;
                                 venue.Description = Convert.ToString(facilityObj.VenueFacilityInformation.Directions.Content);
                                 break;
+                            case "BookingContact":
+                                dynamic contactObj = addressApi.GetArloResponse();
+                                if (contactObj == null || !((IDictionary<String, object>)contactObj).ContainsKey("Contact"))
+                                    continue;
+                                venue.BookingContact = ((ExpandoObject)contactObj.Contact).ToObject<ArloContact>();
+                                break;
+                            default:
+                                break;
                         }
                     }
                     break;

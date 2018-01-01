@@ -345,9 +345,15 @@
           <Property Name="CreatedMemberID" Type="float" Nullable="false" />
           <Property Name="ModifiedMemberID" Type="float" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'americantrainco.dbo.Locations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Locations">
           <Key>
             <PropertyRef Name="LocationID" />
+            
+            
+            
+            
           </Key>
           <Property Name="LocationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LocationTypeID" Type="int" Nullable="false" />
@@ -361,6 +367,11 @@
           <Property Name="Modified" Type="smalldatetime" />
           <Property Name="CreatedMemberID" Type="int" Nullable="false" />
           <Property Name="ModifiedMemberID" Type="int" />
+          <Property Name="TimeZone" Type="varchar" MaxLength="50" />
+          <Property Name="ContactName" Type="varchar" MaxLength="50" />
+          <Property Name="ContactPhone" Type="varchar" MaxLength="50" />
+          <Property Name="ContactFax" Type="varchar" MaxLength="50" />
+          <Property Name="ContactEmail" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="LocationTypes">
           <Key>
@@ -892,7 +903,6 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="CourseTypes" EntityType="Self.CourseTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GotoTrainingRegistrations" EntityType="Self.GotoTrainingRegistrations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="INSTRUCTORS" EntityType="Self.INSTRUCTORS" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Locations" EntityType="Self.Locations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocationTypes" EntityType="Self.LocationTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MEMBERS" EntityType="Self.MEMBERS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegistrationAttendees" EntityType="Self.RegistrationAttendees" Schema="dbo" store:Type="Tables" />
@@ -907,6 +917,27 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="temp_Reg" EntityType="Self.temp_Reg" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WebAccounts" EntityType="Self.WebAccounts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WebSignups" EntityType="Self.WebSignups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Locations" EntityType="Self.Locations" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Locations].[LocationID] AS [LocationID], 
+    [Locations].[LocationTypeID] AS [LocationTypeID], 
+    [Locations].[LocationCode] AS [LocationCode], 
+    [Locations].[LocationName] AS [LocationName], 
+    [Locations].[LocationNotes] AS [LocationNotes], 
+    [Locations].[HotelSleepRate] AS [HotelSleepRate], 
+    [Locations].[HotelMeetingRate] AS [HotelMeetingRate], 
+    [Locations].[Active] AS [Active], 
+    [Locations].[Created] AS [Created], 
+    [Locations].[Modified] AS [Modified], 
+    [Locations].[CreatedMemberID] AS [CreatedMemberID], 
+    [Locations].[ModifiedMemberID] AS [ModifiedMemberID], 
+    [Locations].[TimeZone] AS [TimeZone], 
+    [Locations].[ContactName] AS [ContactName], 
+    [Locations].[ContactPhone] AS [ContactPhone], 
+    [Locations].[ContactFax] AS [ContactFax], 
+    [Locations].[ContactEmail] AS [ContactEmail]
+    FROM [dbo].[Locations] AS [Locations]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="Attendees_ClassHistory" EntityType="Self.Attendees_ClassHistory" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [Attendees_ClassHistory].[AttendeeID] AS [AttendeeID], 
@@ -1186,6 +1217,11 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Property Name="Modified" Type="DateTime" Precision="0" />
           <Property Name="CreatedMemberID" Type="Int32" Nullable="false" />
           <Property Name="ModifiedMemberID" Type="Int32" />
+          <Property Name="TimeZone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ContactName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ContactPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ContactFax" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ContactEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="LocationType">
           <Key>
@@ -2092,6 +2128,11 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySetMapping Name="Locations">
             <EntityTypeMapping TypeName="americantraincoModel.Location">
               <MappingFragment StoreEntitySet="Locations">
+                <ScalarProperty Name="ContactEmail" ColumnName="ContactEmail" />
+                <ScalarProperty Name="ContactFax" ColumnName="ContactFax" />
+                <ScalarProperty Name="ContactPhone" ColumnName="ContactPhone" />
+                <ScalarProperty Name="ContactName" ColumnName="ContactName" />
+                <ScalarProperty Name="TimeZone" ColumnName="TimeZone" />
                 <ScalarProperty Name="LocationID" ColumnName="LocationID" />
                 <ScalarProperty Name="LocationTypeID" ColumnName="LocationTypeID" />
                 <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />

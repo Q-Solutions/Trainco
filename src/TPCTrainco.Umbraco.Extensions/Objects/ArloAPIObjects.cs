@@ -77,6 +77,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
         public DateTime CreatedDateTime { get; set; }
         public DateTime LastModifiedDateTime { get; set; }
         public Address PhysicalAddress { get; set; }
+        public ArloContact BookingContact { get; set; }
         public List<object> Link { get; set; }
     }
 
