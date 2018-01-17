@@ -3309,6 +3309,7 @@
     <Content Include="Views\LocationwiseSeminar.cshtml" />
     <Content Include="Views\LiveOnlineTraining.cshtml" />
     <Content Include="Views\Partials\OnlineTrainingRegistration.cshtml" />
+    <Content Include="Views\Redirector.cshtml" />
     <None Include="Web.Debug-Trainco.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

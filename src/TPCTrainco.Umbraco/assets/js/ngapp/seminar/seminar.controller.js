@@ -18,7 +18,7 @@
       '</ul><p ng-bind=event.locationDetails><div class=result-popover><div class="row result-table-head"><div class=col-xs-5>Training Days</div>' +
       '<div class=col-xs-3>Price</div><div class="col-xs-4 attendees-txt">Attendees</div></div><div class="row result-table-body">' +
       '<div class=col-xs-5><em>{{event.daysTitle}}</em></div><div class=col-xs-3>${{event.price}}</div><div class="col-xs-4 attendees">' +
-      '<a class="btn btn-reg btn-blue-solid" href="{{ event.registerUri }}">Register</a></div></div>' +
+      '<a class="btn btn-reg btn-blue-solid btn-event-register" href="{{ event.registerUri }}">Register</a></div></div>' +
       '</div></div>';
 
     vm.detailPop = {

@@ -1,0 +1,13 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    Layout = null;
+    if (Request.Cookies["redirectToRegisterUrl"] != null)
+    {
+        string url = Request.Cookies["redirectToRegisterUrl"].Value;
+		if (!string.IsNullOrEmpty(url))
+        {
+            Request.Cookies.Remove("redirectToRegisterUrl");
+			Response.RedirectPermanent(url);
+		}
+	}
+}

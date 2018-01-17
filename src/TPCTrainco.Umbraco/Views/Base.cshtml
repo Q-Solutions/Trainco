@@ -16,6 +16,8 @@
     List<RegistrationTrackItem> trackItemsList = null;
 
     // Redirect
+    HttpCookie cookie = new HttpCookie("redirectToRegisterUrl",HttpContext.Current.Request.Url.AbsoluteUri);
+    Response.AppendCookie(cookie);
     if (currentPage.GetPropertyValue("pageRedirect") != null && currentPage.GetPropertyValue("pageRedirect").ToString().Length > 0)
     {
         var redirectUrl = currentPage.GetPropertyValue<UrlPicker.Umbraco.Models.UrlPicker>("pageRedirect");
