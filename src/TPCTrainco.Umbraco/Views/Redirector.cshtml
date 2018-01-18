@@ -1,13 +1,26 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
 @{
     Layout = null;
-    if (Request.Cookies["redirectToRegisterUrl"] != null)
-    {
-        string url = Request.Cookies["redirectToRegisterUrl"].Value;
-		if (!string.IsNullOrEmpty(url))
-        {
-            Request.Cookies.Remove("redirectToRegisterUrl");
-			Response.RedirectPermanent(url);
-		}
-	}
 }
+<!DOCTYPE html>
+<html lang="en">
+<body onload="load()">
+    <script>
+        function load() {
+            var url = getCookie('redirectToRegisterUrl');
+            if (url != '')
+                window.location.href = url;
+        }
+
+        function getCookie(name) {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].split('=');
+                if (cookie[0].trim() == name)
+                    return cookie[1].trim();
+            }
+            return '';
+        }
+    </script>
+</body>
+</html>

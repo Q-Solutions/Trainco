@@ -16,8 +16,6 @@
     List<RegistrationTrackItem> trackItemsList = null;
 
     // Redirect
-    HttpCookie cookie = new HttpCookie("redirectToRegisterUrl",HttpContext.Current.Request.Url.AbsoluteUri);
-    Response.AppendCookie(cookie);
     if (currentPage.GetPropertyValue("pageRedirect") != null && currentPage.GetPropertyValue("pageRedirect").ToString().Length > 0)
     {
         var redirectUrl = currentPage.GetPropertyValue<UrlPicker.Umbraco.Models.UrlPicker>("pageRedirect");
@@ -365,6 +363,21 @@
                     }, 5000);
                 }
             });
+
+            $(document).on('click', 'a.btn-event-register', function (e) {
+                e.preventDefault();
+                var href = $(this).attr('href');
+                setCookie('redirectToRegisterUrl', window.location.href,24);
+                window.location.href = href;
+                return false;
+            });
+
+            function setCookie(cname, cvalue, exHours) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exHours * 60 * 60 * 1000));
+                var expires = "expires=" + d.toUTCString();
+                document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            }
         </script>
     }
     @if (true == checkoutRegistration)
