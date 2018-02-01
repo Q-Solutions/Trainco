@@ -648,6 +648,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                             if (eventObj.Sessions != null && eventObj.Sessions.Count > 0)
                                 SaveSchedules(course.CourseID, eventObj.UniqueIdentifier, publicEvent.ViewUri, publicEvent.RegistrationInfo["RegisterUri"], eventObj.Code, fee, bSimulcast, eventObj.CustomFields, eventObj.Sessions, db);
                         }
+                        db.Database.ExecuteSqlCommand("INSERT INTO CourseRelations(SimulcastID,EventCode) SELECT c.CourseID,c1.EventCode FROM COURSES c INNER JOIN COURSES c1 ON c1.CourseTitle = REPLACE(c.CourseTitle,'Simulcast','') LEFT JOIN CourseRelations cr ON cr.SimulcastID = c.CourseID WHERE c.CourseTitle LIKE '%Simulcast%' AND cr.CourseRelationID IS NULL");
                     }
                     scope.Complete();
                 }
@@ -689,9 +690,16 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                         int locId = Convert.ToInt32(customFields["locationid"]);
                         location = db.Locations.Where(x => x.LocationID == locId).FirstOrDefault();
                     }
-                    if (location == null)
-                        location = db.Locations.Where(x => x.LocationName.ToLower() == session.Venue.Name.ToLower()).FirstOrDefault();
-                    if (location == null)
+                    if (location == null) {
+                        if(session.Venue != null && !string.IsNullOrEmpty(session.Venue.Name))
+                            location = db.Locations.Where(x => x.LocationName.ToLower() == session.Venue.Name.ToLower()).FirstOrDefault();
+                        else if (bSimulcast)
+                        {
+                            int locId = Convert.ToInt32(ConfigurationManager.AppSettings.Get("Caching:Defaults:Location"));
+                            location = db.Locations.Where(x => x.LocationID == locId).FirstOrDefault();
+                        }
+                    }
+                    if (location == null && !string.IsNullOrEmpty(session.Venue.Name))
                     {
                         location = new Location();
                         location.LocationTypeID = 1;
@@ -716,8 +724,16 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                         int cityId = Convert.ToInt32(customFields["cityid"]);
                         city = db.Cities.Where(x => x.CityID == cityId).FirstOrDefault();
                     }
-                    if(city == null)
-                        city = db.Cities.Where(x => x.CityName.ToLower() == session.Venue.PhysicalAddress.City.ToLower()).FirstOrDefault();
+                    if (city == null)
+                    {
+                        if (session.Venue != null && session.Venue.PhysicalAddress != null)
+                            city = db.Cities.Where(x => x.CityName.ToLower() == session.Venue.PhysicalAddress.City.ToLower()).FirstOrDefault();
+                        else if (bSimulcast)
+                        {
+                            int cityId = Convert.ToInt32(ConfigurationManager.AppSettings.Get("Caching:Defaults:City"));
+                            city = db.Cities.Where(x => x.CityID == cityId).FirstOrDefault();
+                        }
+                    }
                     schedule.CityID = (city != null ? city.CityID : 0);
                     State state = null;
                     if (customFields.ContainsKey("stateid") && !string.IsNullOrEmpty(customFields["stateid"]))
@@ -725,8 +741,16 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                         int stateId = Convert.ToInt32(customFields["stateid"]);
                         state = db.States.Where(x => x.StateID == stateId).FirstOrDefault();
                     }
-                    if(state == null)
-                        state = db.States.Where(x => x.StateAbbreviation == session.Venue.PhysicalAddress.StateOrProvince).FirstOrDefault();
+                    if (state == null)
+                    {
+                        if (session.Venue != null && session.Venue.PhysicalAddress != null)
+                            state = db.States.Where(x => x.StateAbbreviation == session.Venue.PhysicalAddress.StateOrProvince).FirstOrDefault();
+                        else if (bSimulcast)
+                        {
+                            int stateId = Convert.ToInt32(ConfigurationManager.AppSettings.Get("Caching:Defaults:State"));
+                            state = db.States.Where(x => x.StateID == stateId).FirstOrDefault();
+                        }
+                    }
                     schedule.StateID = (state != null ? state.StateID : 0);
                     schedule.ScheduleDate = startDate;
                     schedule.ScheduleDateDescription = StringUtilities.GetDateDescription(startDate, finishDate);
