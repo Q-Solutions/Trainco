@@ -60,7 +60,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             FilterByKeyword(ref locationScheduleDetailList, request);
 
 
-            courseDetailList = courseDetailList.OrderBy(p => p.CourseTier).ThenBy(t => t.TopicId).ToList();
+            courseDetailList = courseDetailList.OrderBy(p => p.CourseTier).ThenBy(t => t.TopicId).ThenBy(p => p.Title).ToList();
 
             //if (false == request.ReturnChildSchedules)
             //{
