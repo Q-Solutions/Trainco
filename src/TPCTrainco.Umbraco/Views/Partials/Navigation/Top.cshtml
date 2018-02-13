@@ -12,7 +12,12 @@
 
     // The menu items we want are all of the children of the homepage
     // We also check if "Hide in navigation" is on in the menu, we shouldn't show hidden items
-    var menuItems = homePage.Children.Where("navigationTop == true");
+    dynamic menuItems = null;
+    if (homePage != null && homePage.Children != null)
+    {
+        menuItems = homePage.Children.Where("navigationTop == true");
+    }
+   
 }
 <nav class="navbar navbar-default">
     <div class="container-fluid contain">
@@ -32,30 +37,33 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li><a href="@(searchSeminarNode.Url)" class="btn-reg" role="button">Register</a></li>
-
-                @foreach (IPublishedContent item in menuItems.OrderBy("SortOrder"))
+                @if (menuItems != null)
                 {
-                    if (item.DocumentTypeAlias == "SeminarMainOverview")
+                    foreach (IPublishedContent item in menuItems.OrderBy("SortOrder"))
                     {
-                        string navName = item.GetPropertyValue<string>("navigationTitle", item.Name);
+                        if (item.DocumentTypeAlias == "SeminarMainOverview")
+                        {
+                            string navName = item.GetPropertyValue<string>("navigationTitle", item.Name);
 
-                        <li class="dropdown">
-                            <a href="@item.Url" class="dropdown-toggle regular-link nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@navName<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                @foreach (IPublishedContent subItem in item.Children)
-                                {
-                                    string subNavName = subItem.GetPropertyValue<string>("navigationTitle", subItem.Name);
+                            <li class="dropdown">
+                                <a href="@item.Url" class="dropdown-toggle regular-link nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@navName<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    @foreach (IPublishedContent subItem in item.Children)
+                                    {
+                                        string subNavName = subItem.GetPropertyValue<string>("navigationTitle", subItem.Name);
 
-                                    <li><a href="@subItem.Url" class="nav-link regular-link">@subNavName</a></li>
-                                }
-                            </ul>
-                        </li>
-                    }
-                    else
-                    {
-                        <li><a href="@item.Url" class="nav-link regular-link">@(item.GetPropertyValue<string>("navigationTitle", item.Name))</a></li>
+                                        <li><a href="@subItem.Url" class="nav-link regular-link">@subNavName</a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li><a href="@item.Url" class="nav-link regular-link">@(item.GetPropertyValue<string>("navigationTitle", item.Name))</a></li>
+                        }
                     }
                 }
+
 
                 <li><a href="tel:@(siteSettings.GetPropertyValue<string>("phoneNumber"))" class="regular-link nav-link">@(siteSettings.GetPropertyValue<string>("phoneNumber"))</a></li>
             </ul>

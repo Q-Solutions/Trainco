@@ -7,7 +7,11 @@
     IPublishedContent currentPage = Model.Content;
     IPublishedContent siteSettings = Nodes.Instance.SiteSettings;
     IPublishedContent onsitePromo = siteSettings.GetPropertyValue<IPublishedContent>("activePromo");
-    var dynamicPromo = Umbraco.Content(onsitePromo.Id);
+    dynamic dynamicPromo = null;
+    if (onsitePromo != null)
+    {
+        dynamicPromo = Umbraco.Content(onsitePromo.Id);
+    }
     var seminarContainer = CurrentPage.AncestorOrSelf(2);
     int courseId = 0;
     COURS course = null;
@@ -262,7 +266,7 @@
 </div>
 
 <!-- the red section -->
-@if (CurrentPage.onSiteQuote)
+@if (dynamicPromo != null && CurrentPage.onSiteQuote)
 {
     <div class="container-fluid onsite-section">
         <div class="left-skew">
