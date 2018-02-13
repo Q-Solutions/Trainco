@@ -337,11 +337,31 @@ namespace TPCTrainco.Cache.Controllers
             foreach (dynamic field in fields)
             {
                 IDictionary<String, object> fieldDict = (IDictionary<String, object>)field;
-                if (!fieldDict.ContainsKey("Name") || !fieldDict.ContainsKey("Value"))
+                if (!fieldDict.ContainsKey("Name") || !fieldDict.ContainsKey("Value") || !fieldDict.ContainsKey("Link"))
                     continue;
-                customFields.Add(field.Name.ToString(), field.Value.String);
+                IDictionary<String, object> fieldDescDict = (IDictionary<String, object>)field.Link;
+                if (!fieldDescDict.ContainsKey("@title") || fieldDescDict["@title"].ToString() != "FieldDescription" || !fieldDescDict.ContainsKey("@href"))
+                    continue;
+                string fieldDesc = getCustomFieldDescription(fieldDescDict["@href"].ToString());
+                IDictionary<String, object> fieldValueDict = (IDictionary<String, object>)field.Value;
+                if (string.IsNullOrEmpty(fieldDesc) || !fieldValueDict.ContainsKey(fieldDesc) || fieldValueDict[fieldDesc] == null)
+                    continue;
+                customFields.Add(field.Name.ToString(), fieldValueDict[fieldDesc].ToString());
             }
             return customFields;
+        }
+
+        private string getCustomFieldDescription(string href)
+        {
+            string field = "";
+            ArloAPI api = new ArloAPI(href, _username, _password);
+            dynamic oObj = api.GetArloResponse();
+            if (oObj == null || !((IDictionary<String, object>)oObj).ContainsKey("FieldDescription"))
+                return field;
+            field = oObj.FieldDescription.ValueType.TypeName;
+            if (Convert.ToBoolean(oObj.FieldDescription.ValueType.IsArray))
+                field = "";
+            return field;
         }
     }
 }
