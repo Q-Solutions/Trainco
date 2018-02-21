@@ -537,7 +537,14 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             Dictionary<int, int> courseRelations = new Dictionary<int, int>();
             using (var db = new americantraincoEntities())
             {
-                courseRelations = db.CourseRelations.Join(db.SCHEDULES, cr => cr.EventCode, c => c.EventCode, (cr, c) => new { SimulcastId = cr.SimulcastID, OpenId = c.CourseID }).Where(x => x.SimulcastId.HasValue && x.OpenId.HasValue).DistinctBy(x => x.SimulcastId).ToDictionary(x => x.SimulcastId.Value, x => x.OpenId.Value);
+                courseRelations = db.CourseRelations.Where(x => x.SimulcastID.HasValue && x.OpenID.HasValue).DistinctBy(x => x.SimulcastID).ToDictionary(x => x.SimulcastID.Value, x => x.OpenID.Value);
+                Dictionary<int,int> eventCodeRelations = db.CourseRelations.Join(db.SCHEDULES, cr => cr.EventCode, c => c.EventCode, (cr, c) => new { SimulcastId = cr.SimulcastID, OpenId = c.CourseID }).Where(x => x.SimulcastId.HasValue && x.OpenId.HasValue).DistinctBy(x => x.SimulcastId).ToDictionary(x => x.SimulcastId.Value, x => x.OpenId.Value);
+                foreach (var item in eventCodeRelations)
+                {
+                    if (courseRelations.ContainsKey(item.Key))
+                        continue;
+                    courseRelations.Add(item.Key, item.Value);
+                }
             }
             return courseRelations;
         }
@@ -576,24 +583,34 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                         {
                             int eventId = Convert.ToInt32(eventObj.EventID);
                             if (!publicEvents.ContainsKey(eventId))
+                            {
+                                SaveRejectedCourse(db, eventObj.Code, 0, eventObj.Template.Name, "Course is not marked as visible on website");
+                                if(eventObj.Status.ToLower() != "active")
+                                    CancelSeminar(db,eventObj.Code);
                                 continue;
+                            }
                             PublicEvent publicEvent = publicEvents[eventId];
                             var offers = publicEvent.AdvertisedOffers.Where(x => !x.IsDiscountOffer).ToList();
                             if (offers == null && offers.Count == 0)
+                            {
+                                SaveRejectedCourse(db, eventObj.Code, 0, eventObj.Template.Name, "Course Price is not set");
                                 continue;
+                            }
                             bool bSimulcast = eventObj.Template.Name.ToLower().Contains("simulcast");
                             decimal fee = Convert.ToDecimal(offers[0].OfferAmount["AmountTaxInclusive"]);
-                            COURS course = db.COURSES.Where(x => x.CourseTitle == publicEvent.Name && x.Acronym == eventObj.Template.Code && x.CourseFee == fee).FirstOrDefault();
+                            COURS course = db.COURSES.Where(x => x.TitlePlain == eventObj.Template.Name.Trim() && x.Acronym == eventObj.Template.Code && x.CourseFee == fee).FirstOrDefault();
                             bool bCreated = false;
                             if (course == null)
                             {
                                 course = new COURS();
                                 course.Created = DateTime.UtcNow;
+                                course.CourseFee = fee;
+                                course.Acronym = eventObj.Template.Code;
+                                course.TitlePlain = eventObj.Template.Name.Trim();
                                 bCreated = true;
                             }
-                            course.ArloID = eventObj.UniqueIdentifier;
+                            course.ArloID = eventObj.Template.UniqueIdentifier;
                             course.CourseTitle = publicEvent.Name;
-                            course.EventCode = eventObj.Code;
                             course.CourseSubtitle = eventObj.Description;
                             CourseFormat format = db.CourseFormats.Where(x => x.CourseFormatName == eventObj.Template.AdvertisedDuration).FirstOrDefault();
                             course.CourseFormatID = format != null ? format.CourseFormatID : 0;
@@ -606,16 +623,13 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                             course.CountryID = (country != null ? country.Seq : 0);
                             course.WebHeading = eventObj.Template.Name;
                             course.WebToolTip = eventObj.Description;
-                            course.TitlePlain = eventObj.Template.Name;
-                            course.Acronym = eventObj.Template.Code;
                             course.Active = (eventObj.Status.ToLower() == "active" ? 1 : 0);
                             course.Modified = DateTime.UtcNow;
-                            course.CourseFee = fee;
                             course.CourseFeeDescription = offers[0].Label;
                             foreach (var field in eventObj.CustomFields)
                             {
-                                PropertyInfo prop = course.GetType().GetProperty(field.Key);
-                                if (prop == null)
+                                PropertyInfo prop = course.GetType().GetProperty(field.Key, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+                                if (prop == null || string.IsNullOrEmpty(field.Value))
                                     continue;
                                 prop.SetValue(course, Convert.ChangeType(field.Value, prop.PropertyType));
                             }
@@ -646,9 +660,9 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                                 db.SaveChanges();
                             }
                             if (eventObj.Sessions != null && eventObj.Sessions.Count > 0)
-                                SaveSchedules(course.CourseID, eventObj.UniqueIdentifier, publicEvent.ViewUri, publicEvent.RegistrationInfo["RegisterUri"], eventObj.Code, fee, bSimulcast, eventObj.CustomFields, eventObj.Sessions, db);
+                                SaveSchedules(course.CourseID, eventObj.UniqueIdentifier, publicEvent.ViewUri, publicEvent.RegistrationInfo["RegisterUri"], eventObj.Code, fee, bSimulcast, eventObj.CustomFields, eventObj.Sessions, db, course.CourseTitle);
                         }
-                        db.Database.ExecuteSqlCommand("INSERT INTO CourseRelations(SimulcastID,EventCode) SELECT c.CourseID,c1.EventCode FROM COURSES c INNER JOIN COURSES c1 ON c1.CourseTitle = REPLACE(c.CourseTitle,'Simulcast','') LEFT JOIN CourseRelations cr ON cr.SimulcastID = c.CourseID WHERE c.CourseTitle LIKE '%Simulcast%' AND cr.CourseRelationID IS NULL");
+                        db.Database.ExecuteSqlCommand("INSERT INTO CourseRelations(SimulcastID,OpenID) SELECT c.CourseID,c1.CourseID FROM COURSES c INNER JOIN COURSES c1 ON c1.CourseTitle = REPLACE(c.CourseTitle,'Simulcast','') LEFT JOIN CourseRelations cr ON cr.SimulcastID = c.CourseID WHERE c.CourseTitle LIKE '%Simulcast%' AND cr.CourseRelationID IS NULL");
                     }
                     scope.Complete();
                 }
@@ -660,16 +674,25 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             return bSaved;
         }
 
-        public static void SaveSchedules(int courseId, string identifier, string viewUri, string registerUri, string eventCode, decimal CourseFee, bool bSimulcast, Dictionary<string,string> customFields, List<Session> sessions,americantraincoEntities db)
+        public static void SaveSchedules(int courseId, string identifier, string viewUri, string registerUri, string eventCode, decimal CourseFee, bool bSimulcast, Dictionary<string,string> customFields, List<Session> sessions,americantraincoEntities db, string courseName)
         {
             try
             {
                 foreach (Session session in sessions)
                 {
-                    if (session.Status.ToLower() != "active" || session.Presenter == null || session.Presenter.Status.ToLower() != "active")
-                        continue;
                     int sessionId = Convert.ToInt32(session.SessionID);
-                    SCHEDULE schedule = db.SCHEDULES.Where(x => x.CourseID == courseId && x.ArloSessionID == sessionId).FirstOrDefault();
+                    if (session.Status.ToLower() != "active")
+                    {
+                        SaveRejectedCourse(db, eventCode, sessionId, courseName, "Schedule is not active");
+                        continue;
+                    }
+                    if (session.Presenter == null || session.Presenter.Status.ToLower() != "active")
+                    {
+                        SaveRejectedCourse(db, eventCode, sessionId, courseName, "Schedule's presenter is not set or presenter is inactive");
+                        continue;
+                    }
+                    
+                    SCHEDULE schedule = db.SCHEDULES.Where(x => x.ArloIdentifier == identifier && x.ArloSessionID == sessionId).FirstOrDefault();
                     bool bCreated = false;
                     if (schedule == null)
                     {
@@ -677,6 +700,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                         schedule.ArloIdentifier = identifier;
                         schedule.ArloSessionID = Convert.ToInt32(session.SessionID);
                         schedule.Created = session.CreatedDateTime;
+                        schedule.CourseID = courseId;
                         bCreated = true;
                     }                    
                     schedule.ScheduleType = bSimulcast || session.SessionType.ToLower() == "online" ? "Simulcast" : session.SessionType;
@@ -757,7 +781,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     schedule.ScheduleDateQuarter = StringUtilities.ToDateQuarter(startDate);
                     schedule.ScheduleDateDays = StringUtilities.GetDateDays(startDate, finishDate);
                     schedule.ScheduleDateWeek = StringUtilities.StartOfWeek(startDate, DayOfWeek.Monday);
-                    schedule.ScheduleStatus = (Int16)(session.Status.ToLower() == "active" ? 1 : 0);
+                    schedule.ScheduleStatus = (Int16)(session.Status.ToLower() == "active" ? 0 : 2);
                     foreach (var field in session.CustomFields)
                     {
                         PropertyInfo prop = schedule.GetType().GetProperty(field.Key);
@@ -768,7 +792,6 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     schedule.EventCode = eventCode;
                     schedule.ViewUri = viewUri;
                     schedule.RegisterUri = registerUri;
-                    schedule.CourseID = courseId;
                     if(bCreated)
                         db.SCHEDULES.Add(schedule);
                     db.SaveChanges();
@@ -832,6 +855,28 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             {
                 Debug.WriteLine(ex.Message);
             }            
+        }
+
+        public static void SaveRejectedCourse(americantraincoEntities db, string eventCode, int sessionId, string courseTitle, string reason)
+        {
+            Arlo_Rejected_Courses course = new Arlo_Rejected_Courses();
+            course.EventCode = eventCode;
+            course.SessionID = sessionId;
+            course.CourseTitle = courseTitle;
+            course.Reason = reason;
+            course.CreatedAt = DateTime.UtcNow;
+            db.Arlo_Rejected_Courses.Add(course);
+            db.SaveChanges();
+        }
+
+        public static void CancelSeminar(americantraincoEntities db, string eventCode)
+        {
+            SCHEDULE schedule = db.SCHEDULES.Where(x => x.EventCode == eventCode).FirstOrDefault();
+            if (schedule == null)
+                return;
+            schedule.Active = 0;
+            schedule.ScheduleStatus = 2;
+            db.SaveChanges();
         }
     }
 }

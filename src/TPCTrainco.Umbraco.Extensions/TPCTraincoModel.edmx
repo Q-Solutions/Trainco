@@ -5,6 +5,17 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="americantraincoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Arlo_Rejected_Courses">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="SessionID" Type="int" />
+          <Property Name="CourseTitle" Type="varchar" MaxLength="255" />
+          <Property Name="Reason" Type="varchar" MaxLength="255" />
+          <Property Name="CreatedAt" Type="datetime" />
+        </EntityType>
         <EntityType Name="Cache_Log">
           <Key>
             <PropertyRef Name="id" />
@@ -345,15 +356,9 @@
           <Property Name="CreatedMemberID" Type="float" Nullable="false" />
           <Property Name="ModifiedMemberID" Type="float" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'americantrainco.dbo.Locations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Locations">
           <Key>
             <PropertyRef Name="LocationID" />
-            
-            
-            
-            
           </Key>
           <Property Name="LocationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LocationTypeID" Type="int" Nullable="false" />
@@ -885,6 +890,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Parameter Name="cartID" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="americantraincoModelStoreContainer">
+          <EntitySet Name="Arlo_Rejected_Courses" EntityType="Self.Arlo_Rejected_Courses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cache_Log" EntityType="Self.Cache_Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cart" EntityType="Self.cart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cartLine" EntityType="Self.cartLine" Schema="dbo" store:Type="Tables" />
@@ -903,6 +909,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="CourseTypes" EntityType="Self.CourseTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GotoTrainingRegistrations" EntityType="Self.GotoTrainingRegistrations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="INSTRUCTORS" EntityType="Self.INSTRUCTORS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Locations" EntityType="Self.Locations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LocationTypes" EntityType="Self.LocationTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MEMBERS" EntityType="Self.MEMBERS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegistrationAttendees" EntityType="Self.RegistrationAttendees" Schema="dbo" store:Type="Tables" />
@@ -917,27 +924,6 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="temp_Reg" EntityType="Self.temp_Reg" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WebAccounts" EntityType="Self.WebAccounts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WebSignups" EntityType="Self.WebSignups" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Locations" EntityType="Self.Locations" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Locations].[LocationID] AS [LocationID], 
-    [Locations].[LocationTypeID] AS [LocationTypeID], 
-    [Locations].[LocationCode] AS [LocationCode], 
-    [Locations].[LocationName] AS [LocationName], 
-    [Locations].[LocationNotes] AS [LocationNotes], 
-    [Locations].[HotelSleepRate] AS [HotelSleepRate], 
-    [Locations].[HotelMeetingRate] AS [HotelMeetingRate], 
-    [Locations].[Active] AS [Active], 
-    [Locations].[Created] AS [Created], 
-    [Locations].[Modified] AS [Modified], 
-    [Locations].[CreatedMemberID] AS [CreatedMemberID], 
-    [Locations].[ModifiedMemberID] AS [ModifiedMemberID], 
-    [Locations].[TimeZone] AS [TimeZone], 
-    [Locations].[ContactName] AS [ContactName], 
-    [Locations].[ContactPhone] AS [ContactPhone], 
-    [Locations].[ContactFax] AS [ContactFax], 
-    [Locations].[ContactEmail] AS [ContactEmail]
-    FROM [dbo].[Locations] AS [Locations]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="Attendees_ClassHistory" EntityType="Self.Attendees_ClassHistory" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [Attendees_ClassHistory].[AttendeeID] AS [AttendeeID], 
@@ -1550,6 +1536,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="MEMBERS" EntityType="americantraincoModel.MEMBER" />
           <EntitySet Name="Contacts" EntityType="americantraincoModel.Contact" />
           <EntitySet Name="INSTRUCTORS" EntityType="americantraincoModel.INSTRUCTOR" />
+          <EntitySet Name="Arlo_Rejected_Courses" EntityType="americantraincoModel.Arlo_Rejected_Courses" />
         </EntityContainer>
         <EntityType Name="CourseTopic">
           <Key>
@@ -1915,6 +1902,17 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Property Name="Modified" Type="DateTime" Precision="0" />
           <Property Name="CreatedMemberID" Type="Double" Nullable="false" />
           <Property Name="ModifiedMemberID" Type="Double" />
+        </EntityType>
+        <EntityType Name="Arlo_Rejected_Courses">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EventCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SessionID" Type="Int32" />
+          <Property Name="CourseTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Reason" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2789,6 +2787,18 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
                 <ScalarProperty Name="ContactID" ColumnName="ContactID" />
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="InstructorID" ColumnName="InstructorID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Arlo_Rejected_Courses">
+            <EntityTypeMapping TypeName="americantraincoModel.Arlo_Rejected_Courses">
+              <MappingFragment StoreEntitySet="Arlo_Rejected_Courses">
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="CourseTitle" ColumnName="CourseTitle" />
+                <ScalarProperty Name="SessionID" ColumnName="SessionID" />
+                <ScalarProperty Name="EventCode" ColumnName="EventCode" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
