@@ -277,6 +277,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ArloController.cs" />
+    <Compile Include="Controllers\ArloUpdateApiController.cs" />
     <Compile Include="Controllers\CacheController.cs" />
     <Compile Include="Extension\Extensions.cs" />
     <Compile Include="Global.asax.cs">
@@ -300,6 +301,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
     <Folder Include="StoredProcedures\" />
+    <Folder Include="Views\ArloUpdate\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

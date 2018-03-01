@@ -43,6 +43,7 @@
         <EntityTypeShape EntityType="americantraincoModel.Contact" Width="1.5" PointX="21.375" PointY="0.75" />
         <EntityTypeShape EntityType="americantraincoModel.INSTRUCTOR" Width="1.5" PointX="19.375" PointY="17.75" />
         <EntityTypeShape EntityType="americantraincoModel.Arlo_Rejected_Courses" Width="1.5" PointX="21.375" PointY="6.75" />
+        <EntityTypeShape EntityType="americantraincoModel.Setting" Width="1.5" PointX="21.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

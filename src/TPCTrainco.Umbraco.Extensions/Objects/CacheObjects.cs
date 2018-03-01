@@ -442,6 +442,17 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             return daysTitle;
         }
 
+        public static string GetLastSyncDate()
+        {
+          string date = "";
+          using (var db = new americantraincoEntities())
+          {
+            date = (from p in db.Settings
+                select p.Value).FirstOrDefault();
+          }
+            return date;
+
+        }
 
         public static string GetLocationDetails(Location locationDetail, LocationScheduleDetail locationScheduleDetail)
         {
@@ -668,6 +679,53 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                 }
             }
             catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return bSaved;
+        }
+
+        public static bool SaveVenues(List<Venue> Venue)
+        {
+            bool bSaved = false;
+            try
+            {
+              using (TransactionScope scope = new TransactionScope())
+              {
+                  using (var db = new americantraincoEntities())
+                  {
+                    foreach(Venue venueObj in Venue)
+                    {
+                      Location location = new Location();
+                      bool bCreated = false;
+                      if (location != null)
+                      {
+                        location.Created = DateTime.UtcNow;
+                        bCreated = true;
+                      }
+                      location.LocationID = Convert.ToInt32(venueObj.VenueID);
+                      location.LocationName = venueObj.Name;
+                      location.Active = (venueObj.Status.ToLower() == "active" ? 1 : 0);
+                      location.ContactPhone = venueObj.Phone;
+                      if (venueObj.Timezone != null && !string.IsNullOrEmpty(venueObj.Timezone.Description))
+                      {
+                         location.TimeZone = venueObj.Timezone.Description;
+                      }
+                      if (venueObj.BookingContact != null && !string.IsNullOrEmpty(venueObj.BookingContact.Email))
+                      {
+                        location.ContactEmail = venueObj.BookingContact.Email;
+                      }
+                      if(bCreated)
+                       db.Locations.Add(location);
+                      db.SaveChanges();
+              
+                    }
+                  }
+                scope.Complete();
+              }
+              
+            }
+            catch(Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }

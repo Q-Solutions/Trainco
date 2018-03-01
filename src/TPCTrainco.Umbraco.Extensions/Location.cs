@@ -22,7 +22,7 @@ namespace TPCTrainco.Umbraco.Extensions
         public string HotelSleepRate { get; set; }
         public string HotelMeetingRate { get; set; }
         public int Active { get; set; }
-        public System.DateTime Created { get; set; }
+        public Nullable<System.DateTime> Created { get; set; }
         public Nullable<System.DateTime> Modified { get; set; }
         public int CreatedMemberID { get; set; }
         public Nullable<int> ModifiedMemberID { get; set; }

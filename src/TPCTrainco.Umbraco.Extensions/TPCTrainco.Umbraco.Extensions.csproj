@@ -480,6 +480,9 @@
     <Compile Include="Seminar_Catalog.cs">
       <DependentUpon>TPCTraincoModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Setting.cs">
+      <DependentUpon>TPCTraincoModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="State.cs">
       <DependentUpon>TPCTraincoModel.tt</DependentUpon>

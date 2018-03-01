@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="americantraincoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="americantraincoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Arlo_Rejected_Courses">
           <Key>
             <PropertyRef Name="ID" />
@@ -368,11 +368,11 @@
           <Property Name="HotelSleepRate" Type="varchar" MaxLength="20" />
           <Property Name="HotelMeetingRate" Type="varchar" MaxLength="20" />
           <Property Name="Active" Type="int" Nullable="false" />
-          <Property Name="Created" Type="smalldatetime" Nullable="false" />
-          <Property Name="Modified" Type="smalldatetime" />
+          <Property Name="Created" Type="datetime" />
+          <Property Name="Modified" Type="datetime" />
           <Property Name="CreatedMemberID" Type="int" Nullable="false" />
           <Property Name="ModifiedMemberID" Type="int" />
-          <Property Name="TimeZone" Type="varchar" MaxLength="50" />
+          <Property Name="TimeZone" Type="varchar" MaxLength="250" />
           <Property Name="ContactName" Type="varchar" MaxLength="50" />
           <Property Name="ContactPhone" Type="varchar" MaxLength="50" />
           <Property Name="ContactFax" Type="varchar" MaxLength="50" />
@@ -583,6 +583,14 @@
           <Property Name="RegisterUri" Type="varchar" MaxLength="200" />
           <Property Name="EventCode" Type="varchar" MaxLength="50" />
           <Property Name="CourseID" Type="int" />
+        </EntityType>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="SettingID" />
+          </Key>
+          <Property Name="SettingID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SettingType" Type="nvarchar(max)" />
+          <Property Name="Value" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="States">
           <Key>
@@ -917,6 +925,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="REGISTRATIONS" EntityType="Self.REGISTRATIONS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ScheduleCourseInstructors" EntityType="Self.ScheduleCourseInstructors" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SCHEDULES" EntityType="Self.SCHEDULES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Setting" EntityType="Self.Setting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="States" EntityType="Self.States" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="temp_Att" EntityType="Self.temp_Att" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="temp_Cust" EntityType="Self.temp_Cust" Schema="dbo" store:Type="Tables" />
@@ -1199,11 +1208,11 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Property Name="HotelSleepRate" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="HotelMeetingRate" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Active" Type="Int32" Nullable="false" />
-          <Property Name="Created" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="Modified" Type="DateTime" Precision="0" />
+          <Property Name="Created" Type="DateTime" Precision="3" />
+          <Property Name="Modified" Type="DateTime" Precision="3" />
           <Property Name="CreatedMemberID" Type="Int32" Nullable="false" />
           <Property Name="ModifiedMemberID" Type="Int32" />
-          <Property Name="TimeZone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TimeZone" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
           <Property Name="ContactName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ContactPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ContactFax" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -1537,6 +1546,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="Contacts" EntityType="americantraincoModel.Contact" />
           <EntitySet Name="INSTRUCTORS" EntityType="americantraincoModel.INSTRUCTOR" />
           <EntitySet Name="Arlo_Rejected_Courses" EntityType="americantraincoModel.Arlo_Rejected_Courses" />
+          <EntitySet Name="Settings" EntityType="americantraincoModel.Setting" />
         </EntityContainer>
         <EntityType Name="CourseTopic">
           <Key>
@@ -1913,6 +1923,14 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Property Name="CourseTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Reason" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="SettingID" />
+          </Key>
+          <Property Name="SettingID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SettingType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2799,6 +2817,15 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
                 <ScalarProperty Name="SessionID" ColumnName="SessionID" />
                 <ScalarProperty Name="EventCode" ColumnName="EventCode" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Settings">
+            <EntityTypeMapping TypeName="americantraincoModel.Setting">
+              <MappingFragment StoreEntitySet="Setting">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="SettingType" ColumnName="SettingType" />
+                <ScalarProperty Name="SettingID" ColumnName="SettingID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

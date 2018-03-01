@@ -64,6 +64,7 @@ namespace TPCTrainco.Umbraco.Extensions
         public virtual DbSet<Contact> Contacts { get; set; }
         public virtual DbSet<INSTRUCTOR> INSTRUCTORS { get; set; }
         public virtual DbSet<Arlo_Rejected_Courses> Arlo_Rejected_Courses { get; set; }
+        public virtual DbSet<Setting> Settings { get; set; }
     
         public virtual int add_CC_Log(Nullable<int> p1, Nullable<int> p2, string p3, string p4, Nullable<decimal> p5, string p6, string p7)
         {
