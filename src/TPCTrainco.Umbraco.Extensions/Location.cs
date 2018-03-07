@@ -16,6 +16,7 @@ namespace TPCTrainco.Umbraco.Extensions
     {
         public int LocationID { get; set; }
         public int LocationTypeID { get; set; }
+        public Nullable<int> VenueID { get; set; }
         public string LocationCode { get; set; }
         public string LocationName { get; set; }
         public string LocationNotes { get; set; }

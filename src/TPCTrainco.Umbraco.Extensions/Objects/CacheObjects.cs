@@ -362,10 +362,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
 
             return countryList;
         }
-
-
-
-
+    
         public static List<CourseDetail> GetCourseDetailList(bool forceCacheRefresh = false)
         {
             string cacheKey = "CourseDetailList";
@@ -559,8 +556,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             }
             return courseRelations;
         }
-
-
+    
         public static List<SeminarCitiesActive> GetAcitveCitiesList()
         {
             string cacheKey = "ActiveCitiesList";
@@ -684,54 +680,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             }
             return bSaved;
         }
-
-        public static bool SaveVenues(List<Venue> Venue)
-        {
-            bool bSaved = false;
-            try
-            {
-              using (TransactionScope scope = new TransactionScope())
-              {
-                  using (var db = new americantraincoEntities())
-                  {
-                    foreach(Venue venueObj in Venue)
-                    {
-                      Location location = new Location();
-                      bool bCreated = false;
-                      if (location != null)
-                      {
-                        location.Created = DateTime.UtcNow;
-                        bCreated = true;
-                      }
-                      location.LocationID = Convert.ToInt32(venueObj.VenueID);
-                      location.LocationName = venueObj.Name;
-                      location.Active = (venueObj.Status.ToLower() == "active" ? 1 : 0);
-                      location.ContactPhone = venueObj.Phone;
-                      if (venueObj.Timezone != null && !string.IsNullOrEmpty(venueObj.Timezone.Description))
-                      {
-                         location.TimeZone = venueObj.Timezone.Description;
-                      }
-                      if (venueObj.BookingContact != null && !string.IsNullOrEmpty(venueObj.BookingContact.Email))
-                      {
-                        location.ContactEmail = venueObj.BookingContact.Email;
-                      }
-                      if(bCreated)
-                       db.Locations.Add(location);
-                      db.SaveChanges();
-              
-                    }
-                  }
-                scope.Complete();
-              }
-              
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-            return bSaved;
-        }
-
+    
         public static void SaveSchedules(int courseId, string identifier, string viewUri, string registerUri, string eventCode, decimal CourseFee, bool bSimulcast, Dictionary<string,string> customFields, List<Session> sessions,americantraincoEntities db, string courseName)
         {
             try
@@ -785,6 +734,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     {
                         location = new Location();
                         location.LocationTypeID = 1;
+                        location.VenueID = Convert.ToInt32(session.Venue.VenueID);
                         location.LocationName = session.Venue.Name;
                         location.LocationNotes = session.Venue.Description;
                         location.Active = session.Venue.Status.ToLower() == "active" ? 1 : 0;
@@ -936,5 +886,78 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
             schedule.ScheduleStatus = 2;
             db.SaveChanges();
         }
+
+        public static bool SaveVenues(List<Venue> Venue)
+        {
+          bool bSaved = false;
+          try
+          {
+            using (TransactionScope scope = new TransactionScope())
+            {
+              using (var db = new americantraincoEntities())
+              {
+                 foreach (Venue venueObj in Venue)
+                 { 
+                    int venueId = Convert.ToInt32(venueObj.VenueID);
+                    Location location = db.Locations.Where(x => x.VenueID == venueId).FirstOrDefault();
+                    bool bCreated = false;
+                    if (location == null)
+                    {
+                      location = new Location();
+                      location.VenueID = venueId;
+                      location.Created = DateTime.UtcNow;
+                      bCreated = true;
+                    }
+                    location.LocationName = venueObj.Name;
+                    location.Active = (venueObj.Status.ToLower() == "active" ? 1 : 0);
+                    location.ContactPhone = venueObj.Phone;
+                    if (venueObj.Timezone != null && !string.IsNullOrEmpty(venueObj.Timezone.Description))
+                    {
+                      location.TimeZone = venueObj.Timezone.Description;
+                    }
+                    if (venueObj.BookingContact != null && !string.IsNullOrEmpty(venueObj.BookingContact.Email))
+                    {
+                      location.ContactEmail = venueObj.BookingContact.Email;
+                    }
+                      location.Modified = venueObj.LastModifiedDateTime;
+                    if (bCreated)
+                      db.Locations.Add(location);
+                    db.SaveChanges();
+                 }
+              }
+              scope.Complete();
+            }
+          }
+          catch (Exception ex)
+          {
+            Debug.WriteLine(ex.Message);
+          }
+          return bSaved;
+        }
+
+        public static void SaveLog(string _endpointaddress, string response)
+        {
+          try
+          {
+            using (TransactionScope scope = new TransactionScope())
+            {
+                using (var db = new americantraincoEntities())
+                {
+                   API_Log Log = new API_Log();
+                   Log.Api_request = _endpointaddress;
+                   Log.Api_response = response;
+                   Log.Processed_Date = DateTime.UtcNow;
+                   db.API_Log.Add(Log);
+                   db.SaveChanges();
+                }
+              scope.Complete();
+            }
+          }
+          catch(Exception ex)
+          {
+            Debug.WriteLine(ex.Message);
+          }
+        }
+
     }
 }

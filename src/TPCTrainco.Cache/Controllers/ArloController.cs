@@ -21,7 +21,8 @@ namespace TPCTrainco.Cache.Controllers
     public CacheMessage CacheMessage = new CacheMessage();
     public Dictionary<string, string> parentEvents = new Dictionary<string, string>();
     private string _endPoint = ConfigurationManager.AppSettings.Get("Caching:Arlo:Events:Url");
-    private string _enPointReg = (ConfigurationManager.AppSettings.Get("Caching:Arlo:PublicEventsRegistration:Url") + "&expand=Registration");
+    // private string _enPointReg = (ConfigurationManager.AppSettings.Get("Caching:Arlo:PublicEventsRegistration:Url") + "&expand=Registration");
+    private string _enPointReg = ConfigurationManager.AppSettings.Get("Caching:Arlo:PublicEventsRegistration:Url");
     private string _username = ConfigurationManager.AppSettings.Get("Caching:Arlo:Username");
     private string _password = ConfigurationManager.AppSettings.Get("Caching:Arlo:Password");
     private string _publicEndPoint = ConfigurationManager.AppSettings.Get("Caching:Arlo:PublicEvents:Url") + "&top=200&format=json";
@@ -34,7 +35,7 @@ namespace TPCTrainco.Cache.Controllers
         if (key.ToLower() != ConfigurationManager.AppSettings.Get("Cache:ApiKey").ToLower())
           throw new Exception("Invalid Key");
         SyncArloEvents();
-        //SyncLastArloRegistration();
+       // SyncLastArloRegistration();
         DebugStr.AppendLine("ALL DONE");
         CacheMessage.Success = true;
         CacheMessage.Message = DebugStr.ToString();
@@ -45,73 +46,8 @@ namespace TPCTrainco.Cache.Controllers
       }
       return CacheMessage;
     }
-    private void SyncLastArloRegistration(string endpoint = null)
-    {
-      if (string.IsNullOrEmpty(endpoint))
-        endpoint = _enPointReg;
-      ArloAPI api = new ArloAPI(endpoint, _username, _password);
-      dynamic oEvents = api.GetArloResponse();
-      List<PublicRegistration> registration = new List<PublicRegistration>();
-      registration = GetRegistration(registration);
-      //CacheObjects.SaveCourses(registration);
-    }
-    private List<PublicRegistration> GetRegistration(List<PublicRegistration> registrations, string endpoint = null)
-    {
-      if (string.IsNullOrEmpty(endpoint))
-        endpoint = _enPointReg;
-      ArloAPI api = new ArloAPI(endpoint, _username, _password);
-      dynamic oEvents = api.GetArloResponse();
-      if (oEvents == null || !((IDictionary<String, object>)oEvents).ContainsKey("Registrations"))
-        return registrations;
-      foreach (dynamic linkObj in oEvents.Registrations.Link)
-      {
-        if (linkObj == null)
-          continue;
-        string rel = ((IDictionary<String, object>)linkObj)["@rel"].ToString();
-        if (rel == "next")
-        {
-          registrations = GetRegistration(registrations, ((IDictionary<String, object>)linkObj)["@href"].ToString());
-          break;
-        }
-        if (!((IDictionary<String, object>)linkObj).ContainsKey("Registration"))
-          continue;
-        PublicRegistration oObj = ((ExpandoObject)linkObj.Registration).ToObject<PublicRegistration>();
 
-        foreach (dynamic link in oObj.Link)
-        {
-          IDictionary<String, object> dict = (IDictionary<String, object>)link;
-          string href = dict["@href"].ToString();
-          if (!dict.ContainsKey("@title"))
-            continue;
-          string title = dict["@title"].ToString();
-          if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(href))
-            continue;
-          switch (title)
-          {
-            case "CustomFields":
-              oObj.CustomFields = GetCustomFields(href);
-              break;
-            case "Event":
-              oObj.Event = GetEventRegistration(href);
-              break;
-            case "Contact":
-              oObj.Contact = GetContactRegistration(href);
-              break;
-            case "SourceInfo":
-              oObj.RegSourceinfo = GetRegistrationSourceinfo(href);
-              break;
-            case "OrderLine":
-              oObj.OrderLine = GetOrderLineRegistration(href);
-              break;
-            default:
-              break;
-          }
-        }
-
-      }
-      return registrations;
-    }
-
+    #region Events
     private void SyncArloEvents()
     {
       WebClient client = new WebClient();
@@ -434,9 +370,77 @@ namespace TPCTrainco.Cache.Controllers
       return field;
     }
 
+    #endregion
+
     #region Registration
 
+    private void SyncLastArloRegistration(string endpoint = null)
+    {
+      string lastSyncdate = CacheObjects.GetLastSyncDate();
+      if (string.IsNullOrEmpty(endpoint))
+        endpoint = _enPointReg;
+      ArloAPI api = new ArloAPI(endpoint, _username, _password);
+      dynamic oEvents = api.GetArloResponse();
+      List<PublicRegistration> registration = new List<PublicRegistration>();
+      registration = GetRegistration(registration);
+      //CacheObjects.SaveCourses(registration);
+    }
+    private List<PublicRegistration> GetRegistration(List<PublicRegistration> registrations, string endpoint = null)
+    {
+      string lastSyncdate = CacheObjects.GetLastSyncDate();
+      if (string.IsNullOrEmpty(endpoint))
+        endpoint = _enPointReg + "(%27" + string.Join(",", lastSyncdate) + "T00:00:00.000Z%27)" + "&expand=Registration";
+      ArloAPI api = new ArloAPI(endpoint, _username, _password);
+      dynamic oEvents = api.GetArloResponse();
+      if (oEvents == null || !((IDictionary<String, object>)oEvents).ContainsKey("Registrations"))
+        return registrations;
+      foreach (dynamic linkObj in oEvents.Registrations.Link)
+      {
+        if (linkObj == null)
+          continue;
+        string rel = ((IDictionary<String, object>)linkObj)["@rel"].ToString();
+        if (rel == "next")
+        {
+          registrations = GetRegistration(registrations, ((IDictionary<String, object>)linkObj)["@href"].ToString());
+          break;
+        }
+        if (!((IDictionary<String, object>)linkObj).ContainsKey("Registration"))
+          continue;
+        PublicRegistration oObj = ((ExpandoObject)linkObj.Registration).ToObject<PublicRegistration>();
+        foreach (dynamic link in oObj.Link)
+        {
+          IDictionary<String, object> dict = (IDictionary<String, object>)link;
+          string href = dict["@href"].ToString();
+          if (!dict.ContainsKey("@title"))
+            continue;
+          string title = dict["@title"].ToString();
+          if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(href))
+            continue;
+          switch (title)
+          {
+            case "CustomFields":
+              oObj.CustomFields = GetCustomFields(href);
+              break;
+            case "Event":
+              oObj.Event = GetEventRegistration(href);
+              break;
+            case "Contact":
+              oObj.Contact = GetContactRegistration(href);
+              break;
+            case "SourceInfo":
+              oObj.RegSourceinfo = GetRegistrationSourceinfo(href);
+              break;
+            case "OrderLine":
+              oObj.OrderLine = GetOrderLineRegistration(href);
+              break;
+            default:
+              break;
+          }
+        }
 
+      }
+      return registrations;
+    }
     private Event GetEventRegistration(string href)
     {
       ArloAPI api = new ArloAPI(href, _username, _password);
@@ -445,7 +449,6 @@ namespace TPCTrainco.Cache.Controllers
         return null;
       return ((ExpandoObject)oObj.Event).ToObject<Event>();
     }
-
     private RegistrationContact GetContactRegistration(string href)
     {
       ArloAPI api = new ArloAPI(href, _username, _password);
@@ -498,7 +501,6 @@ namespace TPCTrainco.Cache.Controllers
       }
       return regcontact;
     }
-
     private RegistrationSourceInfo GetRegistrationSourceinfo(string href)
     {
       ArloAPI api = new ArloAPI(href, _username, _password);
@@ -506,7 +508,6 @@ namespace TPCTrainco.Cache.Controllers
       dynamic oObj = api.GetArloResponse();
       return registration;
     }
-
     private OrderLine GetOrderLineRegistration(string href)
     {
       ArloAPI api = new ArloAPI(href, _username, _password);
@@ -515,8 +516,6 @@ namespace TPCTrainco.Cache.Controllers
       return orderline;
 
     }
-
-
     private Organization GetOrganizations(string href)
     {
       ArloAPI api = new ArloAPI(href, _username, _password);
@@ -545,7 +544,6 @@ namespace TPCTrainco.Cache.Controllers
       
       return organization;
     }
-
     private TimeZones GetTimeZones(string href)
     {
       ArloAPI api = new ArloAPI(href, _username, _password);

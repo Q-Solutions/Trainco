@@ -3300,6 +3300,7 @@
     <Content Include="App_Plugins\UmbracoForms\version" />
     <Content Include="App_Plugins\UrlPicker\package.manifest" />
     <Content Include="App_Plugins\TPCTraincoCitiesDropdown\package.manifest" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <Content Include="Views\Logout.cshtml" />
     <Content Include="Views\Error404.cshtml" />

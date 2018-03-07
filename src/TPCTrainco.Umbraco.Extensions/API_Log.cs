@@ -12,10 +12,11 @@ namespace TPCTrainco.Umbraco.Extensions
     using System;
     using System.Collections.Generic;
     
-    public partial class Setting
+    public partial class API_Log
     {
-        public int SettingID { get; set; }
-        public string SettingName { get; set; }
-        public string Value { get; set; }
+        public int Seq { get; set; }
+        public string Api_request { get; set; }
+        public string Api_response { get; set; }
+        public Nullable<System.DateTime> Processed_Date { get; set; }
     }
 }

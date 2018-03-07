@@ -276,6 +276,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API_Log.cs">
+      <DependentUpon>TPCTraincoModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Arlo_Rejected_Courses.cs">
       <DependentUpon>TPCTraincoModel.tt</DependentUpon>
     </Compile>

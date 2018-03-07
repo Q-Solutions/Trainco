@@ -53,6 +53,7 @@ namespace TPCTrainco.Umbraco.Extensions.Objects
                     results = webEx.DownloadString(new Uri(_endpointAddress.ToString(), UriKind.Absolute));
                     typeObj = ReadXMLSchema(results);
                 }
+                CacheObjects.SaveLog(_endpointAddress.ToString(), results);
             }
             catch (Exception ex)
             {

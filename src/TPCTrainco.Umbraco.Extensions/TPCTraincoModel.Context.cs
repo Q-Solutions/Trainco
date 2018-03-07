@@ -36,7 +36,6 @@ namespace TPCTrainco.Umbraco.Extensions
         public virtual DbSet<CourseFormat> CourseFormats { get; set; }
         public virtual DbSet<CourseInstructor> CourseInstructors { get; set; }
         public virtual DbSet<COURS> COURSES { get; set; }
-        public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<LocationType> LocationTypes { get; set; }
         public virtual DbSet<REGISTRATION> REGISTRATIONS { get; set; }
         public virtual DbSet<State> States { get; set; }
@@ -64,7 +63,9 @@ namespace TPCTrainco.Umbraco.Extensions
         public virtual DbSet<Contact> Contacts { get; set; }
         public virtual DbSet<INSTRUCTOR> INSTRUCTORS { get; set; }
         public virtual DbSet<Arlo_Rejected_Courses> Arlo_Rejected_Courses { get; set; }
+        public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
+        public virtual DbSet<API_Log> API_Log { get; set; }
     
         public virtual int add_CC_Log(Nullable<int> p1, Nullable<int> p2, string p3, string p4, Nullable<decimal> p5, string p6, string p7)
         {

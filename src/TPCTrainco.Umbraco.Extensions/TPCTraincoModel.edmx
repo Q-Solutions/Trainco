@@ -5,6 +5,15 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="americantraincoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="API_Log">
+          <Key>
+            <PropertyRef Name="Seq" />
+          </Key>
+          <Property Name="Seq" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Api_request" Type="varchar(max)" />
+          <Property Name="Api_response" Type="varchar(max)" />
+          <Property Name="Processed_Date" Type="datetime" />
+        </EntityType>
         <EntityType Name="Arlo_Rejected_Courses">
           <Key>
             <PropertyRef Name="ID" />
@@ -362,6 +371,7 @@
           </Key>
           <Property Name="LocationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LocationTypeID" Type="int" Nullable="false" />
+          <Property Name="VenueID" Type="int" />
           <Property Name="LocationCode" Type="varchar" MaxLength="20" />
           <Property Name="LocationName" Type="varchar" MaxLength="255" />
           <Property Name="LocationNotes" Type="text" />
@@ -589,7 +599,7 @@
             <PropertyRef Name="SettingID" />
           </Key>
           <Property Name="SettingID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="SettingType" Type="nvarchar(max)" />
+          <Property Name="SettingName" Type="nvarchar(max)" />
           <Property Name="Value" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="States">
@@ -898,6 +908,7 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Parameter Name="cartID" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="americantraincoModelStoreContainer">
+          <EntitySet Name="API_Log" EntityType="Self.API_Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Arlo_Rejected_Courses" EntityType="Self.Arlo_Rejected_Courses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cache_Log" EntityType="Self.Cache_Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cart" EntityType="Self.cart" Schema="dbo" store:Type="Tables" />
@@ -1196,28 +1207,6 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Property Name="RegisterUri" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="EventCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Location">
-          <Key>
-            <PropertyRef Name="LocationID" />
-          </Key>
-          <Property Name="LocationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="LocationTypeID" Type="Int32" Nullable="false" />
-          <Property Name="LocationCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="LocationName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="LocationNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="HotelSleepRate" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="HotelMeetingRate" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Active" Type="Int32" Nullable="false" />
-          <Property Name="Created" Type="DateTime" Precision="3" />
-          <Property Name="Modified" Type="DateTime" Precision="3" />
-          <Property Name="CreatedMemberID" Type="Int32" Nullable="false" />
-          <Property Name="ModifiedMemberID" Type="Int32" />
-          <Property Name="TimeZone" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
-          <Property Name="ContactName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ContactPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ContactFax" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ContactEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="LocationType">
           <Key>
             <PropertyRef Name="LocationTypeID" />
@@ -1502,7 +1491,6 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="CourseFormats" EntityType="Self.CourseFormat" />
           <EntitySet Name="CourseInstructors" EntityType="Self.CourseInstructor" />
           <EntitySet Name="COURSES" EntityType="Self.COURS" />
-          <EntitySet Name="Locations" EntityType="Self.Location" />
           <EntitySet Name="LocationTypes" EntityType="Self.LocationType" />
           <EntitySet Name="REGISTRATIONS" EntityType="Self.REGISTRATION" />
           <EntitySet Name="States" EntityType="Self.State" />
@@ -1546,7 +1534,9 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <EntitySet Name="Contacts" EntityType="americantraincoModel.Contact" />
           <EntitySet Name="INSTRUCTORS" EntityType="americantraincoModel.INSTRUCTOR" />
           <EntitySet Name="Arlo_Rejected_Courses" EntityType="americantraincoModel.Arlo_Rejected_Courses" />
+          <EntitySet Name="Locations" EntityType="americantraincoModel.Location" />
           <EntitySet Name="Settings" EntityType="americantraincoModel.Setting" />
+          <EntitySet Name="API_Log" EntityType="americantraincoModel.API_Log" />
         </EntityContainer>
         <EntityType Name="CourseTopic">
           <Key>
@@ -1924,13 +1914,45 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
           <Property Name="Reason" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="CreatedAt" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="LocationID" />
+          </Key>
+          <Property Name="LocationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LocationTypeID" Type="Int32" Nullable="false" />
+          <Property Name="VenueID" Type="Int32" />
+          <Property Name="LocationCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="LocationName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="LocationNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="HotelSleepRate" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="HotelMeetingRate" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Active" Type="Int32" Nullable="false" />
+          <Property Name="Created" Type="DateTime" Precision="3" />
+          <Property Name="Modified" Type="DateTime" Precision="3" />
+          <Property Name="CreatedMemberID" Type="Int32" Nullable="false" />
+          <Property Name="ModifiedMemberID" Type="Int32" />
+          <Property Name="TimeZone" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="ContactName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ContactPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ContactFax" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ContactEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="Setting">
           <Key>
             <PropertyRef Name="SettingID" />
           </Key>
           <Property Name="SettingID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SettingType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SettingName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="API_Log">
+          <Key>
+            <PropertyRef Name="Seq" />
+          </Key>
+          <Property Name="Seq" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Api_request" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Api_response" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Processed_Date" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2138,29 +2160,6 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
                 <ScalarProperty Name="PPTLink" ColumnName="PPTLink" />
                 <ScalarProperty Name="BrochureLink" ColumnName="BrochureLink" />
                 <ScalarProperty Name="Keywords" ColumnName="Keywords" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Locations">
-            <EntityTypeMapping TypeName="americantraincoModel.Location">
-              <MappingFragment StoreEntitySet="Locations">
-                <ScalarProperty Name="ContactEmail" ColumnName="ContactEmail" />
-                <ScalarProperty Name="ContactFax" ColumnName="ContactFax" />
-                <ScalarProperty Name="ContactPhone" ColumnName="ContactPhone" />
-                <ScalarProperty Name="ContactName" ColumnName="ContactName" />
-                <ScalarProperty Name="TimeZone" ColumnName="TimeZone" />
-                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
-                <ScalarProperty Name="LocationTypeID" ColumnName="LocationTypeID" />
-                <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
-                <ScalarProperty Name="LocationName" ColumnName="LocationName" />
-                <ScalarProperty Name="LocationNotes" ColumnName="LocationNotes" />
-                <ScalarProperty Name="HotelSleepRate" ColumnName="HotelSleepRate" />
-                <ScalarProperty Name="HotelMeetingRate" ColumnName="HotelMeetingRate" />
-                <ScalarProperty Name="Active" ColumnName="Active" />
-                <ScalarProperty Name="Created" ColumnName="Created" />
-                <ScalarProperty Name="Modified" ColumnName="Modified" />
-                <ScalarProperty Name="CreatedMemberID" ColumnName="CreatedMemberID" />
-                <ScalarProperty Name="ModifiedMemberID" ColumnName="ModifiedMemberID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2820,12 +2819,46 @@ warning 6002: The table/view 'americantrainco.dbo.SeminarCitiesActive' does not 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="americantraincoModel.Location">
+              <MappingFragment StoreEntitySet="Locations">
+                <ScalarProperty Name="ContactEmail" ColumnName="ContactEmail" />
+                <ScalarProperty Name="ContactFax" ColumnName="ContactFax" />
+                <ScalarProperty Name="ContactPhone" ColumnName="ContactPhone" />
+                <ScalarProperty Name="ContactName" ColumnName="ContactName" />
+                <ScalarProperty Name="TimeZone" ColumnName="TimeZone" />
+                <ScalarProperty Name="ModifiedMemberID" ColumnName="ModifiedMemberID" />
+                <ScalarProperty Name="CreatedMemberID" ColumnName="CreatedMemberID" />
+                <ScalarProperty Name="Modified" ColumnName="Modified" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="HotelMeetingRate" ColumnName="HotelMeetingRate" />
+                <ScalarProperty Name="HotelSleepRate" ColumnName="HotelSleepRate" />
+                <ScalarProperty Name="LocationNotes" ColumnName="LocationNotes" />
+                <ScalarProperty Name="LocationName" ColumnName="LocationName" />
+                <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
+                <ScalarProperty Name="VenueID" ColumnName="VenueID" />
+                <ScalarProperty Name="LocationTypeID" ColumnName="LocationTypeID" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Settings">
             <EntityTypeMapping TypeName="americantraincoModel.Setting">
               <MappingFragment StoreEntitySet="Setting">
                 <ScalarProperty Name="Value" ColumnName="Value" />
-                <ScalarProperty Name="SettingType" ColumnName="SettingType" />
+                <ScalarProperty Name="SettingName" ColumnName="SettingName" />
                 <ScalarProperty Name="SettingID" ColumnName="SettingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="API_Log">
+            <EntityTypeMapping TypeName="americantraincoModel.API_Log">
+              <MappingFragment StoreEntitySet="API_Log">
+                <ScalarProperty Name="Processed_Date" ColumnName="Processed_Date" />
+                <ScalarProperty Name="Api_response" ColumnName="Api_response" />
+                <ScalarProperty Name="Api_request" ColumnName="Api_request" />
+                <ScalarProperty Name="Seq" ColumnName="Seq" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
