@@ -16,36 +16,96 @@
     // We also check if "Hide in navigation" is on in the menu, we shouldn't show hidden items
     IEnumerable<IPublishedContent> menuItems = homePage.Children.Where("navigationBottom == true");
 }
-<footer>
-    <ul class="wrapper">
-        <li class="copyright">&copy; @copyrightText</li>
+<div class="footer-top">
+    <div class="container">
 
-        <li class="links">
-            <ul class="footer-text-links">
-                @{
-                    int i = 0;
-                    int navCount = menuItems.Count();
+        <div class="row">
+            <div class="col-md-5 no-padding">
+                <img src="/assets/images/logo-trainco-1x.png" alt="TCPTrainco Logo" id="logo" />
+            </div>
+            <div class="col-md-4 links no-padding">
 
-                    foreach (IPublishedContent item in menuItems.OrderBy("SortOrder"))
-                    {
-                        i++;
+                <ul class="footer-text-links">
+                    <h3>QUICK LINKS</h3>
+                    @{
+                        int i = 0;
+                        int navCount = menuItems.Count();
 
-                        <li><a href="@item.Url"@(item.GetPropertyValue<bool>("navigationNewWindow") ? " target=\"_blank\"" : "")>@(item.GetPropertyValue<string>("navigationTitle", item.Name))@(Html.Raw(i != navCount ? "<span>|</span>" : ""))</a></li>
+                        foreach (IPublishedContent item in menuItems.OrderBy("SortOrder"))
+                        {
+                            i++;
+
+                            <li><a href="@item.Url" @(item.GetPropertyValue<bool>("navigationNewWindow") ? " target=\"_blank\"" : "")>@(item.GetPropertyValue<string>("navigationTitle", item.Name))@(Html.Raw(i != navCount ? "" : ""))</a></li>
+                        }
                     }
-                }
-            </ul>
+                </ul>
+            </div>
+            <div class="col-md-3 no-padding">
+                <h3>FOLLOW US</h3>
+                <ul class="social">
+                    @foreach (IPublishedContent social in socialLinks)
+                    {
+                        <li>
+                            <a href="@(social.GetPropertyValue<string>("socialLink"))" class="regular-link" target="_blank">
+                                @(Html.Raw(social.GetPropertyValue<string>("svgHtml")))
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    jQuery(window).scroll(function () {
+        var header_h = jQuery('.header-box').height();
+        var scroll = jQuery(window).scrollTop();
+        if (scroll >= header_h) {
+            //jQuery('#MainWrapper').css({'padding-top': header_h});
+            jQuery('.primary-menu.two').css({ 'position': 'fixed' });
+        } else {
+            //jQuery('#MainWrapper').css({'padding-top': 0});
+            jQuery('.primary-menu.two').css({ 'position': 'relative' });
+        }
+    });
+    jQuery(window).scroll(function () {
+        var header_h = jQuery('.header-box').height();
+        var scroll = jQuery(window).scrollTop();
+        if (scroll >= header_h) {
+            //jQuery('#MainWrapper').css({'padding-top': header_h});
+            jQuery('.primary-menu-mobile').css({ 'position': 'fixed' });
+            jQuery('.register-cart-wrap').css({ 'position': 'fixed' });
+            jQuery('.register-cart-wrap').css({ 'top': '50px' });
+        } else {
+            //jQuery('#MainWrapper').css({'padding-top': 0});
+            jQuery('.primary-menu-mobile').css({ 'position': 'relative' });
+            jQuery('.register-cart-wrap').css({ 'position': 'relative' });
+            jQuery('.register-cart-wrap').css({ 'top': '0px' });
+        }
+    });
+    jQuery(window).load(function () {
+        var window_h = jQuery(window).height();
+        jQuery('.primary-menu-mobile .nav.navbar-nav').css({ 'min-height': window_h - 120 });
+    });
+    jQuery(document).on('click', '.dropdown-toggle', function () {
+        var a = jQuery(this).parent('li').hasClass('open');
+        console.log(a);
+        if (a == 'true') {
+            jQuery(this).parent('li').addClass('open');
+            console.log('ab');
+        } else {
+            jQuery('this').parent('li').removeClass('open');
+        }
+
+
+    });
+</script>
+
+<footer>
+    <ul class="wrapper text-center">
+        <li class="copyright">
+            <p>© Copyright 2018 TPC Training. All Rights Reserved.</p>
         </li>
-        <li>
-        <ul class="social">
-            @foreach (IPublishedContent social in socialLinks)
-            {
-                <li>
-                    <a href="@(social.GetPropertyValue<string>("socialLink"))" class="regular-link" target="_blank">
-                        @(Html.Raw(social.GetPropertyValue<string>("svgHtml")))
-                    </a>
-                </li>
-            }
-        </ul>
-        </li>
+
     </ul>
 </footer>

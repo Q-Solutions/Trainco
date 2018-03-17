@@ -6,93 +6,188 @@
     // (1) means: go up to level 1 and stop looking for more ancestors when you get there
     // First() gets the first ancestor found (the home page, on level 1)
     IPublishedContent siteSettings = Nodes.Instance.SiteSettings;
-    var homePage = CurrentPage.AncestorsOrSelf(1).First();
+    IPublishedContent homePage = CurrentPage.AncestorsOrSelf(1).First();
 
     IPublishedContent searchSeminarNode = Nodes.Instance.SeminarSearch;
 
     // The menu items we want are all of the children of the homepage
     // We also check if "Hide in navigation" is on in the menu, we shouldn't show hidden items
-    var menuItems = homePage.Children.Where("navigationTop == true");
-}
-<div id="authbar" ng-controller="AuthbarController as vm">
-<div class="container">
-  <div ng-if="!vm.isLoggedIn">
-    <ul class="inline-list">
-    <li>
-      <a class="authbar-link" href="/dashboard/signup">Create an account</a>
-    </li>
-    <li>
-      <a class="authbar-link" href="/dashboard/login">Log in</a>
-    </li>
-    <li>
-        <a class="authbar-link" href="/search-seminars?cart=1" title=""><img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-tab.png" class="cart-img-cart ng-scope"> </a>
-    </li>
-  </ul>
-  </div>
-  <div ng-if="vm.isLoggedIn" ng-cloak>
-    <ul class="inline-list">
-        <li ng-cloak>
-            Welcome, <strong>{{vm.user.firstName}} {{vm.user.lastName}}</strong>
-        </li>
-      <li>
-        <a class="authbar-link" href="/dashboard/saved">My account</a>
-      </li>
-      <li>
-        <a class="authbar-link" href="/logout" ng-click="vm.logout()">Logout</a>
-      </li>
-      <li>
-          <a class="authbar-link" href="/search-seminars?cart=1" title=""><img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-tab.png" class="cart-img-cart ng-scope"> </a>
-      </li>
-    </ul>
-  </div>
+    dynamic menuItems = null;
+    Dictionary<string, string> dtContent = new Dictionary<string, string>();
+    Dictionary<string, string> dtMobileContent = new Dictionary<string, string>();
+    if (homePage != null && homePage.Children != null)
+    {
+        menuItems = homePage.Children.Where("navigationTop == true").OrderBy("SortOrder");
 
-  </div>
+        //Dictionary<string, string> dtContent = new Dictionary<string, string> { { "live training", "" }, { "online training", "" }, { "performance support", "" }, { "assessment", "" }, {"about",""}, { "contact", "" } };
+        IPublishedContent menuContainer = homePage.Children(x => x.DocumentTypeAlias == "MegaMenuContainer").FirstOrDefault();
+        if (menuContainer != null)
+        {
+            List<IPublishedContent> contents = menuContainer.Children(x => x.DocumentTypeAlias == "MegaMenuContent").ToList();
+            foreach (var content in contents)
+            {
+                if (!content.HasProperty("parentMenu") || !content.HasProperty("pageContent") || !content.HasProperty("mobileContent"))
+                {
+                    continue;
+                }
+                string parent = content.GetPropertyValue("parentMenu").ToString();
+                if (string.IsNullOrEmpty(parent) || dtContent.ContainsKey(parent))
+                {
+                    continue;
+                }
+                dtContent[parent] = content.GetPropertyValue("pageContent").ToString();
+                if (dtMobileContent.ContainsKey(parent))
+                {
+                    continue;
+                }
+                dtMobileContent[parent] = content.GetPropertyValue("mobileContent").ToString();
+            }
+        }
+    }
+}
+
+<div class="header-box">
+    <div id="authbar" ng-controller="AuthbarController as vm">
+        <div class="container-fluid contain">
+            <div ng-if="!vm.isLoggedIn">
+                <ul class="inline-list">
+                    <li>
+                        <a class="authbar-link" href="/dashboard/signup">Create an account</a>
+                    </li>
+                    <li>
+                        <a class="authbar-link" href="/dashboard/login">Log in</a>
+                    </li>
+
+                </ul>
+            </div>
+            <div ng-if="vm.isLoggedIn" ng-cloak>
+                <ul class="inline-list">
+                    <li ng-cloak>
+                        Welcome, <strong>{{vm.user.firstName}} {{vm.user.lastName}}</strong>
+                    </li>
+                    <li>
+                        <a class="authbar-link" href="/dashboard/saved">My account</a>
+                    </li>
+                    <li>
+                        <a class="authbar-link" href="/logout" ng-click="vm.logout()">Logout</a>
+                    </li>
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    <!-- mobile nav -->
+    <nav class="navbar navbar-default bg-white primary-menu-mobile visible-xs visible-sm hidden-lg hidden-md ">
+        <div class="container-fluid bg-white">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="pull-left mobile-cart-top">
+                    <a class="authbar-link" href="/search-seminars?cart=1" title=""><img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-black.png" class="cart-img-cart ng-scope"> </a>
+                </div>
+                <div class="logo">
+                    TCPTrainco
+                    <a class="navbar-brand" href="/"><img src="/assets/images/logo-trainco-1x.png" alt="TCPTrainco Logo" id="logo" /></a>
+                </div>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav one pull-right">
+                    @foreach (var menuItem in dtMobileContent)
+                    {
+                        @Html.Raw(HttpUtility.HtmlDecode(menuItem.Value))
+                    }
+                    <li class="dropdown register-link-xs">
+                        <a href="register/" class="dropdown-toggle regular-link nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            Register<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <h2 class="gheader__mnav__subnav__group__title">Register now</h2>
+                                <p>If you would like to register with TPC Trainco <a href="search-seminars/" title="live.tpctraining.com/search-seminars/">click here</a> or contact us on <a href="tel:+18779877246">877 987 7246</a></p>
+
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <!-- mobile nav end -->
+    <nav class="navbar navbar-default bg-white hidden-xs hidden-sm">
+        <div class="container-fluid contain">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="logo">
+                    TCPTrainco
+                    <a class="navbar-brand" href="/"><img src="/assets/images/logo-trainco-1x.png" alt="TCPTrainco Logo" id="logo" /></a>
+                </div>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav one pull-right">
+                    <li>
+                        <span>For public seminars</span>
+                        <a href="@(searchSeminarNode.Url)" class="btn-reg" role="button">Register Now</a>
+                    </li>
+                    <li>
+                        Or Call <a href="tel:@(siteSettings.GetPropertyValue<string>("phoneNumber"))" class="no-header">@(siteSettings.GetPropertyValue<string>("phoneNumber"))</a>
+                    </li>
+                    <li class="site-links">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span>Select site:</span>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="http://tpctrainco.com"><i class="fa fa-circle blue-color" aria-hidden="true"></i> Online Training</a>
+                                <a class="dropdown-item" href="http://live.tpctraining.com"><i class="fa fa-circle red-color" aria-hidden="true"></i> Live Training</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="cart-text">YOUR CART</span>
+                        <a class="authbar-link" href="/search-seminars?cart=1" title=""><img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-black.png" class="cart-img-cart ng-scope"> </a>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
 </div>
-<nav class="navbar navbar-default">
+
+
+<nav class="navbar navbar-inverse no-margin">
     <div class="container-fluid contain">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".js-navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <div class="logo">
-                TCPTrainco
-                <a class="navbar-brand" href="/"><img src="/assets/images/logo-trainco-1x.png" alt="TCPTrainco Logo" id="logo"/></a>
-            </div>
         </div>
-
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li><a href="@(searchSeminarNode.Url)" class="btn-reg" role="button">Register</a></li>
-
-                @foreach (IPublishedContent item in menuItems.OrderBy("SortOrder"))
-                {
-                    if (item.DocumentTypeAlias == "SeminarMainOverview")
+        <div class="collapse navbar-collapse js-navbar-collapse no-padding">
+            @if (dtContent.Count > 0)
+            {
+                <ul class="mega-menu nav navbar-nav">
+                    @foreach (var menuItem in dtContent)
                     {
-                        string navName = item.GetPropertyValue<string>("navigationTitle", item.Name);
+                        <li class="mega-menu-item dropdown mega-dropdown">
 
-                        <li class="dropdown">
-                            <a href="@item.Url" class="dropdown-toggle regular-link nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@navName<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                @foreach (IPublishedContent subItem in item.Children)
-                                {
-                                    string subNavName = subItem.GetPropertyValue<string>("navigationTitle", subItem.Name);
-
-                                    <li><a href="@subItem.Url" class="nav-link regular-link">@subNavName</a></li>
-                                }
-                            </ul>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@menuItem.Key</a>
+                            <div class="content dropdown-menu mega-dropdown-menu">@Html.Raw(HttpUtility.HtmlDecode(menuItem.Value))</div>
                         </li>
                     }
-                    else
-                    {
-                        <li><a href="@item.Url" class="nav-link regular-link">@(item.GetPropertyValue<string>("navigationTitle", item.Name))</a></li>
-                    }
-                }
-
-                <li><a href="tel:@(siteSettings.GetPropertyValue<string>("phoneNumber"))" class="regular-link nav-link">@(siteSettings.GetPropertyValue<string>("phoneNumber"))</a></li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
+                </ul>
+            }
+        </div>
+    </div>
 </nav>

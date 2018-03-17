@@ -232,8 +232,7 @@
     <meta name="theme-color" content="#ffffff">
 
     <link rel="stylesheet" href="/assets/css/main.css?@cacheVer">
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="//fonts.googleapis.com/css?family=Lato:100,300,400,700,100italic,400italic" rel="stylesheet" type="text/css">
 
     @if (true == siteSettingsActive.HasValue("googleAnalyticsId"))
@@ -280,7 +279,7 @@
     @if (false == searchPage && false == homePage && false == seminarDetailPage)
     {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
         <script src="//cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
     }
@@ -288,7 +287,7 @@
     {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.4.0/lodash.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.10/ngStorage.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.4.9/angular-sanitize.min.js"></script>
@@ -329,11 +328,14 @@
         <script src="/assets/js/ngapp/components/cart/cart.service.js?v@cacheVer"></script>
         <script src="/assets/js/ngapp/components/cart/cart.controller.js?v@cacheVer"></script>
         <script>
-            $(function() {
-                $(".dropdown").hover(
-                    function(){ $(this).addClass('open') },
-                    function(){ $(this).removeClass('open') }
-                );
+            $(function () {
+                var windowWidth = $(window).width();
+                if (windowWidth > 991) {
+                    $(".dropdown").hover(
+                    function () { $(this).addClass('open') },
+                    function () { $(this).removeClass('open') }
+                    );
+                }
 
                 $('a[href^="#"]:not(.link-geolocation):not([data-toggle="collapse"])').click(function (e) {
                     e.preventDefault();
@@ -391,8 +393,8 @@
         <script type="text/javascript" src="/js/main.js?@cacheVer"></script>
         <script type="text/javascript">
             $(window).load(function () {
-            tpcAppObj = new TPCApp();
-        });
+                tpcAppObj = new TPCApp();
+            });
         </script>
     }
 

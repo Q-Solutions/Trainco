@@ -1,71 +1,71 @@
 <div class="fixed-top-cart slide-toggle" data-slide-toggle ng-controller="CartController as vm">
-  <div ng-show="vm.isCartOpened">
-    <div class="row cart-top">
-      <div class="container">
-        <div class="col-xs-12">
-          <h3 ng-class="{'cart-left': vm.isCartOpened}"><img src="/assets/images/icon-cart.png" alt="Cart"/>Cart</h3>
+    <div ng-show="vm.isCartOpened">
+        <div class="row cart-top">
+            <div class="container">
+                <div class="col-xs-12">
+                    <h3 ng-class="{'cart-left': vm.isCartOpened}"><img src="/assets/images/icon-cart-black.png2:59 AM 3/16/2018" alt="Cart" />Cart</h3>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <ul class="cart-heading-list">
-        <li>
-            <ul class="container">
-                <li class="class-title col-xs-12 col-sm-12 col-md-4"></li>
-                <li class="col-xs-12 col-sm-4 col-md-2"></li>
-                <li class="date col-xs-12 col-sm-4 col-md-2"></li>
-                <li class="col-xs-12 col-sm-4 col-md-2"></li>
-                <li class="qty-wrap col-xs-12 col-sm-4 col-md-1">Attendees:</li>
-                <li class="sub-total col-xs-12 col-sm-4 col-md-1">Subtotal</li>
+        <ul class="cart-heading-list">
+            <li>
+                <ul class="container">
+                    <li class="class-title col-xs-12 col-sm-12 col-md-4"></li>
+                    <li class="col-xs-12 col-sm-4 col-md-2"></li>
+                    <li class="date col-xs-12 col-sm-4 col-md-2"></li>
+                    <li class="col-xs-12 col-sm-4 col-md-2"></li>
+                    <li class="qty-wrap col-xs-12 col-sm-4 col-md-1">Attendees:</li>
+                    <li class="sub-total col-xs-12 col-sm-4 col-md-1">Subtotal</li>
+                </ul>
+            </li>
+        </ul>
+        <div class="cart-gray">
+            <ul class="list-inline cart-item-list">
+                <li class="cart-item" ng-repeat="cartItem in vm.cartItemList track by $index">
+                    <ul class="container">
+                        <li class="class-title col-xs-12 col-sm-12 col-md-4">{{cartItem.title}}</li>
+
+                        <li class="location col-xs-12 col-sm-4 col-md-2">{{cartItem.city}}{{cartItem.state != "" ? ", " + cartItem.state : ""}}</li>
+                        <li class="date col-xs-12 col-sm-4 col-md-2">{{cartItem.date}}</li>
+                        <li class="col-xs-12 col-sm-4 col-md-2 remove-wrap">
+                            <a href="javascript:void(0);" ng-click="vm.removeItemFromCart(cartItem.id)" class="remove">X Remove</a>
+                        </li>
+                        <li class="qty-wrap col-xs-12 col-sm-4 col-md-1">
+                            <input class="class-qty" ng-model="cartItem.quantity" string-to-number value="{{qty}}" ng-keyup="vm.handleQuantInput($event, cartItem)" ng-blur="vm.sanitizeQuantInput($event, cartItem)" type="tel" min="1" name="qty">
+                        </li>
+                        <li class="sub-total col-xs-12 col-sm-4 col-md-1">
+                            ${{cartItem.price * cartItem.quantity}}
+                        </li>
+                    </ul>
+                </li>
             </ul>
-        </li>
-    </ul>
-    <div class="cart-gray">
-      <ul class="list-inline cart-item-list">
-        <li class="cart-item" ng-repeat="cartItem in vm.cartItemList track by $index">
-          <ul class="container">
-            <li class="class-title col-xs-12 col-sm-12 col-md-4">{{cartItem.title}}</li>
-
-            <li class="location col-xs-12 col-sm-4 col-md-2">{{cartItem.city}}{{cartItem.state != "" ? ", " + cartItem.state : ""}}</li>
-            <li class="date col-xs-12 col-sm-4 col-md-2">{{cartItem.date}}</li>
-            <li class="col-xs-12 col-sm-4 col-md-2 remove-wrap">
-              <a href="javascript:void(0);" ng-click="vm.removeItemFromCart(cartItem.id)" class="remove">X Remove</a>
-            </li>
-            <li class="qty-wrap col-xs-12 col-sm-4 col-md-1">
-              <input class="class-qty" ng-model="cartItem.quantity" string-to-number value="{{qty}}" ng-keyup="vm.handleQuantInput($event, cartItem)" ng-blur="vm.sanitizeQuantInput($event, cartItem)" type="tel" min="1" name="qty">
-            </li>
-            <li class="sub-total col-xs-12 col-sm-4 col-md-1">
-              ${{cartItem.price * cartItem.quantity}}
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <div class="cart-bottom">
-      <div class="container">
-        <div class="col-xs-12 wrap">
-          <p class="cart-empty-msg" ng-if="vm.cartItemList.length === 0">Your cart is currently empty.</p>
-      <ul class="cart-total col-xs-12 col-md-4">
-        <li class="items-total">{{ vm.cartItemList.length }} Items</li>
-        <li class="cost-total">Total: $<span class="total-cost">{{vm.cartTotalPrice}}</span></li>
-      </ul>
-          <div class="col-xs-6 col-xs-offset-6 btn-wrapper">
-            <a href="javascript:void(0);" ng-hide="!vm.cartItemList.length" ng-click="vm.doPurchase()" class="btn-reg btn-blue-solid" id="check-out">Check Out</a>
-          </div>
         </div>
-      </div>
+        <div class="cart-bottom">
+            <div class="container">
+                <div class="col-xs-12 wrap">
+                    <p class="cart-empty-msg" ng-if="vm.cartItemList.length === 0">Your cart is currently empty.</p>
+                    <ul class="cart-total col-xs-12 col-md-4">
+                        <li class="items-total">{{ vm.cartItemList.length }} Items</li>
+                        <li class="cost-total">Total: $<span class="total-cost">{{vm.cartTotalPrice}}</span></li>
+                    </ul>
+                    <div class="col-xs-6 col-xs-offset-6 btn-wrapper">
+                        <a href="javascript:void(0);" ng-hide="!vm.cartItemList.length" ng-click="vm.doPurchase()" class="btn-reg btn-blue-solid" id="check-out">Check Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="cart-visible">
-    <a class="cart-tab" href="javascript:void(0);" ng-click="vm.cartIsOpen()">
-        <img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-tab.png" class="cart-img-cart">
-        <img ng-if="vm.isCartOpened" src="/assets/images/icon-cart-close-arrow.png" class="cart-img-arrow">
-    </a>
-    <div class="container" ng-show="!vm.isCartOpened">
-      <ul class="cart-total col-xs-12 col-md-4">
-        <li class="items-total">{{ vm.cartItemList.length }} Items</li>
-        <li class="cost-total">Total: $<span class="total-cost">{{vm.cartTotalPrice}}</span></li>
-      </ul>
+    <div class="cart-visible">
+        <a class="cart-tab" href="javascript:void(0);" ng-click="vm.cartIsOpen()">
+            <img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-black.png" class="cart-img-cart">
+            <img ng-if="vm.isCartOpened" src="/assets/images/icon-cart-close-arrow-black.png" class="cart-img-arrow">
+        </a>
+        <div class="container" ng-show="!vm.isCartOpened">
+            <ul class="cart-total col-xs-12 col-md-4">
+                <li class="items-total">{{ vm.cartItemList.length }} Items</li>
+                <li class="cost-total">Total: $<span class="total-cost">{{vm.cartTotalPrice}}</span></li>
+            </ul>
+        </div>
     </div>
-  </div>
 </div>

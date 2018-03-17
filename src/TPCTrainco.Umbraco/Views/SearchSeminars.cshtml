@@ -12,275 +12,286 @@
 
 @Html.Partial("Messages/MessagesTop", currentPage)
 <div class="register-cart-wrap">
-  <shopping-cart></shopping-cart>
+    <shopping-cart></shopping-cart>
 </div>
 <div class="ng-cloak register-page" ng-controller="RegisterController as ctrl">
-  <div class="responsive-sidebar-toggle">
-    <img class="img-left" src="/assets/images/icon-search.png" alt="Search Icon" /> Search By
-    <img ng-click="ctrl.sbIsCollapsed = !ctrl.sbIsCollapsed" class="img-right" src="/assets/images/icon-arrow-down.png" alt="Toggle Arrow" />
-    <div class="register-sidebar--sm" uib-collapse="ctrl.sbIsCollapsed">
-      <div class="filter-location">
-        <label class="sidebar-label">Keyword Search</label>
-        <input type="search" ng-init="ctrl.kwFilter.word = ''" ng-keydown="ctrl.handleKWInput($event)" ng-model="ctrl.kwFilter.word" placeholder="Enter Keyword">
-      </div>
-      <hr class="dark-hr" />
-      <div class="filter-topic">
-        <h4 class="sidebar-h4">Search By:</h4>
-        <label class="sidebar-label">Seminar Topic</label>
-        <div class="input-group">
-          <label class="sidebar-label">
-            <input type="checkbox" ng-model="ctrl.categories.electrical"ng-change="ctrl.stateChanged(ctrl.categories[category])">Electrical</label>
-          <label class="sidebar-label">
-            <input type="checkbox" ng-model="ctrl.categories.hvac" ng-change="ctrl.stateChanged(ctrl.categories[category])">HVAC</label>
-          <label class="sidebar-label">
-            <input type="checkbox" ng-model="ctrl.categories.management" ng-change="ctrl.stateChanged(ctrl.categories[category])">Plant Management</label>
-          <label class="sidebar-label">
-            <input type="checkbox" ng-model="ctrl.categories.mechanical"  ng-change="ctrl.stateChanged(ctrl.categories[category])">Mechanical &amp; Industrial</label>
-          <label class="sidebar-label">
-            <input type="checkbox" ng-model="ctrl.categories.all" ng-change="ctrl.stateChanged(ctrl.categories[category])">All Seminar Topics</label>
-        </div>
-      </div>
-      <hr class="divider" />
-      <div class="filter-location">
-        <label class="sidebar-label">City or ZIP</label>
-        <input type="search" ng-keydown="ctrl.handleLocInput($event)" ng-model="ctrl.locSearchFilter.location" placeholder="Enter Location">
-        <h5 class="white">- or -</h5>
-        <div class="input-group">
-          <span class="input-group-addon">
-            <input ng-model="ctrl.locSearchFilter.locationAll" ng-change="ctrl.locWatcher()"  type="checkbox">All Locations
-          </span>
-        </div>
-        <div class="input-group">
-            <span class="input-group-addon">
-                <input type="checkbox" ng-model="ctrl.locSearchFilter.simulcast" ng-change="ctrl.simulcastWatcher()">Simulcast Only <span class="helper-text">(will display only web-based courses)</span>
-            </span>
-        </div>
-      </div>
-      <hr class="divider" />
-      <label>Search Within a</label>
-      <rzslider rz-slider-model="ctrl.mileRange.value" rz-slider-options="ctrl.mileRange.options"></rzslider>
-      <hr class="divider" />
-      <label>Date Range</label>
-      <h5>From</h5>
+    <div class="responsive-sidebar-toggle">
+        <img class="img-left" src="/assets/images/icon-search.png" alt="Search Icon" /> Search By
+        <img ng-click="ctrl.sbIsCollapsed = !ctrl.sbIsCollapsed" class="img-right" src="/assets/images/icon-arrow-down.png" alt="Toggle Arrow" />
+        <div class="register-sidebar--sm" uib-collapse="ctrl.sbIsCollapsed">
+            <div class="filter-location">
+                <label class="sidebar-label">Keyword Search</label>
+                <input type="search" ng-init="ctrl.kwFilter.word = ''" ng-keydown="ctrl.handleKWInput($event)" ng-model="ctrl.kwFilter.word" placeholder="Enter Keyword">
+            </div>
+            <hr class="dark-hr" />
+            <div class="filter-topic">
+                <h4 class="sidebar-h4">Search By:</h4>
+                <label class="sidebar-label">Seminar Topic</label>
+                <div class="input-group">
+                    <label class="sidebar-label">
+                        <input type="checkbox" ng-model="ctrl.categories.electrical" ng-change="ctrl.stateChanged(ctrl.categories[category])">Electrical
+                    </label>
+                    <label class="sidebar-label">
+                        <input type="checkbox" ng-model="ctrl.categories.hvac" ng-change="ctrl.stateChanged(ctrl.categories[category])">HVAC
+                    </label>
+                    <label class="sidebar-label">
+                        <input type="checkbox" ng-model="ctrl.categories.management" ng-change="ctrl.stateChanged(ctrl.categories[category])">Plant Management
+                    </label>
+                    <label class="sidebar-label">
+                        <input type="checkbox" ng-model="ctrl.categories.mechanical" ng-change="ctrl.stateChanged(ctrl.categories[category])">Mechanical &amp; Industrial
+                    </label>
+                    <label class="sidebar-label">
+                        <input type="checkbox" ng-model="ctrl.categories.all" ng-change="ctrl.stateChanged(ctrl.categories[category])">All Seminar Topics
+                    </label>
+                </div>
+            </div>
+            <hr class="divider" />
+            <div class="filter-location">
+                <label class="sidebar-label">City or ZIP</label>
+                <input type="search" ng-keydown="ctrl.handleLocInput($event)" ng-model="ctrl.locSearchFilter.location" placeholder="Enter Location">
+                <h5 class="white">- or -</h5>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <input ng-model="ctrl.locSearchFilter.locationAll" ng-change="ctrl.locWatcher()" type="checkbox">All Locations
+                    </span>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <input type="checkbox" ng-model="ctrl.locSearchFilter.simulcast" ng-change="ctrl.simulcastWatcher()">Simulcast Only <span class="helper-text">(will display only web-based courses)</span>
+                    </span>
+                </div>
+            </div>
+            <hr class="divider" />
+            <label>Search Within a</label>
+            <rzslider rz-slider-model="ctrl.mileRange.value" rz-slider-options="ctrl.mileRange.options"></rzslider>
+            <hr class="divider" />
+            <label>Date Range</label>
+            <h5>From</h5>
 
-      <select ng-model="ctrl.dateRange.start" ng-options="month.value as month.name for month in ctrl.startingMonthArray"></select>
-      <h5>Through</h5>
-      <select ng-model="ctrl.dateRange.end" ng-options="month.value as month.name for month in ctrl.yearOfMonths" ng-change="ctrl.watcherOfThings()"></select>
-      <hr class="divider" />
-      <label><span class="register-link" ng-click="ctrl.clearFilters()">Clear Filters</span></label>
+            <select ng-model="ctrl.dateRange.start" ng-options="month.value as month.name for month in ctrl.startingMonthArray"></select>
+            <h5>Through</h5>
+            <select ng-model="ctrl.dateRange.end" ng-options="month.value as month.name for month in ctrl.yearOfMonths" ng-change="ctrl.watcherOfThings()"></select>
+            <hr class="divider" />
+            <label><span class="register-link" ng-click="ctrl.clearFilters()">Clear Filters</span></label>
+        </div>
     </div>
-  </div>
-  <!-- END Responsive menu thing -->
-  <div class="container">
-    <div class="row">
-      <div class="col-md-3 register-sidebar">
+    <!-- END Responsive menu thing -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 register-sidebar">
 
-        <div class="filter-location">
-          <label class="sidebar-label">Keyword Search</label>
-          <input type="search" ng-keydown="ctrl.typingTextBoxHandler($event, 'kw')" ng-model="ctrl.kwFilter.word" placeholder="Enter Keyword">
-        </div>
-        <hr class="dark-hr" />
-        <div class="filter-topic">
-          <h4 class="sidebar-h4">Search By:</h4>
-          <label class="sidebar-label">Seminar Topic</label>
-          <div class="input-group">
-            <label class="sidebar-label">
-              <input type="checkbox" ng-model="ctrl.categories.electrical" ng-change="ctrl.stateChanged(ctrl.categories[category])">Electrical</label>
-            <label class="sidebar-label">
-              <input type="checkbox" ng-model="ctrl.categories.hvac"  ng-change="ctrl.stateChanged(ctrl.categories[category])">HVAC</label>
-            <label class="sidebar-label">
-              <input type="checkbox" ng-model="ctrl.categories.management"ng-change="ctrl.stateChanged(ctrl.categories[category])">Plant Management</label>
-            <label class="sidebar-label">
-              <input type="checkbox" ng-model="ctrl.categories.mechanical"ng-change="ctrl.stateChanged(ctrl.categories[category])">Mechanical &amp; Industrial</label>
-            <label class="sidebar-label">
-              <input type="checkbox" ng-model="ctrl.categories.all" ng-change="ctrl.stateChanged(ctrl.categories[category])">All Seminar Topics</label>
-          </div>
-        </div>
-        <hr class="divider" />
-        <div class="filter-location">
-          <label class="sidebar-label">City or ZIP</label>
-          <input type="search" ng-keydown="ctrl.typingTextBoxHandler($event, 'loc')" ng-model="ctrl.locSearchFilter.location" placeholder="Enter Location">
-          <h5>- or -</h5>
-          <div class="input-group">
-            <span class="input-group-addon">
-              <input ng-model="ctrl.locSearchFilter.locationAll" ng-change="ctrl.locWatcher()" type="checkbox">All Locations
-            </span>
-          </div>
-        <div class="input-group">
-            <span class="input-group-addon">
-                <input type="checkbox" ng-model="ctrl.locSearchFilter.simulcast" ng-change="ctrl.simulcastWatcher()">Simulcast Only <span class="helper-text">(will display only web-based courses)</span>
-            </span>
-        </div>
-        </div>
-        <hr class="divider" />
-        <label>Search Within a</label>
-        <rzslider rz-slider-model="ctrl.mileRange.value" rz-slider-options="ctrl.mileRange.options"></rzslider>
-        <hr class="divider" />
-        <label>Date Range</label>
-        <h5>From</h5>
-        <select ng-model="ctrl.dateRange.start" ng-options="month.value as month.name for month in ctrl.startingMonthArray" ng-change="ctrl.fromDateWatcher()"></select>
-        <h5>Through</h5>
-        <select ng-model="ctrl.dateRange.end" ng-options="month.value as month.name for month in ctrl.yearOfMonths" ng-change="ctrl.dateWatcher()"></select>
-        <hr class="divider" />
-        <label><span class="register-link" ng-click="ctrl.clearFilters()">Clear Filters</span></label>
-    </div>
-    <!-- END register sidebar -->
-      <div class="col-md-9" class="search-results">
-        <!-- No Results -->
-        <div class="empty-results" ng-if="ctrl.showDirections">
-        <div class="no-results" ng-if="ctrl.searchFired">
-          <h2>Sorry, no results were found.</h2>
-          <p>
-            Try refining your search, starting a new search or begin browsing below.
-          </p>
-        </div>
-        @if (settingsPage != null && false == string.IsNullOrEmpty(settingsPage.GetPropertyValue<string>("noResultsText")))
-        {
-          @Html.Raw(settingsPage.GetPropertyValue<string>("noResultsText"))
-        }
-        else
-        {
-            <h3>Use the menu on the left side to:</h3>
-            <div class="empty-results-instructions">
-                <span class="empty-results-number">1</span> Choose a topic or select a specific seminar title.
+                <div class="filter-location">
+                    <label class="sidebar-label">Keyword Search</label>
+                    <input type="search" ng-keydown="ctrl.typingTextBoxHandler($event, 'kw')" ng-model="ctrl.kwFilter.word" placeholder="Enter Keyword">
+                </div>
+                <hr class="dark-hr" />
+                <div class="filter-topic">
+                    <h4 class="sidebar-h4">Search By:</h4>
+                    <label class="sidebar-label">Seminar Topic</label>
+                    <div class="input-group">
+                        <label class="sidebar-label">
+                            <input type="checkbox" ng-model="ctrl.categories.electrical" ng-change="ctrl.stateChanged(ctrl.categories[category])">Electrical
+                        </label>
+                        <label class="sidebar-label">
+                            <input type="checkbox" ng-model="ctrl.categories.hvac" ng-change="ctrl.stateChanged(ctrl.categories[category])">HVAC
+                        </label>
+                        <label class="sidebar-label">
+                            <input type="checkbox" ng-model="ctrl.categories.management" ng-change="ctrl.stateChanged(ctrl.categories[category])">Plant Management
+                        </label>
+                        <label class="sidebar-label">
+                            <input type="checkbox" ng-model="ctrl.categories.mechanical" ng-change="ctrl.stateChanged(ctrl.categories[category])">Mechanical &amp; Industrial
+                        </label>
+                        <label class="sidebar-label">
+                            <input type="checkbox" ng-model="ctrl.categories.all" ng-change="ctrl.stateChanged(ctrl.categories[category])">All Seminar Topics
+                        </label>
+                    </div>
+                </div>
+                <hr class="divider" />
+                <div class="filter-location">
+                    <label class="sidebar-label">City or ZIP</label>
+                    <input type="search" ng-keydown="ctrl.typingTextBoxHandler($event, 'loc')" ng-model="ctrl.locSearchFilter.location" placeholder="Enter Location">
+                    <h5>- or -</h5>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input ng-model="ctrl.locSearchFilter.locationAll" ng-change="ctrl.locWatcher()" type="checkbox">All Locations
+                        </span>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input type="checkbox" ng-model="ctrl.locSearchFilter.simulcast" ng-change="ctrl.simulcastWatcher()">Simulcast Only <span class="helper-text">(will display only web-based courses)</span>
+                        </span>
+                    </div>
+                </div>
+                <hr class="divider" />
+                <label>Search Within a</label>
+                <rzslider rz-slider-model="ctrl.mileRange.value" rz-slider-options="ctrl.mileRange.options"></rzslider>
+                <hr class="divider" />
+                <label>Date Range</label>
+                <h5>From</h5>
+                <select ng-model="ctrl.dateRange.start" ng-options="month.value as month.name for month in ctrl.startingMonthArray" ng-change="ctrl.fromDateWatcher()"></select>
+                <h5>Through</h5>
+                <select ng-model="ctrl.dateRange.end" ng-options="month.value as month.name for month in ctrl.yearOfMonths" ng-change="ctrl.dateWatcher()"></select>
+                <hr class="divider" />
+                <label><span class="register-link" ng-click="ctrl.clearFilters()">Clear Filters</span></label>
             </div>
-            <div class="empty-results-instructions">
-                <span class="empty-results-number">2</span> Choose a location or check "All Locations" to view all.
-            </div>
-            <div class="empty-results-instructions">
-                <span class="empty-results-number">3</span> Adjust the date range as needed.
-            </div>
+            <!-- END register sidebar -->
+            <div class="col-md-9" class="search-results">
+                <!-- No Results -->
+                <div class="empty-results" ng-if="ctrl.showDirections">
+                    <div class="no-results" ng-if="ctrl.searchFired">
+                        <h2>Sorry, no results were found.</h2>
+                        <p>
+                            Try refining your search, starting a new search or begin browsing below.
+                        </p>
+                    </div>
+                    @if (settingsPage != null && false == string.IsNullOrEmpty(settingsPage.GetPropertyValue<string>("noResultsText")))
+                    {
+                        @Html.Raw(settingsPage.GetPropertyValue<string>("noResultsText"))
+                    }
+                    else
+                    {
+                        <h3>Use the menu on the left side to:</h3>
+                        <div class="empty-results-instructions">
+                            <span class="empty-results-number">1</span> Choose a topic or select a specific seminar title.
+                        </div>
+                        <div class="empty-results-instructions">
+                            <span class="empty-results-number">2</span> Choose a location or check "All Locations" to view all.
+                        </div>
+                        <div class="empty-results-instructions">
+                            <span class="empty-results-number">3</span> Adjust the date range as needed.
+                        </div>
 
-            <p class="empty-results-promo">
-                All of our public seminars are just $495 a day, and most are two days in length. All are also available for
-                <a href="/on-site-training/">on-site training</a>.
-            </p>
-        }
-        </div>
-        <!-- END No Results -->
+                        <p class="empty-results-promo">
+                            All of our public seminars are just $495 a day, and most are two days in length. All are also available for
+                            <a href="/on-site-training/">on-site training</a>.
+                        </p>
+                    }
+                </div>
+                <!-- END No Results -->
+                <!-- Search Results -->
+                <div class="faceted-result" ng-if="!ctrl.initialDirections && ctrl.seminarLocations.length" ng-repeat="course in ctrl.seminarLocations | flatten | startFrom: ctrl.mainCurrentPage * 4 | limitTo:4" dw-loading="courses" dw-loading-options="ctrl.options" ng-init="ctrl.setLimit(course.id,course.locationSchedules.length)">
+                    <section class="row">
+                        <div class="col-md-2">
+                            <img ng-src="{{course.imageUrl}}" class="course-img img-circle">
+                            <h4 class="result-price">${{course.price}}</h4>
+                        </div>
+                        <div class="col-md-10" style="padding-left: 15px;">
+                            <h2 class="result-course-title"><a ng-href="{{course.detailsUrl}}">{{course.title}}</a></h2>
+                            <p class="result-course-subtitle">{{course.subTitle}}</p>
+                        </div>
+                    </section>
+                    <section class="row result-table-head">
+                        <div class="col-md-5 col-sm-10 col-xs-9">Location</div>
+                        <div class="col-xs-5 hide-responsive">Seminar Information</div>
+                        <div class="col-sm-2 col-xs-3 result-attendee-wrapper">Attendees</div>
+                    </section>
+                    <section class="row result-table-body simulcast" ng-if="course.simulcastSchedules.length > 0">
+                        <h3 class="no-margin">Simulcast Courses <span><span class="small btn-learnmore" ng-click="ctrl.toggleSimulcastDescription($event)">( <span class="action">+</span> What's a simulcast? )</span></span></h3>
+                        <span class="result-course-subtitle">In addition to classroom locations shown below, this course is also available as a simulcast - a live, web-based connection to a classroom seminar.</span>
+                        <div class="text-learnmore result-course-subtitle hide">
+                            <p>Our simulcast option allows students to connect to a live classroom seminar via a web link, with the ability to participate fully in the classroom dialogue, exercises, and Q&A throughout the 2-day live course.</p>
+                            <p>Simulcast students receive all classroom materials electronically, full technical support during the event, a certificate of completion for 1.6 CEUs, and the same No-Risk Registration and Money-Back Guarantee as our classroom students.</p>
+                        </div>
+                        <hr class="no-margin" />
+                        <div class="result-location-row" ng-repeat="location in course.simulcastSchedules">
+                            <div class="col-md-5 col-sm-10 col-xs-9 result-location">
+                                <span class="city">{{::location.city}}</span>
+                                <span class="date-responsive">{{::location.date}}</span>
+                            </div>
+                            <div class="col-xs-5 result-date">
+                                {{::location.date}}
+                                <span>{{location.locationDetails}}</span>
+                            </div>
 
-    <!-- Search Results -->
-          <div class="faceted-result" ng-if="!ctrl.initialDirections && ctrl.seminarLocations.length" ng-repeat="course in ctrl.seminarLocations | flatten | startFrom: ctrl.mainCurrentPage * 4 | limitTo:4" dw-loading="courses" dw-loading-options="ctrl.options" ng-init="ctrl.setLimit(course.id,course.locationSchedules.length)">
-              <section class="row">
-                  <div class="col-md-2">
-                      <img ng-src="{{course.imageUrl}}" class="course-img img-circle">
-                      <h4 class="result-price">${{course.price}}</h4>
-                  </div>
-                  <div class="col-md-10" style="padding-left: 15px;">
-                      <h2 class="result-course-title"><a ng-href="{{course.detailsUrl}}">{{course.title}}</a></h2>
-                      <p class="result-course-subtitle">{{course.subTitle}}</p>
-                  </div>
-              </section>
-              <section class="row result-table-head">
-                  <div class="col-md-5 col-sm-10 col-xs-9">Location</div>
-                  <div class="col-xs-5 hide-responsive">Seminar Information</div>
-                  <div class="col-sm-2 col-xs-3 result-attendee-wrapper">Attendees</div>
-              </section>
-            <section class="row result-table-body simulcast" ng-if="course.simulcastSchedules.length > 0">
-                <h3 class="no-margin">Simulcast Courses <span><span class="small btn-learnmore" ng-click="ctrl.toggleSimulcastDescription($event)">( <span class="action">+</span> What's a simulcast? )</span></span></h3>
-                <span class="result-course-subtitle">In addition to classroom locations shown below, this course is also available as a simulcast - a live, web-based connection to a classroom seminar.</span>
-                <div class="text-learnmore result-course-subtitle hide">
-                    <p>Our simulcast option allows students to connect to a live classroom seminar via a web link, with the ability to participate fully in the classroom dialogue, exercises, and Q&A throughout the 2-day live course.</p>
-                    <p>Simulcast students receive all classroom materials electronically, full technical support during the event, a certificate of completion for 1.6 CEUs, and the same No-Risk Registration and Money-Back Guarantee as our classroom students.</p>
-                </div>
-                <hr class="no-margin"/>
-                <div class="result-location-row" ng-repeat="location in course.simulcastSchedules">
-                    <div class="col-md-5 col-sm-10 col-xs-9 result-location">
-                        <span class="city">{{::location.city}}</span>
-                        <span class="date-responsive">{{::location.date}}</span>
-                    </div>
-                    <div class="col-xs-5 result-date">
-                        {{::location.date}}
-                        <span>{{location.locationDetails}}</span>
-                    </div>
+                            <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
+                                <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
+                                <input class="cart-btn btn btn-reg btn-blue-solid"
+                                       type="button"
+                                       value="Add to Cart"
+                                       ng-show="location.qty > 0"
+                                       ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
+                            </div>
+                        </div>
+                    </section>
+                    <section class="row result-table-body simulcast" ng-if="course.liveOnlineSchedules.length > 0">
+                        <h3 class="no-margin">Live Online Training Courses <span><span class="small btn-learnmore" ng-click="ctrl.toggleSimulcastDescription($event)">( <span class="action">+</span> What's a simulcast? )</span></span></h3>
+                        <span class="result-course-subtitle">In addition to classroom locations shown below, this course is also available as a simulcast - a live, web-based connection to a classroom seminar.</span>
+                        <div class="text-learnmore result-course-subtitle hide">
+                            <p>Our simulcast option allows students to connect to a live classroom seminar via a web link, with the ability to participate fully in the classroom dialogue, exercises, and Q&A throughout the 2-day live course.</p>
+                            <p>Simulcast students receive all classroom materials electronically, full technical support during the event, a certificate of completion for 1.6 CEUs, and the same No-Risk Registration and Money-Back Guarantee as our classroom students.</p>
+                        </div>
+                        <hr class="no-margin" />
+                        <div class="result-location-row" ng-repeat="location in course.liveOnlineSchedules">
+                            <div class="col-md-5 col-sm-10 col-xs-9 result-location">
+                                <span class="city">{{::location.city}}</span>
+                                <span class="date-responsive">{{::location.date}}</span>
+                            </div>
+                            <div class="col-xs-5 result-date">
+                                {{::location.date}}
+                                <span>{{location.locationDetails}}</span>
+                            </div>
 
-                    <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
-                        <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
-                        <input class="cart-btn btn btn-reg btn-blue-solid"
-                                type="button"
-                                value="Add to Cart"
-                                ng-show="location.qty > 0"
-                                ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
-                    </div>
-                </div>
-            </section>
-            <section class="row result-table-body simulcast" ng-if="course.liveOnlineSchedules.length > 0">
-                <h3 class="no-margin">Live Online Training Courses <span><span class="small btn-learnmore" ng-click="ctrl.toggleSimulcastDescription($event)">( <span class="action">+</span> What's a simulcast? )</span></span></h3>
-                <span class="result-course-subtitle">In addition to classroom locations shown below, this course is also available as a simulcast - a live, web-based connection to a classroom seminar.</span>
-                <div class="text-learnmore result-course-subtitle hide">
-                    <p>Our simulcast option allows students to connect to a live classroom seminar via a web link, with the ability to participate fully in the classroom dialogue, exercises, and Q&A throughout the 2-day live course.</p>
-                    <p>Simulcast students receive all classroom materials electronically, full technical support during the event, a certificate of completion for 1.6 CEUs, and the same No-Risk Registration and Money-Back Guarantee as our classroom students.</p>
-                </div>
-                <hr class="no-margin" />
-                <div class="result-location-row" ng-repeat="location in course.liveOnlineSchedules">
-                    <div class="col-md-5 col-sm-10 col-xs-9 result-location">
-                        <span class="city">{{::location.city}}</span>
-                        <span class="date-responsive">{{::location.date}}</span>
-                    </div>
-                    <div class="col-xs-5 result-date">
-                        {{::location.date}}
-                        <span>{{location.locationDetails}}</span>
-                    </div>
+                            <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
+                                <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
+                                <input class="cart-btn btn btn-reg btn-blue-solid"
+                                       type="button"
+                                       value="Add to Cart"
+                                       ng-show="location.qty > 0"
+                                       ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
+                            </div>
+                        </div>
+                    </section>
+                    <section class="row result-table-body" ng-if="course.locationSchedules.length > 0">
+                        <h3 class="no-margin">Classroom Courses</h3>
+                        <hr class="no-margin" />
+                        <div class="result-location-row"
+                             ng-repeat="location in course.locationSchedules | limitTo: ctrl.limits[course.id].limit">
+                            <div class="col-md-5 col-sm-10 col-xs-9 result-location">
+                                <span class="state">{{::location.state}}</span>
+                                <span class="city">{{::location.city}}</span>
+                                <span class="date-responsive">{{::location.date}}</span>
+                            </div>
+                            <div class="col-xs-5 result-date">
+                                {{::location.date}}
+                                <span>{{location.locationDetails}}</span>
+                            </div>
 
-                    <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
-                        <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
-                        <input class="cart-btn btn btn-reg btn-blue-solid"
-                               type="button"
-                               value="Add to Cart"
-                               ng-show="location.qty > 0"
-                               ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
-                    </div>
-                </div>
-            </section>
-            <section class="row result-table-body" ng-if="course.locationSchedules.length > 0">
-                <h3 class="no-margin">Classroom Courses</h3>
-                <hr class="no-margin"/>
-                <div class="result-location-row"
-                    ng-repeat="location in course.locationSchedules | limitTo: ctrl.limits[course.id].limit">
-                    <div class="col-md-5 col-sm-10 col-xs-9 result-location">
-                        <span class="state">{{::location.state}}</span>
-                        <span class="city">{{::location.city}}</span>
-                        <span class="date-responsive">{{::location.date}}</span>
-                    </div>
-                    <div class="col-xs-5 result-date">
-                        {{::location.date}}
-                        <span>{{location.locationDetails}}</span>
-                    </div>
+                            <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
+                                <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
+                                <input class="cart-btn btn btn-reg btn-blue-solid"
+                                       type="button"
+                                       value="Add to Cart"
+                                       ng-show="location.qty > 0"
+                                       ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
+                            </div>
+                        </div>
+                        @*<span class="additional-showing" ng-if="course.locationSchedules.length > 10" ng-click="ctrl.additionalClick()"><i class="fa fa-plus-circle"></i> Show additional seminars for this topic</span>*@
+                        <span class="additional-showing" ng-if="ctrl.showAdditional(course.id)" ng-click="ctrl.additionalClick(course.id,$event)"><i class="fa fa-plus-circle"></i> Show additional seminars for this topic</span>
+                        <span class="additional-showing" ng-if="ctrl.showLess(course.id)" ng-click="ctrl.lessClick(course.id,$event)"><i class="fa fa-minus-circle"></i> Show less seminars for this topic</span>
+                    </section>
 
-                    <div class="col-sm-2 col-xs-3 result-attendee-wrapper">
-                        <input class="attendee-input" type="tel" min="1" ng-model="location.qty" string-to-number />
-                        <input class="cart-btn btn btn-reg btn-blue-solid"
-                                type="button"
-                                value="Add to Cart"
-                                ng-show="location.qty > 0"
-                                ng-click="ctrl.addItemToCart(location, location.qty, $event)" />
-                    </div>
                 </div>
-                @*<span class="additional-showing" ng-if="course.locationSchedules.length > 10" ng-click="ctrl.additionalClick()"><i class="fa fa-plus-circle"></i> Show additional seminars for this topic</span>*@
-                <span class="additional-showing" ng-if="ctrl.showAdditional(course.id)" ng-click="ctrl.additionalClick(course.id,$event)"><i class="fa fa-plus-circle"></i> Show additional seminars for this topic</span>
-                <span class="additional-showing" ng-if="ctrl.showLess(course.id)" ng-click="ctrl.lessClick(course.id,$event)"><i class="fa fa-minus-circle"></i> Show less seminars for this topic</span>
-            </section>
-                
-</div>
-    <ul class="pagination-btn-wrapper" ng-hide="ctrl.showDirections">
-          <!-- bottom pagination buttons -->
-          <li><button class="btn-pagination btn-pagination-left"
-                  ng-disabled="ctrl.mainCurrentPage == 0"
-                  ng-click="ctrl.mainCurrentPage=ctrl.mainCurrentPage-1">
-                  <i class="fa fa-chevron-left"></i> Previous
-          </button>
-        </li>
-        <li><p class="pagination-length">{{ ctrl.mainCurrentPage + 1 }} / {{ ctrl.semLocLength | number:0}}</p></li>
-        <li>              <button class="btn-pagination btn-pagination-right"
-                              ng-disabled="ctrl.mainCurrentPage >= ctrl.semLocLength - 1"
-                              ng-click="ctrl.goNextPage()">
-                          Next <i class="fa fa-chevron-right"></i>
-                      </button>
+                <ul class="pagination-btn-wrapper" ng-hide="ctrl.showDirections">
+                    <!-- bottom pagination buttons -->
+                    <li>
+                        <button class="btn-pagination btn-pagination-left"
+                                ng-disabled="ctrl.mainCurrentPage == 0"
+                                ng-click="ctrl.mainCurrentPage=ctrl.mainCurrentPage-1">
+                            <i class="fa fa-chevron-left"></i> Previous
+                        </button>
                     </li>
-            <!-- end bottom pagination buttons -->
-          </ul>
-  </div>
+                    <li><p class="pagination-length">{{ ctrl.mainCurrentPage + 1 }} / {{ ctrl.semLocLength | number:0}}</p></li>
+                    <li>
+                        <button class="btn-pagination btn-pagination-right"
+                                ng-disabled="ctrl.mainCurrentPage >= ctrl.semLocLength - 1"
+                                ng-click="ctrl.goNextPage()">
+                            Next <i class="fa fa-chevron-right"></i>
+                        </button>
+                    </li>
+                    <!-- end bottom pagination buttons -->
+                </ul>
+            </div>
 
-</div>
-</div>
+        </div>
+    </div>
 </div>
