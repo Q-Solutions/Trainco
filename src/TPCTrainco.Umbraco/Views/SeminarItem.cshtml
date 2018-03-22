@@ -7,7 +7,12 @@
     IPublishedContent currentPage = Model.Content;
     IPublishedContent siteSettings = Nodes.Instance.SiteSettings;
     IPublishedContent onsitePromo = siteSettings.GetPropertyValue<IPublishedContent>("activePromo");
-    var dynamicPromo = Umbraco.Content(onsitePromo.Id);
+    dynamic dynamicPromo = null;
+    if (onsitePromo != null)
+    {
+        dynamicPromo = Umbraco.Content(onsitePromo.Id);
+    }
+
     var seminarContainer = CurrentPage.AncestorOrSelf(2);
     int courseId = 0;
     COURS course = null;
@@ -34,7 +39,7 @@
             <li><a href="#overview" class="page-scroll nav-link regular-link active">Seminar Overview</a></li>
             @if (false == string.IsNullOrWhiteSpace(CurrentPage.day1Header) || false == string.IsNullOrWhiteSpace(CurrentPage.day2Header) || false == string.IsNullOrWhiteSpace(CurrentPage.day3Header) || false == string.IsNullOrWhiteSpace(CurrentPage.day4Header))
             {
-            <li><a href="#discussion" class="page-scroll nav-link regular-link">Discussion Topics</a></li>
+                <li><a href="#discussion" class="page-scroll nav-link regular-link">Discussion Topics</a></li>
             }
             @if (CurrentPage.HasValue("certificationCopy") || CurrentPage.includeCeu || CurrentPage.includeAtmt)
             {
@@ -70,12 +75,12 @@
         {
             <div class="button-wrapper">
                 <ul class="list-inline">
-                  <li>
-                    <a href="#checkDates" class="btn-reg btn-first" role="button">Check Dates and Locations</a>
-                  </li>
-                  <li>
-                    <a href="/on-site-training/#cf-container" class="btn-reg btn-white" role="button">Get an On-Site Quote</a>
-                  </li>
+                    <li>
+                        <a href="#checkDates" class="btn-reg btn-first" role="button">Check Dates and Locations</a>
+                    </li>
+                    <li>
+                        <a href="/on-site-training/#cf-container" class="btn-reg btn-white" role="button">Get an On-Site Quote</a>
+                    </li>
                 </ul>
             </div>
         }
@@ -83,12 +88,12 @@
         {
             <div class="button-wrapper">
                 <ul class="list-inline">
-                  <li>
-                    <a href="#register-seminars" class="btn-reg btn-first" role="button">Check Dates and Locations</a>
-                  </li>
-                  <li>
-                    <a href="/on-site-training/#cf-container" class="btn-reg btn-white" role="button">Get an On-Site Quote</a>
-                  </li>
+                    <li>
+                        <a href="#register-seminars" class="btn-reg btn-first" role="button">Check Dates and Locations</a>
+                    </li>
+                    <li>
+                        <a href="/on-site-training/#cf-container" class="btn-reg btn-white" role="button">Get an On-Site Quote</a>
+                    </li>
                 </ul>
             </div>
         }
@@ -103,15 +108,17 @@
         <div class="col-md-8 col-md-offset-2 text-wrap" id="overview">
 
             <div class="row" ng-controller="SeminarItemController as vm">
-              <div class="col-md-10">
-                <h2>Seminar Overview</h2>
-                @CurrentPage.seminarOverview
-              </div>
-              <div class="col-md-2">
-                <button class="btn-reg btn-blue-solid" ng-model="vm.savedBtn"
-                  ng-click="vm.saveCourseToUser()" ng-show="vm.saveBtn">Save</button>
-                <span ng-show="!vm.saveBtn"><strong>Saved!</strong><br /><a href="/dashboard/saved">View My Saved Seminars</a></span>
-              </div>
+                <div class="col-md-10">
+                    <h2>Seminar Overview</h2>
+                    @CurrentPage.seminarOverview
+                </div>
+                <div class="col-md-2">
+                    <button class="btn-reg btn-blue-solid" ng-model="vm.savedBtn"
+                            ng-click="vm.saveCourseToUser()" ng-show="vm.saveBtn">
+                        Save
+                    </button>
+                    <span ng-show="!vm.saveBtn"><strong>Saved!</strong><br /><a href="/dashboard/saved">View My Saved Seminars</a></span>
+                </div>
             </div>
             @if (course != null && courseFormat != null)
             {
@@ -286,7 +293,7 @@
 </div>
 
 <!-- the red section -->
-@if (CurrentPage.onSiteQuote)
+@if (CurrentPage.onSiteQuote && dynamicPromo != null)
 {
     <div class="container-fluid onsite-section">
         <div class="left-skew">
@@ -307,18 +314,18 @@
     </div>
 }
 <script>
-              $(function() {
-                $('a[href*="#"]:not([href="#"])').click(function() {
-                  if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-                    var target = $(this.hash);
-                    target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-                    if (target.length) {
-                      $('html, body').animate({
-                        scrollTop: target.offset().top+500
-                      }, 1000);
-                      return false;
-                    }
-                  }
-                });
-              });
+    $(function () {
+        $('a[href*="#"]:not([href="#"])').click(function () {
+            if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top + 500
+                    }, 1000);
+                    return false;
+                }
+            }
+        });
+    });
 </script>

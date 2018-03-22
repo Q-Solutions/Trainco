@@ -75,7 +75,7 @@
             {
                 Response.Redirect("/search-seminars/?error=12");
             }
-            else
+            else if(cartList.Count > 0)
             {
                 cartsObj.DeleteTempAtt(cartList[0].reg_ID);
                 cartsObj.DeleteTempCust(cartList[0].reg_ID);
