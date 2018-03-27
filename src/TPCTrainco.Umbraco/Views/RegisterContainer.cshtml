@@ -18,7 +18,7 @@
         cartGuid = Carts.GetCartGuid(Session);
     }
 
-    if (Request.QueryString["token"] != null && Request.QueryString.Get("token").Length > 0)
+    if (Request.QueryString["token"] != null && Request.QueryString.Get("token").Length > 0 && Request.QueryString["token"] != "null")
     {
         tokenKey = Request.QueryString.Get("token");
         tokenKey = tokenKey.Trim('"');

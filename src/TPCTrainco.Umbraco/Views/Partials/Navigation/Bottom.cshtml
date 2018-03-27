@@ -18,15 +18,16 @@
 }
 <div class="footer-top">
     <div class="container">
-
         <div class="row">
-            <div class="col-md-5 no-padding">
-                <img src="/assets/images/logo-trainco-1x.png" alt="TCPTrainco Logo" id="logo" />
+            <div class="col-md-12">
+                <img src="/assets/images/logo-tpc-training_300x.png" alt="TCPTrainco Logo" id="logo" />
             </div>
-            <div class="col-md-4 links no-padding">
+        </div>
+        <div class="row">
+            
+            <div class="col-md-4 links">
 
                 <ul class="footer-text-links">
-                    <h3>QUICK LINKS</h3>
                     @{
                         int i = 0;
                         int navCount = menuItems.Count();
@@ -40,7 +41,7 @@
                     }
                 </ul>
             </div>
-            <div class="col-md-3 no-padding">
+            <div class="col-md-4">
                 <h3>FOLLOW US</h3>
                 <ul class="social">
                     @foreach (IPublishedContent social in socialLinks)
@@ -62,10 +63,12 @@
         var scroll = jQuery(window).scrollTop();
         if (scroll >= header_h) {
             //jQuery('#MainWrapper').css({'padding-top': header_h});
-            jQuery('.primary-menu.two').css({ 'position': 'fixed' });
+            jQuery('.primary-menu.two').css({ 'position': 'fixed', 'top':'0px', 'width': '100%', 'z-index': '9'});
+            jQuery('.navbar-lower.affix').css({ 'position': 'fixed', 'top':'50px', 'z-index': '3'});
         } else {
             //jQuery('#MainWrapper').css({'padding-top': 0});
             jQuery('.primary-menu.two').css({ 'position': 'relative' });
+            jQuery('.navbar-lower.affix').css({ 'position': 'relative', 'top':'0px'});
         }
     });
     jQuery(window).scroll(function () {
@@ -104,6 +107,7 @@
 <footer>
     <ul class="wrapper text-center">
         <li class="copyright">
+            <p>© TPC Training</p>
             <p>© Copyright 2018 TPC Training. All Rights Reserved.</p>
         </li>
 
