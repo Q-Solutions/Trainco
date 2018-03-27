@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="row">
-            
+
             <div class="col-md-4 links">
 
                 <ul class="footer-text-links">
@@ -63,12 +63,12 @@
         var scroll = jQuery(window).scrollTop();
         if (scroll >= header_h) {
             //jQuery('#MainWrapper').css({'padding-top': header_h});
-            jQuery('.primary-menu.two').css({ 'position': 'fixed', 'top':'0px', 'width': '100%', 'z-index': '9'});
-            jQuery('.navbar-lower.affix').css({ 'position': 'fixed', 'top':'50px', 'z-index': '3'});
+            jQuery('.primary-menu.two').css({ 'position': 'fixed', 'top': '0px', 'width': '100%', 'z-index': '9' });
+            jQuery('.navbar-lower.affix').css({ 'position': 'fixed', 'top': '50px', 'z-index': '3' });
         } else {
             //jQuery('#MainWrapper').css({'padding-top': 0});
             jQuery('.primary-menu.two').css({ 'position': 'relative' });
-            jQuery('.navbar-lower.affix').css({ 'position': 'relative', 'top':'0px'});
+            jQuery('.navbar-lower.affix').css({ 'position': 'relative', 'top': '0px' });
         }
     });
     jQuery(window).scroll(function () {

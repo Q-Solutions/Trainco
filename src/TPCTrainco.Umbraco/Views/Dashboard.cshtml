@@ -4,6 +4,7 @@
     // React.js base Umbraco template page.
     Layout = null;
 
+    Html.RequiresCss("/assets/css/main.css");
     Html.RequiresCss("/assets/js/dashboard/app.css");
 
     Html.RequiresJs("/assets/js/dashboard/vendor.js", 1);
@@ -48,17 +49,62 @@
     <meta name="msapplication-TileImage" content="/images/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
-	<link href="//fonts.googleapis.com/css?family=Lato:100,300,400,700,100italic,400italic" rel="stylesheet" type="text/css">
-	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css"  rel="stylesheet" type="text/css">
-	@Html.RenderCssHere()
+    @Html.RenderCssHere()
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="//fonts.googleapis.com/css?family=Lato:100,300,400,700,100italic,400italic" rel="stylesheet" type="text/css">
 	<link rel="shortcut icon" href="/assets/js/dashboard/favicon.ico">
 	<!--[if lt IE 10]>
         <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-shim.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
     <![endif]-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 <body>
-	<div id="root" style="height: 100%"></div>
+    @Html.Partial("Navigation/Top")
+	<div id="root"></div>
+    @Html.Partial("Navigation/Bottom")
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	@Html.RenderJsHere()
+    <script>
+        $(function () {
+            var windowWidth = $(window).width();
+            if (windowWidth > 991) {
+                $(".dropdown").hover(
+                function () { $(this).addClass('open') },
+                function () { $(this).removeClass('open') }
+                );
+            }
+
+            $('a[href^="#"]:not(.link-geolocation):not([data-toggle="collapse"])').click(function (e) {
+                e.preventDefault();
+                var hash = $(this).attr('href');
+                if ($(hash).length == 0)
+                    return false;
+                $('html, body').stop(true).animate({
+                    scrollTop:
+                     $(hash).offset().top - 125
+                }, 500);
+            });
+
+            $(document).on('click', 'a.link-geolocation', function (e) {
+                e.preventDefault();
+                if (typeof window.geoLocationLink === 'undefined' || window.geoLocationLink == '')
+                    return false;
+                window.location.href = window.location.origin + window.geoLocationLink;
+            });
+
+            if ($('.alert-visible').length > 0) {
+                $('html body').animate({ scrollTop: $('.alert-visible:first').offset().top - 125 });
+            }
+
+            if ($('.alert-success').length > 0) {
+                setTimeout(function () {
+                    $('.alert-success').fadeOut(400, function () { $(this).remove(); });
+                }, 5000);
+            }
+        });
+    </script>
+
 </body>
 </html>
