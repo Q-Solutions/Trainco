@@ -67,7 +67,7 @@ else
 
                                             <div class="@f.CssClass" @{ if (hidden) { <text> style="display: none" </text>  } }>
 
-                                                @if (!f.HideLabel)
+                                                @if (!f.HideLabel && !string.IsNullOrEmpty(f.Caption))
                                                 {
                                                     <label for="@f.Id" class="fieldLabel">
                                                         @Html.Raw(f.Caption) @if (f.ShowIndicator)

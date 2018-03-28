@@ -17,8 +17,7 @@
       if (!authToken) {
         vm.isLoggedIn = false;
       } else {
-        getUser(authToken);
-        return vm.isLoggedIn = true;
+          getUser(authToken);
       }
     }
 
@@ -33,6 +32,7 @@
       $http(req).then(function(response) {
         vm.user.firstName = response.data.result.firstName;
         vm.user.lastName = response.data.result.lastName;
+        vm.isLoggedIn = true;
       }).catch(function(error) {
         $log.debug(error);
       })
