@@ -792,7 +792,7 @@ webpackJsonp([1], [function(e, t, n) {
                     uri: "login",
                     data: e
                 }).then(function(e) {
-                    localStorage.setItem("tcJWT", e.data.result), t(s(e.data.result)), t((0, w.push)("/dashboard/seminars/upcoming"))
+                    localStorage.setItem("tcJWT", e.data.result), t(s(e.data.result)), window.location.href = '/dashboard/seminars/upcoming' /*, t((0, w.push)("/dashboard/seminars/upcoming"))*/
                 })["catch"](function(e) {
                     t(l(e))
                 })
