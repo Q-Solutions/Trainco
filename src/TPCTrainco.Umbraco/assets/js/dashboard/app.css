@@ -3978,7 +3978,7 @@ html *{
 }
 .searchfooter__SearchFooter___1i0g0{
     text-align:center;
-    padding:70px 15px 80px
+    padding:70px 15px 80px;
 }
 .searchfooter__SearchFooter___1i0g0 h3{
     padding-bottom:40px
@@ -3991,4 +3991,7 @@ footer .copyright p {
 }*/
 .site-links .btn-secondary.dropdown-toggle {
     margin-top: 79px;
+}
+aside.dashboard-sidebar-container {
+    position: relative;
 }

@@ -10,7 +10,7 @@
     Html.RequiresJs("/assets/js/dashboard/vendor.js", 1);
     Html.RequiresJs("/assets/js/dashboard/app.js", 2);
 }
-<html>
+<html ng-app="train">
 <head>
 	    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -65,7 +65,46 @@
     @Html.Partial("Navigation/Bottom")
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.4.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.10/ngStorage.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.4.9/angular-sanitize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular-animate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.1.2/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-slider/2.8.0/rzslider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/1.2.7/spin.min.js"></script>
+    <script src="/assets/js/ngapp/lib/angular-loading.js"></script>
+    <script src="/assets/js/ngapp/lib/angular-selector.js"></script>
 	@Html.RenderJsHere()
+    <script src="/assets/js/ngapp/core/core.module.js"></script>
+    <script src="/assets/js/ngapp/common/common.module.js"></script>
+    <script src="/assets/js/ngapp/components/components.module.js"></script>
+    <script src="/assets/js/ngapp/register/register.module.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/seminar/seminar.module.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/auth/auth.module.js"></script>
+    <script src="/assets/js/ngapp/app.module.js"></script>
+    <script src="/assets/js/ngapp/common/util.service.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/common/search.factory.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/common/seminars.factory.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/common/startFrom.filter.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/common/months.factory.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/common/cities.factory.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/common/dropIn.animation.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/common/slideToggle.animation.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/components/cart/cart.directive.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/common/stringToNumber.directive.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/seminar/seminar.controller.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/seminar/seminarItem.controller.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/seminar/courseSearch.service.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/auth/auth.controller.js"></script>
+    <script src="/assets/js/ngapp/auth/loginModal.controller.js"></script>
+    <script src="/assets/js/ngapp/register/register.controller.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/core/lodash.factory.js"></script>
+    <script src="/assets/js/ngapp/components/mainSearch/mainSearch.directive.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/components/mainSearch/mainSearch.controller.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/components/cart/cart.service.js?v@cacheVer"></script>
+    <script src="/assets/js/ngapp/components/cart/cart.controller.js?v@cacheVer"></script>
     <script>
         $(function () {
             var windowWidth = $(window).width();
@@ -85,13 +124,6 @@
                     scrollTop:
                      $(hash).offset().top - 125
                 }, 500);
-            });
-
-            $(document).on('click', 'a.link-geolocation', function (e) {
-                e.preventDefault();
-                if (typeof window.geoLocationLink === 'undefined' || window.geoLocationLink == '')
-                    return false;
-                window.location.href = window.location.origin + window.geoLocationLink;
             });
 
             if ($('.alert-visible').length > 0) {

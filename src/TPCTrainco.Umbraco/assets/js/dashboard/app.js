@@ -5686,23 +5686,10 @@ webpackJsonp([1], [function(e, t, n) {
             i = (n(35), n(54), n(22)),
             u = r(i),
             s = n(1413),
-            l = o["default"].createElement("img", {
-                className: "tpc-logo",
-                src: s,
-                alt: "TPCTrainco"
-            }),
+            l = null,
             c = function(e) {
                 var t = e.onLogout;
-                return o["default"].createElement("header", {
-                    className: "dashboard-header"
-                }, o["default"].createElement("div", {
-                    className: "container"
-                }, o["default"].createElement("a", {
-                    href: "/"
-                }, l), o["default"].createElement(u["default"], {
-                    className: "btn-grey",
-                    onClick: t
-                }, "Log Out")))
+                return null
             };
         t["default"] = c
     },
@@ -6179,11 +6166,7 @@ webpackJsonp([1], [function(e, t, n) {
             v = (n(35), n(16), n(22)),
             b = r(v),
             y = n(21),
-            E = h["default"].createElement("img", {
-                className: "tpc-logo",
-                src: "https://www.tpctrainco.com/images/logo-trainco-1x.png",
-                alt: "TPCTrainco"
-            }),
+            E = null,
             g = h["default"].createElement(y.Navbar.Toggle, null),
             _ = function(e) {
                 function t() {
@@ -7260,7 +7243,7 @@ webpackJsonp([1], [function(e, t, n) {
                 x = function(t) {
                     var n = t.email;
                     return new b["default"](function(t, r) {
-                        e("http://localhost:56386/api/account/userexists?email=" + n, {
+                        e("/api/account/userexists?email=" + n, {
                             method: "get",
                             headers: {
                                 Accept: "application/json",
@@ -17642,9 +17625,9 @@ webpackJsonp([1], [function(e, t, n) {
                         if (e) {
                             var r = this.refs.placeholder.getBoundingClientRect(),
                                 a = {
-                                    position: "fixed",
+                                    position: "absolute",
                                     top: this.context.offset,
-                                    left: r.left,
+                                    left: 0,
                                     width: r.width
                                 },
                                 o = (this.context.rect.bottom || 0) - this.state.height - this.props.bottomOffset;
