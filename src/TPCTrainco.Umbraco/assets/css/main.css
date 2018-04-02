@@ -68,7 +68,7 @@ audio, canvas, progress, video {
 }
 
 .mega-dropdown-menu img{
-  margin: 0 auto;
+  margin: 0 0 0 auto;
 }
 .mega-dropdown-menu ul a{
     font-size: 14px;
@@ -77,8 +77,11 @@ audio, canvas, progress, video {
     line-height: 32px;
 }
 .mega-dropdown-menu p{
-    font-size: 12px;
+    font-size: 13px;
     color: #000;
+}
+.text-right{
+    text-align: right;
 }
 .mega-dropdown-menu ul li ul li a {
         font-weight: 500;
@@ -371,6 +374,11 @@ hr {
 }
 
 @media (min-width:992px) {
+    .modal-content h1 {
+    font-weight: 600;
+    font-size: 24px;
+    text-transform: capitalize;
+    }
     .cart-icon{
       font-size: 28px !important;
       position: relative;
@@ -3175,9 +3183,9 @@ a.list-group-item-danger, button.list-group-item-danger {
     box-shadow: 0 3px 9px rgba(0,0,0,.5);
     background-clip: padding-box;
     outline: 0;
-    width: 720px;
-    height: 640px;
-    padding: 30px 60px 40px;
+    width: 100%;
+    height: auto;
+    padding: 20px 40px;
 }
 
     .modal-content h1 {
@@ -4568,7 +4576,7 @@ button {
     background-color: #c6211f;
     color: #fff;
     padding: 10px 20px;
-    border-radius: 2px;
+    border-radius: 3px;
     font-weight: 600;
     position: relative;
     -webkit-transition: background-color .25s;
@@ -4615,7 +4623,7 @@ button {
 .btn-white {
     background-color: transparent;
     border: 3px solid #fff;
-    padding: 8px 37px;
+    padding: 7px 37px;
     z-index: 2;
 }
 
@@ -4965,6 +4973,7 @@ ul.pagination-btn-wrapper li {
             display: inline-block;
             padding-left: 10px;
             padding-right: 10px;
+            color: #ffffff;
         }
 
             #authbar ul li a {
@@ -4983,7 +4992,7 @@ ul.pagination-btn-wrapper li {
     position: relative;
     top: 0px;
     width: 100%;
-    z-index: 1300;
+    z-index: 130;
     height: 50px;
 }
 
@@ -5195,8 +5204,20 @@ ul.pagination-btn-wrapper li {
 }
 
 @media (min-width:992px) {
+    .newsletter-box{
+        display: none;
+    }
     .mega-dropdown-menu .container-fluid {
         padding: 0px 30px;
+        margin: 0 auto;
+        max-width: 1200px;
+        box-sizing: content-box;
+    }
+    .mega-dropdown-menu {
+        padding: 40px 0px 30px 0px !important;
+    }
+    .mega-menu ul{
+        padding: 0px;
     }
     .dropdown-menu {
         left: 6px;
@@ -6242,12 +6263,8 @@ ul.pagination-btn-wrapper li {
         font-style: italic;
     }
 
-.seminar-detail {
-    padding-top: 100px;
-}
-
     .seminar-detail .btn-white {
-        padding: 11px 10px;
+        padding: 7px 10px;
     }
 
     .seminar-detail .button-wrapper ul {
@@ -6269,7 +6286,7 @@ ul.pagination-btn-wrapper li {
 
     .seminar-detail .button-wrapper .btn-first {
         margin-bottom: 30px;
-        padding: 13px 10px;
+        padding: 10px 10px;
     }
 
 .detail-page-app {
@@ -6295,7 +6312,7 @@ ul.pagination-btn-wrapper li {
 
 .button-wrapper .btn-first {
     margin-bottom: 30px;
-    padding: 13px 10px;
+    padding: 10px 10px;
 }
 
 .share-btn-wrap {
@@ -6304,6 +6321,10 @@ ul.pagination-btn-wrapper li {
 }
 
 @media (min-width:992px) {
+    .primary-menu.two .navbar-nav {
+    margin: 0 auto !important;
+    max-width: 1440px !important;
+    }
     .second-btn {
         margin-left: 0;
     }
@@ -10892,7 +10913,7 @@ div.geolocation-panel {
     color: #333 !important;
     text-transform: uppercase;
     font-size: 12px;
-    text-decoration: none;
+    text-decoration: underline;
     padding: 2px 15px 0px 0px;
 }
 
@@ -10907,7 +10928,119 @@ div.geolocation-panel {
 .navbar-lower.affix-top{
     display: none !important;
 }
+.newsletter-form .help-block{
+    display: none !important;
+}
+#contour_form_PageNewsletterform fieldset{
+    padding: 0px !important;
+    margin: 0px !important;
+}
+#contour_form_PageNewsletterform input.text{
+    margin: 0px;
+    width: 100%;
+    border-radius: 2px;
+    text-transform: uppercase;
+    font-size: 11px;
+    padding: 8px 10px;
+    color: #000;
+    border: 0px;
+    max-width: 100% !important;
+}
+#contour_form_PageNewsletterform .row-fluid{
+    padding-top: 15px;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+#contour_form_PageNewsletterform .span6{
+    padding-right: 7.5px;
+    
+}
+#contour_form_PageNewsletterform .span6:nth-child(2){
+    padding-left: 7.5px;
+    padding-right: 15px;
+}
+.footer-top .contourPage h3{
+    text-transform: uppercase;
+    margin: 0px;
+    font-weight: 400 !important;
+}
+#contour_form_PageNewsletterform{
+    padding: 0px !important;
+}
+#contour_form_PageNewsletterform .btn{
+    background: #059ee1;
+    padding: 12px 40px;
+    color: #fff;
+    border-radius: 3px;
+    font-size: 13px;
+    padding: 7px 25px;
+    text-transform: uppercase;
+    font-weight: bold;
+    border: 1px;
+    float: right;
+}
+.btn-blue-modal a:hover{
+    color: #fff;
+}
 @media only screen and (max-width: 991px) and (min-width: 320px) {
+    .hidden-mobile-sm-desktop{
+        display: none;
+    }
+
+    .modal-content h1 {
+        font-weight: 600;
+        font-size: 24px;
+        text-transform: capitalize;
+    }
+    .newsletter-box h3{
+        font-weight: bold;
+        margin: 0.6em 0;
+        text-transform: uppercase;
+        font-size: 13px;
+        color: #000;
+        text-align: center;
+    }
+    .newsletter-box #contour_form_PageNewsletterform input.text {
+        background-color: #ebebeb;
+}
+    .newsletter-box .contourPage h3{
+        text-transform: uppercase;
+        margin: 0.8em 0;
+        font-size: 12px;
+        text-align: center;
+        font-weight: 400;
+    }
+    .newsletter-box{
+        display: block !important;
+        padding: 20px 0;
+    }
+    .newsletter-col{
+        display: none;
+    }
+    #contour_form_PageNewsletterform .span6:nth-child(2){
+        padding-left: 7.5px;
+        padding-right: 20px;
+    }
+    #contour_form_PageNewsletterform .span6 {
+        padding-right: 7.5px;
+        padding-left: 20px;
+    }
+    #contour_form_PageNewsletterform .span12 {
+    padding: 0px 20px;
+    }
+    #contour_form_PageNewsletterform .btn {
+    margin: 0px auto;
+    float: none;
+    display: block;
+    width: auto;
+    }
+    #authbar .inline-list{
+    padding: 0px !important;
+    }
+    #authbar ul li{
+    padding-left: 5px;
+    padding-right: 1px;
+    }
     footer .copyright p{
     margin: 0.5em 0;
     font-size: 10px;
@@ -10942,6 +11075,7 @@ div.geolocation-panel {
     }
     .navbar-nav .open .dropdown-menu {
     margin: 0px 0;
+    margin-bottom: 20px;
 }
     .footer-text-links {
     margin-bottom: 1.8em;
@@ -11279,4 +11413,140 @@ li.mega-menu-item{
 .nav > li > a {
             padding: 10px 6px;
 }
+}
+@media only screen and (max-width: 768px) and (min-width: 320px) {
+    .text-wrap h2 {
+    font-size: 24px;
+    color: #5c5c5c;
+    }
+    #overview #discussion ul{
+        padding-left: 15px;
+    }
+    .btn-reg {
+    font-size: 14px;
+    } 
+    .btn-white {
+    padding: 7px 10px;
+    }
+    .modal-content h1 {
+        font-weight: 600;
+        font-size: 18px;
+        text-transform: capitalize;
+    }
+    .course-col-header .register-link {
+        font-size: 16px;
+        display: block;
+        text-align: left !important;
+        padding: 0 15px;
+    }
+    .course-col-header {
+    padding-top: 20px;
+    padding-bottom: 20px;
+   }
+    .course-col-header .left-course-head {
+        font-size: 16px;
+        padding: 0px 15px;
+        width: 100%;
+        display: block;
+        text-align: left !important;
+}
+    .seminar-loc--row .faux-head--register{
+        padding: 0px !important;
+    }
+    #register-seminars ul {
+    font-size: 12px;
+    }
+    .faux-head--register .register-link {
+    font-size: 12px;
+    }
+    .seminar-loc--block .seminar-loc--row .city-name {
+    font-size: 12px;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    }
+    #register-seminars ul {
+    font-size: .85em;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    margin-right: 0px;
+    }
+}
+@media only screen and (max-width: 400px) and (min-width: 320px) {
+.popover {
+    left: -231px !important;
+    width: 310px;
+}
+.popover-content .attendees-txt {
+    padding-left: 30px;
+}
+.popover-content .attendees {
+    padding-left: 30px;
+}
+.popover-content .btn-blue-solid {
+    float: none;
+    width: auto;
+    display: block;
+}
+.popover {
+    font-size: 12px;
+}
+.popover-content .result-table-body {
+    padding: 10px 0px;
+}
+.result-table-head {
+    padding: 15px 0px;
+}
+.popover-content p {
+    padding-right: 0px;
+    display: block;
+}
+.popover-content .list-inline li strong{
+    float: right;
+}
+.popover-content .list-inline li h3 strong{
+    float: left;
+}
+#register-seminars .seminar-loc--row .popover-content ul {
+    margin-right: -25px;
+    margin-left: -25px;
+}
+.seminar-loc--row .popover-content p {
+    padding-right: 0px;
+    display: block;
+    margin-left: -25px;
+    margin-right: -25px;
+}
+}
+@media only screen and (max-width: 480px) and (min-width: 320px) {
+    .btn-reg {
+    font-size: 13px;
+    padding: 10px 10px;
+    }
+    .login-form-group {
+    padding-top: 20px !important;
+    }
+    .login-form-group button[type=submit] {
+    margin: 0 auto;
+    display: block;
+    }
+    .text-wrap, .text-wrap .share-btn-wrap {
+    margin-bottom: 20px;
+    }
+    .text-wrap h2 {
+    font-size: 22px;
+    color: #5c5c5c;
+    }
+    .simulcast-img img {
+        margin: 0 auto;
+        max-width: 100% !important;
+        display: block;
+        float: none;
+    }
+    p.simulcast-points{
+        padding-left: 10px important;
+    }
+    
 }
