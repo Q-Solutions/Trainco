@@ -5234,7 +5234,7 @@ ul.pagination-btn-wrapper li {
     background-color: #4c4b4b;
     }
     .mega-menu-item{
-        width: 16.666%;
+        width: 12.5%;
         text-align: center;
         font-size: 14px;
         font-family: 'Source Sans Pro', sans-serif !important;
@@ -10983,6 +10983,9 @@ div.geolocation-panel {
     color: #fff;
 }
 @media only screen and (max-width: 991px) and (min-width: 320px) {
+    .overflow-hidden{
+      overflow: hidden !important;
+    }
     .hidden-mobile-sm-desktop{
         display: none;
     }
