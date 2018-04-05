@@ -102,17 +102,25 @@
     });
     jQuery(window).load(function () {
         var window_h = jQuery(window).height();
-        jQuery('.primary-menu-mobile .nav.navbar-nav').css({ 'min-height': window_h - 120 });
+        var navbar_h = jQuery('.navbar-header').height();
+        var author_h = jQuery('#authbar').height();
+        var total_top_h = navbar_h + author_h - 2;
+        jQuery('.primary-menu-mobile .nav.navbar-nav').css({ 'min-height': window_h - total_top_h});
     });
+    
     jQuery(document).on('click', '.dropdown-toggle', function () {
         var a = jQuery(this).parent('li').hasClass('open');
-        console.log(a);
         if (a == 'true') {
             jQuery(this).parent('li').addClass('open');
-            console.log('ab');
         } else {
             jQuery('this').parent('li').removeClass('open');
         }
+
+
+    });
+    jQuery(document).on('click', '.navbar-toggle ', function () {
+        jQuery('html,body').toggleClass('overflow-hidden');
+        
 
 
     });
