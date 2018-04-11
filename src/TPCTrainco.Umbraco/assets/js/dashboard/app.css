@@ -2550,6 +2550,12 @@ h2{
 .headline__heading--h2___1ix51{
     margin-top:50px
 }
+.savedSem-container .headline__heading--h2___1ix51 {
+    margin-top: 20px;
+}
+.savedSem-container .saved-seminar-description{
+    padding-top: 0px;
+}
 .form-container{
     padding:45px 0 60px
 }
@@ -3411,8 +3417,8 @@ input[type=checkbox]{
     }
 }
 .savedSem-picture{
-    height:62px;
-    width:62px;
+    height:100px;
+    width:100px;
     border-radius:50%;
     background-color:#ff4500
 }
@@ -4008,6 +4014,9 @@ footer .copyright p {
 }
 aside.dashboard-sidebar-container {
     position: relative;
+}
+.savedSem-container .options-container .btn-reg:before {
+    border: 0px solid #c6211f !important;
 }
 @media only screen and (max-width: 991px) and (min-width: 320px) {
     .dropdown-menu p {

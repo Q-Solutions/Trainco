@@ -374,6 +374,11 @@ hr {
 }
 
 @media (min-width:992px) {
+    li.mega-menu-item {
+        border-bottom: 5px solid #c6211f00;
+        flex: 1;
+        text-align: center;
+    }
     .modal-content h1 {
     font-weight: 600;
     font-size: 24px;
@@ -4582,13 +4587,18 @@ button {
     -webkit-transition: background-color .25s;
     transition: background-color .25s;
 }
+.Modal__Share > .btn-reg {
+    padding: 6px 12px;
+}
 
     .btn-reg:hover {
         color: #fff;
         text-decoration: none;
         background-color: #f04b49;
     }
-
+.Modal__Share .login-form-group {
+    padding-left: 20px;
+}
     .btn-reg:before {
         content: '';
         position: absolute;
@@ -4597,7 +4607,7 @@ button {
         width: 100%;
         height: 100%;
         border: 4px solid #c6211f;
-        z-index: 1;
+        z-index: 0;
         border-radius: inherit;
         opacity: 0;
         -webkit-transform: scale3d(.6,.6,1);
@@ -5268,7 +5278,7 @@ ul.pagination-btn-wrapper li {
     }
     .navbar-inverse .navbar-nav > li > a{
     color: #fff;
-    padding: 14px 25px 9px;
+    padding: 14px 15px 9px;
     }
     .navbar {
     border: 0px solid transparent;
@@ -6326,6 +6336,8 @@ ul.pagination-btn-wrapper li {
     margin: 0 auto !important;
     max-width: 1440px !important;
     text-align: center;
+    display: flex;
+    width: 100%;
     }
     .second-btn {
         margin-left: 0;
@@ -11528,7 +11540,7 @@ li.mega-menu-item{
 @media only screen and (max-width: 480px) and (min-width: 320px) {
     .btn-reg {
     font-size: 13px;
-    padding: 10px 10px;
+    padding: 10px 8px;
     }
     .login-form-group {
     padding-top: 20px !important;
@@ -11556,6 +11568,16 @@ li.mega-menu-item{
     
 }
 @media only screen and (max-width: 1260px) and (min-width: 992px) {
+.mega-dropdown-menu {
+    left: 0px;
+    border: 0px;
+    top: 46px;
+}}
+@media only screen and (max-width: 1180px) and (min-width: 992px) {
+.navbar-inverse .navbar-nav > li > a {
+    color: #fff;
+    padding: 14px 6px 9px;
+}
 .mega-dropdown-menu {
     left: 0px;
     border: 0px;
