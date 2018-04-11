@@ -35,12 +35,12 @@
                 {
                     continue;
                 }
-                dtContent[parent] = content.GetPropertyValue("pageContent").ToString();
+                dtContent[parent] = content.GetPropertyValue("pageContent") != null ? content.GetPropertyValue("pageContent").ToString() : "";
                 if (dtMobileContent.ContainsKey(parent))
                 {
                     continue;
                 }
-                dtMobileContent[parent] = content.GetPropertyValue("mobileContent").ToString();
+                dtMobileContent[parent] = content.GetPropertyValue("mobileContent") != null ? content.GetPropertyValue("mobileContent").ToString() : "";
             }
         }
     }

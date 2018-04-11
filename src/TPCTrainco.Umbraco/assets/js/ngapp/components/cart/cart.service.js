@@ -60,19 +60,15 @@ if (!Array.prototype.findIndex) {
     function addItem(item, qty) {
       var id = item.id;
       var itemInCart = getItemById(id);
-      // var itemInCart = {};
       var itemStr = window.localStorage.getItem('cartItemList'); // eslint-disable-line
       var itemList = itemStr ? JSON.parse(itemStr) : []; // eslint-disable-line
       if (angular.isObject(itemInCart)) {
-        var additionalAttendees = parseInt(qty);
-        var currentAttendees = parseInt(itemInCart.quantity);
-        var updatedAttendees = currentAttendees += additionalAttendees;
-        itemInCart.quantity = updatedAttendees;
-        itemList.find(function(itemInCart) {
-          itemList['item'] = itemInCart;
-          localStorage['cartItemList'] = itemList;
-          return itemInCart.quantity = updatedAttendees;
-        });
+          var additionalAttendees = parseInt(qty);
+          angular.forEach(itemList, function (item) {
+              if (item.id === itemInCart.id) {
+                  item.quantity = parseInt(item.quantity) + additionalAttendees;
+              }
+          });
       } else {
         itemList.push({
           id: item.id,
@@ -84,8 +80,6 @@ if (!Array.prototype.findIndex) {
           quantity: qty
         });
       }
-
-
       window.localStorage.setItem('cartItemList', JSON.stringify(itemList)); // eslint-disable-line
     }
 

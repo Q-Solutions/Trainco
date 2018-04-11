@@ -370,7 +370,7 @@ webpackJsonp([1], [function(e, t, n) {
                     headers: {
                         Authorization: "Bearer " + t
                     }
-                }).then(function(t) {
+                }).then(function (t) {
                     e(E(t))
                 })["catch"](function(t) {
                     e(g()), e((0, K.push)("/dashboard/login"))
@@ -1947,7 +1947,8 @@ webpackJsonp([1], [function(e, t, n) {
                     timeout: 5e3,
                     responseType: "json"
                 }).then(function(t) {
-                    e(C(t))
+                    e(C(t));
+                    p()(e);
                 })["catch"](function(t) {
                     e(T())
                 })
@@ -6074,7 +6075,7 @@ webpackJsonp([1], [function(e, t, n) {
             A = n(528),
             w = [{
                 label: "Purchased Seminars",
-                value: "/dashboard/seminars"
+                value: "/dashboard/seminars/upcoming"
             }, {
                 label: "Saved Seminars",
                 value: "/dashboard/saved"
@@ -6089,13 +6090,22 @@ webpackJsonp([1], [function(e, t, n) {
                 function t(e) {
                     (0, s["default"])(this, t);
                     var n = (0, d["default"])(this, (0, i["default"])(t).call(this, e));
+                    var selected = w[0];
+                    var path = window.location.pathname;
+                    for (var idx = 0; idx < w.length;idx++) {
+                        var obj = w[idx];
+                        if (obj.value == path) {
+                            selected = obj;
+                            break;
+                        }
+                    }
                     return n.state = {
-                        selected: w[0]
+                        selected: selected
                     }, n._onSelect = n._onSelect.bind(n), n
                 }
                 return (0, m["default"])(t, e), (0, c["default"])(t, [{
                     key: "_onSelect",
-                    value: function(e, t, n) {
+                    value: function (e, t, n) {
                         this.setState({
                             selected: e
                         }), this.props.routerActions.replace(e.value)
@@ -6104,7 +6114,10 @@ webpackJsonp([1], [function(e, t, n) {
                     key: "render",
                     value: function() {
                         var e = this.state.selected;
-                        "string" == typeof this.state.selected ? this.state.selected : this.state.selected.label;
+
+                        var selectedLabel = "Select an option";
+                        if(e !== undefined)
+                            selectedLabel = "string" == typeof this.state.selected ? this.state.selected : this.state.selected.label;
                         return v["default"].createElement("aside", {
                             className: "dashboard-sidebar-container col-fh"
                         }, v["default"].createElement(T["default"], {
@@ -6120,7 +6133,7 @@ webpackJsonp([1], [function(e, t, n) {
                             options: w,
                             onChange: this._onSelect,
                             value: e,
-                            placeholder: "Select an option"
+                            placeholder: selectedLabel
                         })), v["default"].createElement("ul", {
                             className: "dashboard-nav"
                         }, this.props.children)))
@@ -17581,7 +17594,7 @@ webpackJsonp([1], [function(e, t, n) {
                 }, {
                     key: "getOrigin",
                     value: function(e) {
-                        return this.refs.placeholder.getBoundingClientRect().top + e
+                        return (this.refs.placeholder ? this.refs.placeholder.getBoundingClientRect().top + e : 0);
                     }
                 }, {
                     key: "update",
@@ -17623,12 +17636,12 @@ webpackJsonp([1], [function(e, t, n) {
                         e && (t += " " + this.props.stickyClassName);
                         var n = this.props.style;
                         if (e) {
-                            var r = this.refs.placeholder.getBoundingClientRect(),
+                            var r = (this.refs.placeholder ? this.refs.placeholder.getBoundingClientRect() : null),
                                 a = {
                                     position: "absolute",
                                     top: this.context.offset,
                                     left: 0,
-                                    width: r.width
+                                    width: (r != null ? r.width : 0)
                                 },
                                 o = (this.context.rect.bottom || 0) - this.state.height - this.props.bottomOffset;
                             this.context.offset > o && (a.top = o), n = u({}, this.props.style, a, this.props.stickyStyle)

@@ -8290,9 +8290,11 @@ ul.pagination-btn-wrapper li {
         }
 
     .register-standalone .form-group span {
-        margin-left: 3px;
-        display: block;
-        margin-top: 5px;
+        right: 16px;
+        padding: 7.5px 5px;
+        background: rgba(255,255,255,0.9);
+        border-radius: 0 4px 5px 0;
+        top: 1px;
     }
 
     .register-standalone .form-container {

@@ -15,11 +15,19 @@ function SubmitRegForm() {
         $('.form-control.error').removeClass('error');
         $('.error-text').remove();
         var bError = false;
-        $('.form-item-wrapper .required').each(function () {
-            if ($(this).val() == '') {
+        $('.form-item-wrapper input').each(function () {
+            try {
+                if ($(this).hasClass('required') && $(this).val() == '') {
+                    throw $(this).attr('placeholder') + ' is required';
+                }
+                if ($(this).attr('name') == 'email' && $(this).val() != '' && !validateEmail($(this).val())) {
+                    throw 'Email address format is invalid';
+                }
+            }
+            catch (ex) {
                 bError = true;
                 $(this).addClass('error');
-                $(this).after('<span class="error-text">' + $(this).attr('placeholder') + ' is required</span>')
+                $(this).after('<span class="error-text">' + ex + '</span>');
             }
         });
         if (bError)
@@ -27,6 +35,11 @@ function SubmitRegForm() {
         var formData = CreateFormPostString();
         CheckoutPost(formData);
     });
+}
+
+function validateEmail(email) {
+    var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+    return re.test(String(email).toLowerCase());
 }
 
 function CreateFormPostString() {

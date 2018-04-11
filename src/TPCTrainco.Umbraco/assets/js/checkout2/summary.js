@@ -73,11 +73,11 @@ function SubmitOrder() {
             $('.processing-msg').fadeIn().text('Order processing may take several seconds. Please wait...');
         });
 
-        setTimeout(function () {
-            $('.card-loader').fadeOut(100, function () {
-                $('.processing-msg').text('There was an error processing your order. Please try again.');
-                $submit_button.fadeIn();
-            });
-        }, 30000);
+        //setTimeout(function () {
+        //    $('.card-loader').fadeOut(100, function () {
+        //        $('.processing-msg').text('There was an error processing your order. Please try again.');
+        //        $submit_button.fadeIn();
+        //    });
+        //}, 30000);
     });
 }
