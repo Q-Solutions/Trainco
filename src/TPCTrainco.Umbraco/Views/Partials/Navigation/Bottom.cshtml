@@ -75,10 +75,8 @@
     jQuery(document).on('click', '.navbar-toggle ', function () {
         jQuery('html,body').toggleClass('overflow-hidden');
         jQuery('#bg-overlay').toggleClass('bg-overlay');
-        
-
-
     });
+
     jQuery(window).scroll(function () {
         var header_h = jQuery('.header-box').height();
         var scroll = jQuery(window).scrollTop();
@@ -117,19 +115,16 @@
         jQuery('.primary-menu-mobile .nav.navbar-nav').css({ 'min-height': window_h - total_top_h});
     });
     
-    jQuery(document).on('click','.mega-menu-item a', function () {
-        var a = jQuery(this).parent('li').hasClass('open');
-        console.log(a);
-        if (a == 'true') {
-            jQuery(this).parent('li').addClass('open');
-        } else {
-            jQuery('this').parent('li').removeClass('open');
-        }
-
-
+    jQuery(document).on('click', 'ul.mega-menu li.mega-menu-item > a.dropdown-toggle', function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        var parent = jQuery(this).parents('li.mega-menu-item');
+        var bOpen = parent.hasClass('open');
+        jQuery('ul.mega-menu li.mega-menu-item').removeClass('open');
+        if (!bOpen)
+            parent.addClass('open');
+        return false;
     });
-
-
 </script>
 
 <footer>
