@@ -186,9 +186,6 @@ hr{
 }
 @media (min-width:992px){
 
-    .mega-menu .open>.dropdown-menu {
-    padding: 20px 40px !important;
-}
     .container{
         width:970px
     }

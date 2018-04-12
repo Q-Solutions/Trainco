@@ -21,7 +21,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <h3>NEWSLETTER</h3>
-                @Umbraco.RenderMacro("FormsRenderForm", new { FormGuid = "72c34848-b09e-4637-a0fa-d0727793d4e9" })
+                @Umbraco.RenderMacro("FormsRenderForm", new { FormGuid = "275c4253-1f01-41fd-a45d-9c8b6cb00c75" })
             </div>
         </div>
     </div>
@@ -66,23 +66,32 @@
             </div>
             <div class="col-md-4 newsletter-col">
                 <h3>NEWSLETTER</h3>
-                @Umbraco.RenderMacro("FormsRenderForm", new { FormGuid = "72c34848-b09e-4637-a0fa-d0727793d4e9" })
+                @Umbraco.RenderMacro("FormsRenderForm", new { FormGuid = "275c4253-1f01-41fd-a45d-9c8b6cb00c75" })
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
+    jQuery(document).on('click', '.navbar-toggle ', function () {
+        jQuery('html,body').toggleClass('overflow-hidden');
+        jQuery('#bg-overlay').toggleClass('bg-overlay');
+        
+
+
+    });
     jQuery(window).scroll(function () {
         var header_h = jQuery('.header-box').height();
         var scroll = jQuery(window).scrollTop();
         if (scroll >= header_h) {
             //jQuery('#MainWrapper').css({'padding-top': header_h});
-            jQuery('.primary-menu.two').css({ 'position': 'fixed', 'top': '0px', 'width': '100%', 'z-index': '9' });
+            jQuery('.primary-menu.two').css({ 'position': 'fixed', 'top': '0px', 'width': '100%', 'z-index': '999' });
             jQuery('.navbar-lower.affix').css({ 'position': 'fixed', 'top': '50px', 'z-index': '3' });
+            jQuery('.btn-reg.reg-btn-footer').css({'bottom': '0px' });
         } else {
             //jQuery('#MainWrapper').css({'padding-top': 0});
             jQuery('.primary-menu.two').css({ 'position': 'relative' });
             jQuery('.navbar-lower.affix').css({ 'position': 'relative', 'top': '0px' });
+            jQuery('.btn-reg.reg-btn-footer').css({'bottom': '-45px' });
         }
     });
     jQuery(window).scroll(function () {
@@ -92,7 +101,7 @@
             //jQuery('#MainWrapper').css({'padding-top': header_h});
             jQuery('.primary-menu-mobile').css({ 'position': 'fixed' });
             jQuery('.register-cart-wrap').css({ 'position': 'fixed' });
-            jQuery('.register-cart-wrap').css({ 'top': '50px' });
+            jQuery('.register-cart-wrap').css({ 'top': '48px' });
         } else {
             //jQuery('#MainWrapper').css({'padding-top': 0});
             jQuery('.primary-menu-mobile').css({ 'position': 'relative' });
@@ -108,8 +117,9 @@
         jQuery('.primary-menu-mobile .nav.navbar-nav').css({ 'min-height': window_h - total_top_h});
     });
     
-    jQuery(document).on('click', '.dropdown-toggle', function () {
+    jQuery(document).on('click','.mega-menu-item a', function () {
         var a = jQuery(this).parent('li').hasClass('open');
+        console.log(a);
         if (a == 'true') {
             jQuery(this).parent('li').addClass('open');
         } else {
@@ -118,12 +128,8 @@
 
 
     });
-    jQuery(document).on('click', '.navbar-toggle ', function () {
-        jQuery('html,body').toggleClass('overflow-hidden');
-        
 
 
-    });
 </script>
 
 <footer>

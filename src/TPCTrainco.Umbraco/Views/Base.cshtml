@@ -329,16 +329,29 @@
         <script src="/assets/js/ngapp/components/cart/cart.service.js?v@cacheVer"></script>
         <script src="/assets/js/ngapp/components/cart/cart.controller.js?v@cacheVer"></script>
         <script>
+             // $(document).on('click', '.dropdown-toggle', function () {
+             //        var a = jQuery(this).parent('li').hasClass('open');
+             //        console.log(a);
+             //        console.log("stat");
+             //        if (a == 'true') {
+             //            $(this).parent('li').addClass('open');
+             //        } else {
+             //            $('this').parent('li').removeClass('open');
+             //        }
+
+
+             //    });
             $(function () {
                 var windowWidth = $(window).width();
-                if (windowWidth > 991) {
-                    $(".dropdown").hover(
-                    function () { $(this).addClass('open') },
-                    function () { $(this).removeClass('open') }
-                    );
-                }
+                console.log(windowWidth);
+                
+                // if (windowWidth > 991) {
+                //     $(".dropdown").click(
+                //     function () { $(this).toggleClass('open') }
+                //     );
+                // }
 
-                $('a[href^="#"]:not(.link-geolocation):not([data-toggle="collapse"])').click(function (e) {
+                $('a[href^="#"]:not(.link-geolocation):not([data-toggle="collapse"]):not([data-toggle="dropdown"])').click(function (e) {
                     e.preventDefault();
                     var hash = $(this).attr('href');
                     if ($(hash).length == 0)
