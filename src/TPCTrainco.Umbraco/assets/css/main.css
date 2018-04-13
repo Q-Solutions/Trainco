@@ -4552,7 +4552,7 @@ ul {
 }
 
 .view-opts, a:active, a:focus, a:hover {
-    text-decoration: none;
+    text-decoration: underline;
     color: #008fc7;
 }
 
@@ -4681,6 +4681,7 @@ button {
 .btn-blue-solid {
     background-color: #008fc7 !important;
     padding: 6px 24px;
+    border-color: #3330;
 }
 
     .btn-blue-solid:hover {
@@ -5091,6 +5092,7 @@ ul.pagination-btn-wrapper li {
         text-transform: uppercase;
         font-size: 12px;
         padding-left: 10px;
+        margin-left: 5px;
     }
 }
 
@@ -5508,7 +5510,7 @@ ul.pagination-btn-wrapper li {
 
 .intro-section {
     background-color: rgba(0,0,0,.75);
-    background-image: url(/assets/images/bg-small.jpg);
+    background-image: url(/assets/images/H1Image2.jpg);
     background-position: top;
     background-size: cover;
     background-repeat: no-repeat;
@@ -5792,7 +5794,7 @@ ul.pagination-btn-wrapper li {
 }
 
 .headline-section {
-    background-image: url(/assets/images/content-pg-header-small.jpg);
+    background-image: url(/assets/images/H1Image.jpg);
     background-position: top;
     background-repeat: no-repeat;
     background-size: cover;
@@ -8792,7 +8794,7 @@ input {
 
 .cart-btn {
     position: absolute;
-    top: 0px;
+    top: -4px;
     right: 70px;
     border-radius: 50px;
 }
@@ -11018,6 +11020,9 @@ div.geolocation-panel {
     color: #fff;
 }
 @media only screen and (max-width: 991px) and (min-width: 320px) {
+    .btn-reg.reg-btn-footer {
+     display: none;
+    }
     .bg-overlay{
      position: fixed;
     top: 0;

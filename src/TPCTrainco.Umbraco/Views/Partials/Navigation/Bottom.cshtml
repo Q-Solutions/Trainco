@@ -75,7 +75,9 @@
 <script type="text/javascript">
     jQuery(document).on('click', '.navbar-toggle ', function () {
         jQuery('html,body').toggleClass('overflow-hidden');
-        jQuery('#bg-overlay').toggleClass('bg-overlay');
+        setTimeout(function() {
+		jQuery('#bg-overlay').toggleClass('bg-overlay');
+	},500);
     });
 
     jQuery(window).scroll(function () {
