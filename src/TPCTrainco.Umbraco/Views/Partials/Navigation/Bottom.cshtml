@@ -15,6 +15,7 @@
     // The menu items we want are all of the children of the homepage
     // We also check if "Hide in navigation" is on in the menu, we shouldn't show hidden items
     IEnumerable<IPublishedContent> menuItems = homePage.Children.Where("navigationBottom == true");
+    int year = DateTime.UtcNow.Year;
 }
 <div class="newsletter-box">
     <div class="container">
@@ -131,7 +132,7 @@
     <ul class="wrapper text-center">
         <li class="copyright">
             <p>© TPC Training</p>
-            <p>© Copyright 2018 TPC Training. All Rights Reserved.</p>
+            <p>© Copyright @(year) TPC Training. All Rights Reserved.</p>
         </li>
 
     </ul>

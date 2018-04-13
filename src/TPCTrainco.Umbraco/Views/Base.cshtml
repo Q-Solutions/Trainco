@@ -360,8 +360,11 @@
                 }
 
                 $('.cart-box').addClass('hide');
-                if (localStorage.getItem('cartDataArr') !== null)
-                    $('.cart-box').removeClass('hide');
+                if (localStorage.getItem('cartItemList') !== null) {
+                    var cartItems = JSON.parse(localStorage.getItem('cartItemList'));
+                    if(cartItems.length > 0)
+                        $('.cart-box').removeClass('hide');
+                }
             });
         </script>
     }
