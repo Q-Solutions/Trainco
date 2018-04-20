@@ -5661,6 +5661,7 @@ ul.pagination-btn-wrapper li {
         padding: 10px;
     }
 
+
     .jumbotron p {
         max-width: 700px;
         margin: 0 auto;
@@ -8157,6 +8158,8 @@ ul.pagination-btn-wrapper li {
             .register-standalone .register-top .jumbotron h1 {
                 color: #3e3e3e;
                 font-size: 30px !important;
+                background: #4c4b4b00 !important;
+
             }
 
                 .register-standalone .register-top .jumbotron h1:after, .register-standalone .register-top .jumbotron h1:before {
