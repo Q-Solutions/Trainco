@@ -111,11 +111,11 @@
 
                     <li class="dropdown register-link-xs">
                         <a href="register/" class="dropdown-toggle regular-link nav-link main-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            Register</span>
+                            Register For Seminars Here</span>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <h2 class="gheader__mnav__subnav__group__title">Register now</h2>
+                                <h2 class="gheader__mnav__subnav__group__title">Register For Seminars Here</h2>
                                 <p>If you would like to register with TPC Trainco <a href="search-seminars/" title="live.tpctraining.com/search-seminars/">click here</a> or contact us on <a href="tel:+18779877246">877 987 7246</a></p>
 
                             </li>
@@ -159,13 +159,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav one pull-right">
                     <li>
-                        <span>For public seminars</span>
-                        <a href="@(searchSeminarNode.Url)" class="btn-reg" role="button">Register Now</a>
+                        <span>For Live Training</span>
+                        <a href="@(searchSeminarNode.Url)" class="btn-reg" role="button">Register For Seminars Here</a>
                     </li>
                     <li>
                         Or Call <a href="tel:@(siteSettings.GetPropertyValue<string>("phoneNumber"))" class="no-header">@(siteSettings.GetPropertyValue<string>("phoneNumber"))</a>
                     </li>
-                    <li class="site-links">
+                    <!-- /<li class="site-links">
                         <div class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span>Select site:</span>
@@ -174,11 +174,11 @@
                                 <a class="dropdown-item" href="https://tpc-training-systems-staging.myshopify.com/"><i class="fa fa-circle blue-color" aria-hidden="true"></i> Online Training</a>
                                 <a class="dropdown-item" href="https://live.tpctraining.com"><i class="fa fa-circle red-color" aria-hidden="true"></i> Live Training</a>
                             </div>
-                        </div>
+                        </div>-->
                     </li>
                     <li>
                       <div class="cart-box hide">
-                        <span class="cart-text">ONLINE CART</span>
+                        <span class="cart-text">LIVE TRAINING CART</span>
                         <a class="authbar-link" href="/search-seminars?cart=1" title=""><img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-black.png" class="cart-img-cart ng-scope"> </a>
 
                        <!--  <a class="authbar-link" href="/search-seminars?cart=1" title=""><span class="cart-icon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span></a> -->
@@ -221,4 +221,4 @@
         </div>
     </div>
 </nav>
-<a href="@(searchSeminarNode.Url)" class="btn-reg reg-btn-footer" role="button">Register Now</a>
+<a href="@(searchSeminarNode.Url)" class="btn-reg reg-btn-footer" role="button">Register For Seminars Here</a>

@@ -1,6 +1,7 @@
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700');
 
+
 html {
     font-family: sans-serif;
     -ms-text-size-adjust: 100%;
@@ -4607,7 +4608,7 @@ button {
         left: 0;
         width: 100%;
         height: 100%;
-        border: 4px solid #c6211f;
+        border: 0px solid #c6211f;
         z-index: 0;
         border-radius: inherit;
         opacity: 0;
@@ -4632,10 +4633,11 @@ button {
     }
 
 .btn-white {
-    background-color: transparent;
+    background-color: #fff;
     border: 3px solid #fff;
     padding: 7px 37px;
     z-index: 2;
+    color: #3e3e3e;
 }
 
     .btn-white:hover {
@@ -4643,6 +4645,14 @@ button {
         text-decoration: none;
         background-color: #fff;
     }
+    .btn-white#search-btn{
+        background-color: #fff0;
+        color: #fff;
+}
+.btn-white#search-btn:hover{
+       color: #3e3e3e;
+        background-color: #fff;
+}
 
     .btn-white:before {
         background-color: #fff;
@@ -5657,10 +5667,9 @@ ul.pagination-btn-wrapper li {
     .jumbotron h1 {
         font-size: 36px;
         color: #fff;
-        background: #4c4b4bad;
+        background-color: rgba(0,0,0,.75);
         padding: 10px;
     }
-
 
     .jumbotron p {
         max-width: 700px;
@@ -5668,6 +5677,8 @@ ul.pagination-btn-wrapper li {
         line-height: 1.7;
         font-size: 16px;
         color: #fff;
+        background-color: rgba(0,0,0,.75);
+        padding: 10px;
     }
 
 .onsite-section {
@@ -5795,15 +5806,15 @@ ul.pagination-btn-wrapper li {
 }
 
 .headline-section {
-    background-image: url(/assets/images/H1Image.jpg);
-    background-position: top;
+    background-image: url(/assets/images/H1Image2.jpg);
+    background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
 
 @media (min-width:992px) {
     .headline-section {
-        background-image: url(/assets/images/H1Image.jpg);
+        background-image: url(/assets/images/H1Image2.jpg);
         padding-top: 20px;
         padding-bottom: 20px;
     }
@@ -8158,8 +8169,7 @@ ul.pagination-btn-wrapper li {
             .register-standalone .register-top .jumbotron h1 {
                 color: #3e3e3e;
                 font-size: 30px !important;
-                background: #4c4b4b00 !important;
-
+                background: #4c4b4b00;
             }
 
                 .register-standalone .register-top .jumbotron h1:after, .register-standalone .register-top .jumbotron h1:before {
@@ -10955,6 +10965,7 @@ div.geolocation-panel {
     font-size: 12px;
     text-decoration: underline;
     padding: 2px 15px 0px 0px;
+    margin: 0;
 }
 
 .navbar-default.two {
@@ -11209,12 +11220,13 @@ div.geolocation-panel {
 ul.child-menu li a{
     display: block;
     border: 0px !important;
-    padding: 6px 0px 6px 0px !important;
+    padding: 0px 0px 10px 0px !important;
 }
 ul.child-menu{
     color: #444;
     font-size: 10px;
-    padding: 0px 18px;
+    padding: 0px 15px;
+    -moz-padding-start : 10px;
     list-style: disc;
 }
 .cart-icon{
@@ -11435,6 +11447,8 @@ ul.child-menu{
 
 .site-links .dropdown-toggle {
     background-color: #fff;
+    width: 100%;
+    min-height: 50px;
 }
 
 .site-links {
