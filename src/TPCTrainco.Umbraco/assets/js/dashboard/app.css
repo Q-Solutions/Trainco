@@ -4057,6 +4057,8 @@ aside.dashboard-sidebar-container {
         display: none;
     }
     .is-open > .dropdown-menu {
+    background-color: #fff;
+    border: 1px solid #ddd;
     display: block;
     width: 100%;
 }
