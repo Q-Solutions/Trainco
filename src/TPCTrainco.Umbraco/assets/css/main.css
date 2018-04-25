@@ -11679,3 +11679,6 @@ li.mega-menu-item{
     border: 0px;
     top: 46px;
 }}
+.walkme-tooltip-outer-div {
+    z-index: 9999 !important;
+}
