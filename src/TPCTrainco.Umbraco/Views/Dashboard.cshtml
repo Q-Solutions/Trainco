@@ -108,14 +108,7 @@
     <script>
         $(function () {
             var windowWidth = $(window).width();
-            if (windowWidth > 991) {
-                $(".dropdown").hover(
-                function () { $(this).addClass('open') },
-                function () { $(this).removeClass('open') }
-                );
-            }
-
-            $('a[href^="#"]:not(.link-geolocation):not([data-toggle="collapse"])').click(function (e) {
+            $('a[href^="#"]:not(.link-geolocation):not([data-toggle="collapse"]):not([data-toggle="dropdown"])').click(function (e) {
                 e.preventDefault();
                 var hash = $(this).attr('href');
                 if ($(hash).length == 0)
