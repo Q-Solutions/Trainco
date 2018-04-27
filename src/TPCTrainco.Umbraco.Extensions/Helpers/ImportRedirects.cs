@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using umbraco.NodeFactory;
+using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using Umbraco.Web;
@@ -35,7 +36,7 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
 
                     if (false == string.IsNullOrWhiteSpace(oldUrl) && false == string.IsNullOrWhiteSpace(newUrl))
                     {
-                        if (oldUrl.IndexOf("www.americantrainco.com") >= 0)
+                        if (oldUrl.IndexOf("tpctrainco.com") >= 0)
                         {
                             oldUrl = oldUrl.Replace("http://www.americantrainco.com", "");
                             oldUrl = oldUrl.Replace("https://www.americantrainco.com", "");
@@ -105,7 +106,51 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
             return output;
         }
 
+        public static string ImportExternalRedirects(string filePath)
+        {
+            FileStream stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read);
+            ContentService contentSerivce = new ContentService();
+            StringBuilder sb = new StringBuilder();
+            IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+            excelReader.IsFirstRowAsColumnNames = true;
+            DataSet result = excelReader.AsDataSet();
+            if (result.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in result.Tables[0].Rows)
+                {
+                    string oldUrl = row[0].ToString();
+                    string newUrl = row[1].ToString();
 
+                    if (string.IsNullOrWhiteSpace(oldUrl) || string.IsNullOrWhiteSpace(newUrl) || oldUrl.IndexOf("tpctrainco.com") == -1)
+                        continue;
+                    oldUrl = oldUrl.Replace("tpctrainco.com", "");
+                    StringBuilder urlPicker = new StringBuilder();
+                    urlPicker.AppendLine("{");
+                    urlPicker.AppendLine("  \"type\": \"url\",");
+                    urlPicker.AppendLine("  \"meta\": {");
+                    urlPicker.AppendLine("    \"title\": \"\",");
+                    urlPicker.AppendLine("    \"newWindow\": false");
+                    urlPicker.AppendLine("},");
+                    urlPicker.AppendLine("  \"typeData\": {");
+                    urlPicker.AppendLine("    \"url\": \"" + newUrl + "\",");
+                    urlPicker.AppendLine("    \"contentId\": \"\",");
+                    urlPicker.AppendLine("    \"mediaId\": null");
+                    urlPicker.AppendLine("}");
+                    urlPicker.AppendLine("}");
+                    deleteExistingRedirects(oldUrl);
+                    IContent node = contentSerivce.CreateContent(oldUrl, 1092, "Redirect", 0);
+                    node.SetValue("hideInXmlSitemap", true);
+                    node.SetValue("urlToRedirect", oldUrl);
+                    node.SetValue("redirectToUrl", urlPicker.ToString());
+                    node.SetValue("statusCode", "301");
+                    contentSerivce.Publish(node, 0);
+                }
+            }
+            string output = sb.ToString();
+            contentSerivce.RePublishAll();
+            excelReader.Close();
+            return output;
+        }
         public static bool IsExistingUrl(string url)
         {
             bool found = false;
@@ -123,9 +168,24 @@ namespace TPCTrainco.Umbraco.Extensions.Helpers
             {
                 found = true;
             }
-
-
             return found;
+        }
+
+        public static void deleteExistingRedirects(string url)
+        {
+            var umbHelper = new UmbracoHelper(UmbracoContext.Current);
+            var cs = ApplicationContext.Current.Services.ContentService;
+            IPublishedContent siteSettings = umbHelper.TypedContentAtRoot().FirstOrDefault(n => n.IsDocumentType("SiteSettings")); ;
+            IPublishedContent redirectsFolder = siteSettings.Children.FirstOrDefault(n => n.IsDocumentType("RedirectsFolder"));
+            IEnumerable<IPublishedContent> redirects = redirectsFolder.Children;
+            List<IPublishedContent> nodes = redirects.Where(p => p.Name.ToLower() == url.ToLower()).ToList();
+            foreach (IPublishedContent node in nodes)
+            {
+                IContent contentNode = cs.GetById(node.Id);
+                if (contentNode == null)
+                    continue;
+                cs.Delete(contentNode);
+            }
         }
 
     }
