@@ -78,9 +78,9 @@
     <nav class="navbar navbar-default bg-white primary-menu-mobile visible-xs visible-sm hidden-lg hidden-md ">
         <div class="container-fluid bg-white">
             <div class="navbar-header">
-                
+
                 <div class="pull-right mobile-cart-top cart-box hide">
-                     <a class="authbar-link" href="/search-seminars?cart=1" title=""><img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-black.png" class="cart-img-cart ng-scope"> </a>
+                    <a class="authbar-link" href="/search-seminars?cart=1" title=""><img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-black.png" class="cart-img-cart ng-scope"> </a>
                 </div>
                 <button type="button" class="navbar-toggle collapsed pull-left" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
@@ -89,7 +89,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <div class="logo">
-                    TCPTrainco
+                    TPC Training
                     <a class="navbar-brand" href="/"><img src="/assets/images/logo-trainco-1x.png" alt="TCPTrainco Logo" id="logo" /></a>
                 </div>
             </div>
@@ -97,9 +97,9 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <div class="pull-right icon-cross-box">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="true">
-                    <span class="sr-only">Toggle navigation</span>
-                    <img src="/assets/images/icon-cross.svg" class="close-img-menu">
-                </button>
+                        <span class="sr-only">Toggle navigation</span>
+                        <img src="/assets/images/icon-cross.svg" class="close-img-menu">
+                    </button>
                 </div>
 
                 <ul class="nav navbar-nav one pull-right">
@@ -108,7 +108,11 @@
                         @Html.Raw(HttpUtility.HtmlDecode(menuItem.Value))
                     }
 
-
+                    <li class="dropdown">
+                        <a href="https://tpc-training-systems-staging.myshopify.com/pages/contact-us" class="dropdown-toggle regular-link nav-link main-link">
+                            Contact
+                        </a>
+                    </li>
                     <li class="dropdown register-link-xs">
                         <a href="register/" class="dropdown-toggle regular-link nav-link main-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                             Register For Seminars Here</span>
@@ -127,7 +131,7 @@
                             <li>
                                 <a class="nav-link regular-link">Select site:</a>
                                 <ul class="site-links-xs" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="nav-link regular-link" href="https://tpc-training-systems-staging.myshopify.com/"><i class="fa fa-circle blue-color" aria-hidden="true"></i> Online Training</a></li>
+                                    <li><a class="nav-link regular-link" href="https://tpctraining.com/"><i class="fa fa-circle blue-color" aria-hidden="true"></i> Online Training</a></li>
                                     <li>
                                         <a class="nav-link regular-link" href="https://live.tpctraining.com"><i class="fa fa-circle red-color" aria-hidden="true"></i> Live Training</a>
                                     </li>
@@ -171,18 +175,18 @@
                                 <span>Select site:</span>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="https://tpc-training-systems-staging.myshopify.com/"><i class="fa fa-circle blue-color" aria-hidden="true"></i> Online Training</a>
+                                <a class="dropdown-item" href="https://www.tpctraining.com/"><i class="fa fa-circle blue-color" aria-hidden="true"></i> Online Training</a>
                                 <a class="dropdown-item" href="https://live.tpctraining.com"><i class="fa fa-circle red-color" aria-hidden="true"></i> Live Training</a>
                             </div>
                         </div>-->
                     </li>
                     <li>
-                      <div class="cart-box hide">
-                        <span class="cart-text">LIVE TRAINING CART</span>
-                        <a class="authbar-link" href="/search-seminars?cart=1" title=""><img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-black.png" class="cart-img-cart ng-scope"> </a>
+                        <div class="cart-box hide">
+                            <span class="cart-text">LIVE TRAINING CART</span>
+                            <a class="authbar-link" href="/search-seminars?cart=1" title=""><img ng-if="!vm.isCartOpened" src="/assets/images/icon-cart-black.png" class="cart-img-cart ng-scope"> </a>
 
-                       <!--  <a class="authbar-link" href="/search-seminars?cart=1" title=""><span class="cart-icon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span></a> -->
-                      </div>
+                            <!--  <a class="authbar-link" href="/search-seminars?cart=1" title=""><span class="cart-icon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span></a> -->
+                        </div>
                     </li>
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -214,8 +218,8 @@
                         </li>
                     }
                     <li class="mega-menu-item dropdown mega-dropdown">
-                            <a href="/contact">Contact</a>
-                        </li>
+                        <a href="https://tpc-training-systems-staging.myshopify.com/pages/contact-us">Contact</a>
+                    </li>
                 </ul>
             }
         </div>
