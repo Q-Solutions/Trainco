@@ -1,0 +1,99 @@
+﻿@using TPCTrainco.Umbraco.Extensions
+@using TPCTrainco.Umbraco.Extensions.Helpers
+@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    Layout = "Base.cshtml";
+    IPublishedContent currentPage = Model.Content;
+    var seminarContainer = CurrentPage.AncestorOrSelf(2);
+}
+
+
+<div class="container-fluid headline-section seminar-detail">
+    <div class="row">
+        <div class="jumbotron">
+            @if (!String.IsNullOrEmpty(CurrentPage.pageTitle))
+            {
+                <h1>@CurrentPage.pageTitle</h1>
+            }
+            else
+            {
+                <h1>@CurrentPage.name</h1>
+            }
+            <br />
+            <h1 class="no-margin0top">Simulcast Course</h1>
+
+            @if (CurrentPage.HasValue("subTitle"))
+            {
+
+                <p>@CurrentPage.subTitle</p>
+            }
+        </div>
+        <div class="button-wrapper">
+            <ul class="list-inline">
+                <li>
+                    <a href="#checkDates" class="btn-reg btn-first" role="button">Check Dates and Locations</a>
+                </li>
+                <li>
+                    <a href="/on-site-training/#cf-container" class="btn-reg btn-white" role="button">Get an On-Site Quote</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- include the cart template -->
+<div ng-include src="'/assets/js/ngapp/components/cart/cart.html'"></div>
+<!-- end include the cart template -->
+<div class="container-fluid gradient-bg main-content">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 text-wrap" id="overview">
+
+            <div class="row" ng-controller="SeminarItemController as vm">
+                <div class="col-md-10">
+                    <h2>Seminar Overview</h2>
+                    @CurrentPage.seminarOverview
+                </div>
+                <div class="col-md-2">
+                    <button class="btn-reg btn-blue-solid" ng-model="vm.savedBtn"
+                            ng-click="vm.saveCourseToUser()" ng-show="vm.saveBtn">
+                        Save
+                    </button>
+                    <span ng-show="!vm.saveBtn"><strong>Saved!</strong><br /><a href="/dashboard/saved">View My Saved Seminars</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<a id="checkDates" name="checkDates"></a>
+@Html.Partial("SeminarSearch/SeminarDetailsSearch", Model.Content)
+
+<div class="container-fluid results-container detail-page-app">
+    <div class="container">
+        <div class="row">
+            <div class="empty-message"></div>
+            <div class="spinner class-loader">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+            <ul class="results"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('a[href*="#"]:not([href="#"])').click(function () {
+            if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top + 500
+                    }, 1000);
+                    return false;
+                }
+            }
+        });
+    });
+</script>

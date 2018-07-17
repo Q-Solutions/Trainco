@@ -5807,7 +5807,7 @@ ul.pagination-btn-wrapper li {
 
 .headline-section {
     background-image: url(/assets/images/H1Image2.jpg);
-    background-position: center;
+    background-position: top;
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -11682,3 +11682,4 @@ li.mega-menu-item{
 .walkme-tooltip-outer-div {
     z-index: 9999 !important;
 }
+.no-margin-top { margin-top: 0 !important; }
